@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>58. Phoenix Group — Rise Up To Fire</title>
+<meta name="description" content="58. Phoenix Group — česko-slovenská Arma 3 MILSIM komunita. Nový web pripravujeme.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --oliva: #242B1C;
+    --oliva-svetla: #35402A;
+    --khaki: #9C9C74;
+    --khaki-svetla: #C2C29E;
+    --hneda: #6E4C36;
+    --text: #D8D8C0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--oliva);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .patch {
+    position: relative;
+    width: min(320px, 78vw);
+    aspect-ratio: 1;
+    margin-bottom: 40px;
+  }
+  .patch-kruh {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid var(--khaki);
+    background: var(--oliva-svetla);
+    box-shadow: inset 0 0 0 10px var(--oliva-svetla), inset 0 0 0 12px var(--khaki);
+  }
+  .patch-stred {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .patch-stred img {
+    width: 52%;
+    height: auto;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
+  }
+  .patch-stred .fenix-nahrada {
+    font-family: 'Staatliches', sans-serif;
+    font-size: clamp(64px, 18vw, 96px);
+    color: var(--khaki);
+    line-height: 1;
+  }
+  .patch-text {
+    position: absolute;
+    inset: 0;
+    animation: rotacia 40s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .patch-text { animation: none; }
+  }
+  @keyframes rotacia { to { transform: rotate(360deg); } }
+  .patch-text text {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 13.5px;
+    letter-spacing: 3.5px;
+    fill: var(--khaki-svetla);
+  }
+
+  h1 {
+    font-family: 'Staatliches', sans-serif;
+    font-size: clamp(40px, 8vw, 64px);
+    letter-spacing: 4px;
+    color: var(--khaki-svetla);
+    line-height: 1.05;
+  }
+  .motto {
+    font-family: 'Staatliches', sans-serif;
+    font-size: clamp(18px, 3.5vw, 24px);
+    letter-spacing: 6px;
+    color: var(--hneda);
+    filter: brightness(1.5);
+    margin-top: 8px;
+  }
+  .popis {
+    max-width: 460px;
+    margin-top: 28px;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .popis strong { color: var(--khaki-svetla); font-weight: 500; }
+
+  .cta {
+    display: inline-block;
+    margin-top: 36px;
+    padding: 14px 36px;
+    font-family: 'Staatliches', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    color: var(--oliva);
+    background: var(--khaki);
+    border: 2px solid var(--khaki-svetla);
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background .15s, transform .15s;
+  }
+  .cta:hover { background: var(--khaki-svetla); transform: translateY(-2px); }
+  .cta:focus-visible { outline: 3px solid var(--khaki-svetla); outline-offset: 3px; }
+
+  footer {
+    margin-top: 56px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--khaki);
+    opacity: .7;
+  }
+</style>
+</head>
+<body>
+
+  <div class="patch" aria-hidden="true">
+    <div class="patch-kruh"></div>
+    <svg class="patch-text" viewBox="0 0 320 320">
+      <defs>
+        <path id="obvod" d="M 160,160 m -128,0 a 128,128 0 1,1 256,0 a 128,128 0 1,1 -256,0"/>
+      </defs>
+      <text><textPath href="#obvod" startOffset="0%">58. PHOENIX GROUP • RISE UP TO FIRE • 58. PHOENIX GROUP • RISE UP TO FIRE •</textPath></text>
+    </svg>
+    <div class="patch-stred">
+      <img src="assets/phoenix58.png" alt="">
+    </div>
+  </div>
+
+  <h1>58. Phoenix Group</h1>
+  <p class="motto">Rise up to fire</p>
+
+  <p class="popis">
+    Česko-slovenská <strong>Arma 3 MILSIM</strong> komunita.
+    Nový web pripravujeme — profily členov, kalendár misií a výcvikové materiály na jednom mieste.
+  </p>
+
+  <a class="cta" href="https://discord.gg/2sQKH3RkG9">Pridaj sa na Discord</a>
+
+  <footer>© 2020–2026 · 58. Phoenix Group</footer>
+
+</body>
+</html>
