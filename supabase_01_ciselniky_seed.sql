@@ -86,18 +86,19 @@ create table if not exists timy (
   velitel_id uuid           -- FK na clenov, prepoji sa v kroku 2
 );
 
--- Aktivne timy (typ u Wolf/Grizzly/Duch doplnime — posli mi ich zaradenie)
+-- Aktivne timy
 insert into timy (nazov, typ, aktivny) values
-  ('Fox (Líška)', 'Ľahké pechotné uskupenie', true),
-  ('Wolf',        null,                        true),
-  ('Grizzly',     null,                        true),
-  ('Duch',        null,                        true);
+  ('Líška',   'Prieskumný tím',                       true),
+  ('Vlk',     'Podporná jednotka — ťažké zbrane',     true),
+  ('Grizzly', 'Mechanizovaný tím',                    true),
+  ('Duch',    'Hĺbkový prieskum a špeciálne nasadenia', true),
+  ('Alžbeta', 'Operačné veliteľstvo',                 true);
 
 -- Zalozne timy
 insert into timy (nazov, typ, aktivny) values
-  ('Hotel',    'Vrtuľníkové krídlo',   false),
-  ('Nomad',    'UAV centrum',          false),
-  ('Rosnička', 'Špeciálne jednotky',   false);
+  ('Hotel',    'Vrtuľníkové krídlo',       false),
+  ('Nomad',    'Bezpilotné prostriedky',   false),
+  ('Rosnička', 'Špeciálne jednotky',       false);
 
 -- ---------- TYPY MISII (pre kalendar) ----------
 create table if not exists typy_misii (
