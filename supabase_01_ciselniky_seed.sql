@@ -92,12 +92,11 @@ insert into timy (nazov, typ, aktivny) values
   ('Vlk',     'Podporná jednotka — ťažké zbrane',     true),
   ('Grizzly', 'Mechanizovaný tím',                    true),
   ('Duch',    'Hĺbkový prieskum a špeciálne nasadenia', true),
+  ('Hotel',   'Vrtuľníkové krídlo',                   true),
   ('Alžbeta', 'Operačné veliteľstvo',                 true);
 
 -- Zalozne timy
 insert into timy (nazov, typ, aktivny) values
-  ('Hotel',    'Vrtuľníkové krídlo',       false),
-  ('Nomad',    'Bezpilotné prostriedky',   false),
   ('Rosnička', 'Špeciálne jednotky',       false);
 
 -- ---------- TYPY MISII (pre kalendar) ----------
