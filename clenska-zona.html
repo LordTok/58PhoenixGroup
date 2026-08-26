@@ -315,18 +315,49 @@ a:hover { color: #E8E8CC; }
         </div>
       </div>
       <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
+            <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">Veterancia</div>
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+              <span style="font-family: 'Staatliches', sans-serif; font-size: 24px; letter-spacing: 2px; color: #C2C29E;">Skúsený operátor</span>
+              <span style="font-size: 14px; color: #A8A890;">1 240 / 1 600 XP</span>
+            </div>
+            <div style="margin-top: 12px; height: 12px; border-radius: 6px; background: #242B1C; border: 1px solid #4A5A38; overflow: hidden;">
+              <div style="width: 62%; height: 100%; background: linear-gradient(90deg, #8A5F44, #9C9C74);"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12.5px; color: #A8A890;">
+              <span>Ďalší stupeň: Veterán</span>
+              <span>vrchol: Legenda Vardaku</span>
+            </div>
+            <p style="font-size: 12.5px; color: #A8A890; margin: 14px 0 0;">XP za účasť na misiách a výcvikoch · pri dlhšej neaktivite klesá · kvalifikácie a stužky ostávajú navždy</p>
+          </div>
+          <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
+            <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">Stužky a pochvaly</div>
+            <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+              <div style="display: grid; gap: 6px; justify-items: center;">
+                <div style="width: 74px; height: 22px; border: 1px solid #1C2216; border-radius: 2px; background: linear-gradient(90deg, #8A5F44 0 30%, #C2C29E 30% 50%, #8A5F44 50% 70%, #C2C29E 70% 100%);"></div>
+                <span style="font-size: 11.5px; color: #A8A890; text-align: center; max-width: 90px;">Pochvala velenia</span>
+              </div>
+              <div style="display: grid; gap: 6px; justify-items: center;">
+                <div style="width: 74px; height: 22px; border: 1px solid #1C2216; border-radius: 2px; background: linear-gradient(90deg, #4A5A38 0 20%, #9C9C74 20% 80%, #4A5A38 80% 100%);"></div>
+                <span style="font-size: 11.5px; color: #A8A890; text-align: center; max-width: 90px;">Operácia Tichý hrebeň</span>
+              </div>
+              <div style="display: grid; gap: 6px; justify-items: center;">
+                <div style="width: 74px; height: 22px; border: 1px solid #1C2216; border-radius: 2px; background: linear-gradient(90deg, #2d69ad 0 15%, #C2C29E 15% 50%, #8A5F44 50% 85%, #2d69ad 85% 100%);"></div>
+                <span style="font-size: 11.5px; color: #A8A890; text-align: center; max-width: 90px;">Joint Ops veterán</span>
+              </div>
+            </div>
+            <p style="font-size: 12.5px; color: #A8A890; margin: 16px 0 0;">Pochvala od velenia = bonusové XP + trvalá stužka do zbierky</p>
+          </div>
+          <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
         <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">Kvalifikačné odznaky</div>
         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
           <sc-for list="{{ badges }}" as="b" hint-placeholder-count="5">
-            <div style="display: grid; justify-items: center; gap: 8px; width: 88px;">
-              <div style="width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: {{ b.bg }}; border: 2px solid {{ b.border }}; box-shadow: inset 0 0 0 4px #2C3522, inset 0 0 0 5px {{ b.border }}; opacity: {{ b.opacity }};">
-                <span style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 1px; color: {{ b.codeColor }};">{{ b.code }}</span>
-              </div>
+            <div style="display: grid; justify-items: center; gap: 8px; width: 100px;">
+              <img src="{{ b.img }}" alt="{{ b.name }}" style="width: 84px; height: 84px; object-fit: contain; filter: {{ b.filter }}; opacity: {{ b.opacity }};">
               <div style="font-size: 12px; color: {{ b.labelColor }}; text-align: center; line-height: 1.3;">{{ b.name }}</div>
             </div>
           </sc-for>
         </div>
-        <p style="font-size: 12.5px; color: #A8A890; margin: 16px 0 0;">Plné odznaky = dokončený výcvik · obrys = prebieha</p>
+        <p style="font-size: 12.5px; color: #A8A890; margin: 16px 0 0;">Farebný odznak = dokončený výcvik (bronz / striebro / zlato) · sivý = prebieha</p>
       </div>
       <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
         <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">História povýšení</div>
@@ -334,8 +365,9 @@ a:hover { color: #E8E8CC; }
           <div style="position: absolute; left: 7px; top: 10px; bottom: 10px; width: 2px; background: linear-gradient(to bottom, #4A5A38, #9C9C74);"></div>
           <div style="display: grid; gap: 18px;">
             <sc-for list="{{ ranks }}" as="rk" hint-placeholder-count="4">
-              <div style="display: grid; grid-template-columns: 16px 84px minmax(0, 1fr); gap: 14px; align-items: center;">
+              <div style="display: grid; grid-template-columns: 16px 40px 84px minmax(0, 1fr); gap: 14px; align-items: center;">
                 <span style="width: 12px; height: 12px; border-radius: 50%; background: {{ rk.dotBg }}; border: 2px solid {{ rk.dotBorder }}; position: relative; z-index: 1; box-sizing: border-box;"></span>
+            <img src="{{ rk.img }}" alt="" style="width: 40px; height: 40px; object-fit: contain; opacity: {{ rk.imgOpacity }};">
                 <span style="font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: {{ rk.color }};">{{ rk.rank }}</span>
                 <span style="font-size: 13.5px; color: #A8A890;">{{ rk.note }}</span>
               </div>
@@ -445,17 +477,16 @@ class Component extends DCLogic {
   ];
   attendData = [1,1,1,0,1,1,1,1,2,1,1,1];
   badgeData = [
-    { code: "ZV", name: "Základný výcvik", done: true },
-    { code: "PRI", name: "Prieskumník", done: true },
-    { code: "RTO", name: "Spojár", done: true },
-    { code: "CLS", name: "Zdravotník", done: false },
-    { code: "JO", name: "Joint Ops veterán", done: true }
+    { img: "assets/odznaky/odznak-zav-zlato.png",     name: "Základný výcvik · zlato",    done: true },
+    { img: "assets/odznaky/odznak-rto-striebro.png",  name: "RTO training · striebro",    done: true },
+    { img: "assets/odznaky/odznak-med-bronz.png",     name: "Medical training · bronz",   done: true },
+    { img: "assets/odznaky/odznak-cmd-zlato.png",     name: "Command training — prebieha", done: false }
   ];
   rankData = [
-    { rank: "voj.", note: "Nástup do jednotky · 03/2022", state: "past" },
-    { rank: "slob.", note: "Po základnom výcviku · 11/2022", state: "past" },
-    { rank: "des.", note: "Aktuálna hodnosť · od 06/2026", state: "now" },
-    { rank: "čat.", note: "Ďalšia hodnosť — vyžaduje výcvik TL", state: "next" }
+    { rank: "voj.", img: "assets/hodnosti/01-vojak-1-stupna.png", note: "Nástup do jednotky · 03/2022", state: "past" },
+    { rank: "slob.", img: "assets/hodnosti/03-slobodnik.png", note: "Po základnom výcviku · 11/2022", state: "past" },
+    { rank: "des.", img: "assets/hodnosti/04-desiatnik.png", note: "Aktuálna hodnosť · od 06/2026", state: "now" },
+    { rank: "čat.", img: "assets/hodnosti/05-catar.png", note: "Ďalšia hodnosť — vyžaduje výcvik TL", state: "next" }
   ];
   componentDidMount() {
     const map = { orbat: 1, kalendar: 2, archiv: 3, vycviky: 4, profil: 5 };
@@ -525,11 +556,9 @@ class Component extends DCLogic {
       }),
       badges: this.badgeData.map(b => ({
         ...b,
-        bg: b.done ? "#35402A" : "transparent",
-        border: b.done ? "#9C9C74" : "#4A5A38",
-        codeColor: b.done ? "#C2C29E" : "#7A7A5C",
+        filter: b.done ? "none" : "grayscale(1) brightness(.75)",
         labelColor: b.done ? "#D8D8C0" : "#7A7A5C",
-        opacity: b.done ? 1 : 0.85
+        opacity: b.done ? 1 : 0.6
       })),
       ranks: this.rankData.map(r => ({
         ...r,

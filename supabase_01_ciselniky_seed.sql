@@ -9,26 +9,30 @@ create table if not exists hodnosti (
   id serial primary key,
   nazov text not null unique,
   kategoria text not null,
-  poradie int not null unique  -- 1 = najnizsia, sluzi na triedenie ORBATu
+  poradie int not null unique,   -- 1 = najnizsia
+  insignia text                   -- cesta k obrazku insignie
 );
 
-insert into hodnosti (nazov, kategoria, poradie) values
-  ('Vojak 2. stupňa',        'Mužstvo',           1),
-  ('Vojak 1. stupňa',        'Mužstvo',           2),
-  ('Slobodník',              'Mužstvo',           3),
-  ('Desiatnik',              'Mužstvo',           4),
-  ('Čatár',                  'Poddôstojníci',     5),
-  ('Rotný',                  'Poddôstojníci',     6),
-  ('Rotmajster',             'Poddôstojníci',     7),
-  ('Nadrotmajster',          'Poddôstojníci',     8),
-  ('Štábny nadrotmajster',   'Poddôstojníci',     9),
-  ('Podpráporčík',           'Práporčíci',       10),
-  ('Práporčík',              'Práporčíci',       11),
-  ('Nadpráporčík',           'Práporčíci',       12),
-  ('Poručík',                'Nižší dôstojníci', 13),
-  ('Nadporučík',             'Nižší dôstojníci', 14),
-  ('Kapitán',                'Nižší dôstojníci', 15),
-  ('Major',                  'Vyšší dôstojníci', 16);
+insert into hodnosti (nazov, kategoria, poradie, insignia) values
+  ('Vojak 1. stupňa',      'Mužstvo',           1,  'assets/hodnosti/01-vojak-1-stupna.png'),
+  ('Vojak 2. stupňa',      'Mužstvo',           2,  'assets/hodnosti/02-vojak-2-stupna.png'),
+  ('Slobodník',            'Mužstvo',           3,  'assets/hodnosti/03-slobodnik.png'),
+  ('Desiatnik',            'Mužstvo',           4,  'assets/hodnosti/04-desiatnik.png'),
+  ('Čatár',                'Poddôstojníci',     5,  'assets/hodnosti/05-catar.png'),
+  ('Rotný',                'Poddôstojníci',     6,  'assets/hodnosti/06-rotny.png'),
+  ('Rotmajster',           'Poddôstojníci',     7,  'assets/hodnosti/07-rotmajster.png'),
+  ('Nadrotmajster',        'Poddôstojníci',     8,  'assets/hodnosti/08-nadrotmajster.png'),
+  ('Štábny nadrotmajster', 'Poddôstojníci',     9,  'assets/hodnosti/09-stabny-nadrotmajster.png'),
+  ('Podpráporčík',         'Práporčíci',       10,  'assets/hodnosti/10-podpraporcik.png'),
+  ('Práporčík',            'Práporčíci',       11,  'assets/hodnosti/11-praporcik.png'),
+  ('Nadpráporčík',         'Práporčíci',       12,  'assets/hodnosti/12-nadpraporcik.png'),
+  ('Poručík',              'Nižší dôstojníci', 13,  'assets/hodnosti/13-porucik.png'),
+  ('Nadporučík',           'Nižší dôstojníci', 14,  'assets/hodnosti/14-nadporucik.png'),
+  ('Kapitán',              'Nižší dôstojníci', 15,  'assets/hodnosti/15-kapitan.png'),
+  ('Major',                'Vyšší dôstojníci', 16,  'assets/hodnosti/16-major.png'),
+  ('Podplukovník',         'Vyšší dôstojníci', 17,  'assets/hodnosti/17-podplukovnik.png'),
+  ('Plukovník',            'Vyšší dôstojníci', 18,  'assets/hodnosti/18-plukovnik.png');
+
 
 -- ---------- VYCVIKY ----------
 -- druh: 'training' = komplexna instruktaz s viacerymi praktickymi vycvikmi
@@ -109,6 +113,54 @@ insert into timy (nazov, typ, aktivny) values
 -- Zalozne timy
 insert into timy (nazov, typ, aktivny) values
   ('Rosnička', 'Špeciálne jednotky',       false);
+
+
+-- ---------- XP SYSTEM (veterancia) ----------
+-- Dve vrstvy: trvaly sluzobny zaznam (odznaky, stuzky) vs. ziva
+-- veterancia (XP bar + stupen, pri neaktivite klesa).
+-- XP NIKDY samo nepovysuje — prah len ticho signalizuje veleniu.
+
+-- Stupne veterancie (nazvy su navrhove, doladi klan)
+create table if not exists veterancia_stupne (
+  id serial primary key,
+  nazov text not null unique,
+  min_xp int not null unique,
+  poradie int not null unique
+);
+insert into veterancia_stupne (nazov, min_xp, poradie) values
+  ('Nováčik',            0,    1),
+  ('Vojak kampane',      300,  2),
+  ('Skúsený operátor',   800,  3),
+  ('Veterán',            1600, 4),
+  ('Legenda Vardaku',    2600, 5);  -- ciel: ~rok pravidelneho hrania
+
+-- XP zaznamy (kazde pridelenie XP, kvoli auditu a decay vypoctu)
+create table if not exists xp_zaznamy (
+  id serial primary key,
+  clen_id uuid,
+  zdroj text not null check (zdroj in ('misia','vycvik','pochvala','ine')),
+  body int not null,
+  popis text,
+  datum date not null default current_date
+);
+
+-- Stuzky (ciselnik trvalych vyznamenani za pochvaly)
+create table if not exists stuzky (
+  id serial primary key,
+  nazov text not null unique,
+  popis text,
+  farby text  -- napr. "#9C9C74,#8A5F44" pre CSS vykreslenie stuzky
+);
+
+-- Udelene pochvaly: trvala stuzka + bonusove XP (XP ide do xp_zaznamy)
+create table if not exists pochvaly (
+  id serial primary key,
+  clen_id uuid,
+  stuzka_id int not null references stuzky(id),
+  udelil_id uuid,
+  poznamka text,
+  datum date not null default current_date
+);
 
 -- ---------- TYPY MISII (pre kalendar) ----------
 create table if not exists typy_misii (
