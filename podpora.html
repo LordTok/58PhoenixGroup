@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Podpora a prvé kroky — 58. Phoenix Group</title>
+<meta name="description" content="Od Discordu po prvý výcvik — návod na pripojenie, modpacky, TeamSpeak, riešenie problémov a pravidlá 58. Phoenix Group.">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Podpora a prvé kroky — 58. Phoenix Group">
+<meta property="og:description" content="Od Discordu po prvý výcvik — všetko, čo nováčik potrebuje na jednom mieste.">
+<meta property="og:image" content="https://lordtok.github.io/58PhoenixGroup/assets/og-nahlad.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --oliva: #242B1C; --oliva-svetla: #35402A; --oliva-panel: #2C3522;
+    --khaki: #9C9C74; --khaki-svetla: #C2C29E; --hneda: #8A5F44;
+    --text: #D8D8C0; --text-tlm: #A8A890;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--oliva); color: var(--text); font-family: 'Barlow', sans-serif; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: var(--khaki-svetla); font-weight: 400; }
+  a { color: var(--khaki-svetla); }
+  .sirka { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(36,43,28,.94); backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--oliva-svetla);
+  }
+  .nav-vnutro { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1120px; margin: 0 auto; }
+  .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .nav-logo img { width: 38px; height: 38px; }
+  .nav-logo span { font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--khaki-svetla); }
+  .nav-linky { display: flex; gap: 22px; flex-wrap: wrap; }
+  .nav-linky a { font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: var(--khaki); }
+  .nav-linky a:hover, .nav-linky a.tu { color: var(--khaki-svetla); }
+  @media (max-width: 640px) { .nav-linky { gap: 14px; } .nav-linky a { font-size: 14px; } }
+
+  header.podpora-hero {
+    background: linear-gradient(rgba(28,34,22,.85), rgba(36,43,28,.96)), url('assets/gal-prieskum.jpg') center 40% / cover no-repeat;
+    border-bottom: 1px solid var(--oliva-svetla);
+    text-align: center; padding: 76px 24px 84px;
+  }
+  .podpora-hero .eyebrow { font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: var(--hneda); }
+  .podpora-hero h1 { font-size: clamp(36px, 6.5vw, 60px); margin-top: 6px; }
+  .podpora-hero p { max-width: 620px; margin: 18px auto 0; font-size: 17px; }
+
+  section { padding: 68px 0; }
+  section[id] { scroll-margin-top: 64px; }
+  .sekcia-hlava { margin-bottom: 34px; }
+  .sekcia-hlava .eyebrow { font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: var(--hneda); }
+  .sekcia-hlava h2 { font-size: clamp(28px, 4.5vw, 40px); margin-top: 4px; }
+  .sekcia-hlava p { max-width: 620px; margin-top: 12px; font-size: 15px; color: var(--text-tlm); }
+
+  .kroky { counter-reset: krok; display: grid; gap: 18px; max-width: 780px; }
+  .krok {
+    background: var(--oliva-panel); border: 1px solid var(--khaki); border-radius: 6px;
+    padding: 22px 24px 22px 78px; position: relative;
+  }
+  .krok::before {
+    counter-increment: krok; content: counter(krok, decimal-leading-zero);
+    position: absolute; left: 22px; top: 20px;
+    font-family: 'Staatliches', sans-serif; font-size: 30px; color: var(--hneda);
+  }
+  .krok h3 { font-size: 21px; letter-spacing: 2px; }
+  .krok p { margin-top: 8px; font-size: 15px; }
+  .krok .tip { margin-top: 10px; font-size: 14px; color: var(--text-tlm); border-left: 3px solid var(--hneda); padding-left: 12px; }
+  .krok a.tlacitko {
+    display: inline-block; margin-top: 12px; padding: 9px 18px;
+    font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px;
+    color: var(--oliva); background: var(--khaki); border-radius: 4px; text-decoration: none;
+  }
+  .krok a.tlacitko:hover { background: var(--khaki-svetla); }
+
+  #problemy { background: var(--oliva-panel); border-top: 1px solid var(--oliva-svetla); border-bottom: 1px solid var(--oliva-svetla); }
+  .problem { max-width: 780px; border: 1px solid var(--khaki); border-radius: 6px; background: var(--oliva-svetla); margin-bottom: 12px; overflow: hidden; }
+  .problem summary {
+    cursor: pointer; list-style: none; padding: 16px 20px;
+    font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: var(--khaki-svetla);
+  }
+  .problem summary::-webkit-details-marker { display: none; }
+  .problem summary::before { content: '▸ '; color: var(--hneda); }
+  .problem[open] summary::before { content: '▾ '; }
+  .problem .riesenie { padding: 0 20px 18px; font-size: 15px; }
+  .problem .riesenie code {
+    background: var(--oliva); border: 1px solid var(--khaki); border-radius: 3px;
+    padding: 1px 6px; font-size: 13.5px; color: var(--khaki-svetla);
+  }
+
+  .pravidla { max-width: 780px; }
+  .pravidla li {
+    list-style: none; padding: 14px 18px 14px 42px; position: relative;
+    background: var(--oliva-panel); border: 1px solid var(--khaki); border-radius: 6px;
+    margin-bottom: 10px; font-size: 15.5px;
+  }
+  .pravidla li::before {
+    content: '▸'; position: absolute; left: 18px; top: 14px;
+    color: var(--hneda); font-family: 'Staatliches', sans-serif; font-size: 18px;
+  }
+  .pravidla li strong { color: var(--khaki-svetla); }
+  .navrh-stitok {
+    display: inline-block; margin-top: 14px; padding: 2px 10px;
+    font-family: 'Staatliches', sans-serif; font-size: 12px; letter-spacing: 2px;
+    color: var(--text-tlm); border: 1px dashed var(--text-tlm); border-radius: 3px;
+  }
+
+  .pomoc {
+    max-width: 780px; margin-top: 34px; padding: 22px 24px;
+    border: 1px solid var(--hneda); border-radius: 8px;
+    background: linear-gradient(135deg, var(--oliva-svetla), var(--oliva-panel));
+  }
+  .pomoc h3 { font-size: 20px; letter-spacing: 2px; }
+  .pomoc p { margin-top: 8px; font-size: 15px; }
+
+  footer { background: #1C2216; border-top: 1px solid var(--oliva-svetla); padding: 36px 0; text-align: center; }
+  .paticka-linky { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; }
+  .paticka-linky a { font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: var(--khaki); }
+  .paticka-linky a:hover { color: var(--khaki-svetla); }
+  .paticka-copy { margin-top: 18px; font-size: 13px; letter-spacing: 1px; color: var(--text-tlm); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-vnutro">
+    <a class="nav-logo" href="index.html">
+      <img src="assets/phoenix58.png" alt="">
+      <span>58. Phoenix Group</span>
+    </a>
+    <div class="nav-linky">
+      <a href="index.html">Domov</a>
+      <a href="#prve-kroky" class="tu">Prvé kroky</a>
+      <a href="#problemy">Riešenie problémov</a>
+      <a href="#pravidla">Pravidlá</a>
+      <a href="kronika.html">Kronika</a>
+    </div>
+  </div>
+</nav>
+
+<header class="podpora-hero">
+  <div class="eyebrow">Podpora</div>
+  <h1>Od Discordu po prvý výcvik</h1>
+  <p>Všetko, čo potrebuješ na pripojenie k nám — krok za krokom, bez stresu. A keby čokoľvek nešlo podľa plánu, riešenia najčastejších problémov máš hneď pod tým.</p>
+</header>
+
+<section id="prve-kroky">
+  <div class="sirka">
+    <div class="sekcia-hlava">
+      <div class="eyebrow">Krok za krokom</div>
+      <h2>Prvé kroky</h2>
+    </div>
+    <div class="kroky">
+      <div class="krok">
+        <h3>Pridaj sa na Discord</h3>
+        <p>Discord je centrum života klanu — organizácia, oznamy, pokec. Po pripojení napíš do náborového kanála, že máš záujem o vstup, a označ moderátorov.</p>
+        <a class="tlacitko" href="https://discord.gg/2sQKH3RkG9">Pripojiť sa na Discord ▸</a>
+      </div>
+      <div class="krok">
+        <h3>Pohovor s moderátorom</h3>
+        <p>Aj naši moderátori sú len ľudia — ozvú sa, hneď ako budú k dispozícii. Predstavíme ti fungovanie klanu, ty nám povieš niečo o sebe a dostaneš prístup ďalej.</p>
+      </div>
+      <div class="krok">
+        <h3>Nainštaluj si TeamSpeak</h3>
+        <p>Počas misií komunikujeme cez TeamSpeak — Discord počas hry nestačí. Stiahni si klienta a adresu nášho servera dostaneš po pohovore na Discorde.</p>
+        <a class="tlacitko" href="https://teamspeak.com/en/downloads/" target="_blank" rel="noopener">Stiahnuť TeamSpeak ▸</a>
+      </div>
+      <div class="krok">
+        <h3>Prihlás sa na odber modpackov</h3>
+        <p>Na Steam Workshope sa prihlás na odber modpacku <strong>Engine</strong> (technický základ, povinný vždy) a modpacku éry, ktorú budeme hrať — pre bežné sobotné misie je to <strong>Moderna</strong>. Steam stiahne všetko sám.</p>
+        <p class="tip">Sťahuje sa niekoľko gigabajtov — sprav to deň vopred, nie hodinu pred misiou. 🤓</p>
+        <a class="tlacitko" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2228993580" target="_blank" rel="noopener">Engine ▸</a>
+        <a class="tlacitko" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2228993880" target="_blank" rel="noopener">Moderna ▸</a>
+      </div>
+      <div class="krok">
+        <h3>Zapni módy v Arma 3 Launcheri</h3>
+        <p>Otvor Arma 3 Launcher → záložka Mods → over, že módy z modpacku sú stiahnuté a zaškrtnuté. Ideálne si z nich vytvor preset, nech ich nabudúce zapneš jedným klikom.</p>
+      </div>
+      <div class="krok">
+        <h3>Príď na základný výcvik</h3>
+        <p>Základný prijímací výcvik (ZaV) má šesť etáp a pripraví ťa na ostré misie. Termín si dohodneme na Discorde — a potom už len sobota 15:30, prvá kapitola s nami.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="problemy">
+  <div class="sirka">
+    <div class="sekcia-hlava">
+      <div class="eyebrow">Keď niečo nejde</div>
+      <h2>Riešenie problémov</h2>
+    </div>
+    <details class="problem">
+      <summary>Server ma nepustí — hlási zlé alebo chýbajúce módy</summary>
+      <div class="riesenie">Najčastejší problém. Over v Launcheri, že máš zapnuté <strong>všetky</strong> módy z modpacku a <strong>žiadne navyše</strong>. Potom v Steame: knižnica → Arma 3 → pravý klik → Vlastnosti → Nainštalované súbory → <code>Overiť integritu</code>. Ak Workshop hlási aktualizácie, počkaj, kým dobehnú.</div>
+    </details>
+    <details class="problem">
+      <summary>Módy sa sťahujú večnosť alebo sa sťahovanie zaseklo</summary>
+      <div class="riesenie">V Steame: Nastavenia → Sťahovanie → zruš obmedzenie rýchlosti a vyskúšaj zmeniť región sťahovania. Zaseknutý odber pomôže zrušiť a prihlásiť znova. A pamätaj na pravidlo z kroku 04 — deň vopred, nie hodinu. 🤓</div>
+    </details>
+    <details class="problem">
+      <summary>V TeamSpeaku ma nepočuť / nepočujem ostatných</summary>
+      <div class="riesenie">Nastavenia → Options → Capture: over správny mikrofón a režim (Push-to-Talk odporúčame). V Playback over výstupné zariadenie. Ak používame rádiový mód (TFAR/ACRE), musí bežať Arma aj plugin — pomôžeme ti to nastaviť pred prvou misiou.</div>
+    </details>
+    <details class="problem">
+      <summary>Arma po zapnutí módov padá pri štarte</summary>
+      <div class="riesenie">Typicky konflikt módov navyše. Vypni všetko, čo nie je v našom modpacku (hlavne staré osobné módy), a skús znova. Ak pád ostáva, over integritu hry v Steame (postup vyššie).</div>
+    </details>
+    <div class="pomoc">
+      <h3>Nič z toho nepomohlo?</h3>
+      <p>Žiadna panika — napíš do technického kanála na <a href="https://discord.gg/2sQKH3RkG9">Discorde</a> a poradíme ti osobne. Nikoho nenecháme stáť pred bránou kvôli technike.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pravidla">
+  <div class="sirka">
+    <div class="sekcia-hlava">
+      <div class="eyebrow">Ako to u nás chodí</div>
+      <h2>Pravidlá</h2>
+      <p>Nie je ich veľa — sme tu, aby sme si hru užili. Ale to, čo tu je, berieme vážne.</p>
+    </div>
+    <ul class="pravidla">
+      <li><strong>Hráme seriózne.</strong> Počas misie platí velenie, rádiová disciplína a rola, na ktorú si sa zahlásil. Srandu si užijeme pred misiou a po nej.</li>
+      <li><strong>Chuť učiť sa.</strong> Nikto nemusí nič vedieť vopred — ale očakávame ochotu prejsť výcvikom a zlepšovať sa.</li>
+      <li><strong>Rešpekt v komunite.</strong> Na veku, skúsenostiach ani pôvode nezáleží. Urážky, toxicita a povyšovanie sa u nás nemajú miesto.</li>
+      <li><strong>Zahlásený znamená prítomný.</strong> Ak sa zahlásiš na misiu a nemôžeš prísť, daj vedieť vopred — veliteľ s tebou počíta pri plánovaní.</li>
+      <li><strong>Technická pripravenosť.</strong> Módy stiahnuté a odskúšané pred misiou, nie počas nej.</li>
+    </ul>
+    <span class="navrh-stitok">Návrhové znenie — nahradíme oficiálnymi pravidlami z vášho Discordu</span>
+  </div>
+</section>
+
+<footer>
+  <div class="paticka-linky">
+    <a href="index.html">Domov</a>
+    <a href="kronika.html">Kronika</a>
+    <a href="https://discord.gg/2sQKH3RkG9">Discord</a>
+    <a href="https://www.instagram.com/58_phoenix_group/">Instagram</a>
+  </div>
+  <p class="paticka-copy">© 2020–2026 · 58. Phoenix Group · Podpora a prvé kroky</p>
+</footer>
+
+</body>
+</html>

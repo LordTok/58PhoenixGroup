@@ -74,6 +74,19 @@ insert into vycviky (skratka, nazov, typ, druh) values
   ('MG-C', 'Machine gunner course',   'odborny', 'course'),
   ('GL-C', 'Grenade launcher course', 'odborny', 'course');
 
+
+-- ---------- ABSOLVOVANE VYCVIKY CLENOV ----------
+-- Evidencia: kto, kedy, u koho a NA AKU UROVEN vycvik absolvoval.
+-- clen_id / instruktor_id sa prepoja na tabulku clenov v kroku 2 (Supabase Auth).
+create table if not exists vycviky_clena (
+  id serial primary key,
+  clen_id uuid,
+  vycvik_id int not null references vycviky(id),
+  uroven text not null default 'bronz' check (uroven in ('bronz','striebro','zlato')),
+  datum date not null default current_date,
+  instruktor_id uuid
+);
+
 -- ---------- TIMY ----------
 create table if not exists timy (
   id serial primary key,
