@@ -37,7 +37,12 @@ img { max-width: 100%; }
       <a href="#onas" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulOnas }}; color: {{ navOnas }}; transition: color .2s;" style-hover="color: #C2C29E;">O nás</a>
       <a href="#timy" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulTimy }}; color: {{ navTimy }}; transition: color .2s;" style-hover="color: #C2C29E;">Tímy</a>
       <a href="#zamerania" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulZamerania }}; color: {{ navZamerania }}; transition: color .2s;" style-hover="color: #C2C29E;">Zamerania</a>
-      <a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kampaň</a>
+      <div id="odpocet-misie" style="margin: 26px 0 6px; font-family: 'Staatliches', sans-serif; letter-spacing: 2px;">
+  <div style="font-size: 14px; letter-spacing: 4px; color: #8A5F44;">Najbližšia kapitola</div>
+  <div id="odpocet-cas" style="font-size: clamp(30px, 5vw, 44px); color: #C2C29E; line-height: 1.2;">—</div>
+  <div style="font-size: 14px; letter-spacing: 2px; color: #A8A890;">sobota · 15:30</div>
+</div>
+<a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kampaň</a>
       <a href="#galeria" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulGaleria }}; color: {{ navGaleria }}; transition: color .2s;" style-hover="color: #C2C29E;">Galéria</a>
       <a href="#nabor" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulNabor }}; color: {{ navNabor }}; transition: color .2s;" style-hover="color: #C2C29E;">Nábor</a>
       <a href="clenska-zona.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #C2C29E; border: 1px solid #9C9C74; padding: 7px 14px; border-radius: 4px;" style-hover="background: #35402A; border-color: #C2C29E;">Členská zóna</a>
@@ -463,6 +468,40 @@ class Component extends DCLogic {
     };
   }
 }
+</script>
+<script>
+(function () {
+  var cielHodina = 15, cielMinuta = 30, trvanieHodin = 5;
+  var el = document.getElementById('odpocet-cas');
+  if (!el) return;
+  function najblizsiaSobota() {
+    var teraz = new Date();
+    var d = new Date(teraz);
+    d.setHours(cielHodina, cielMinuta, 0, 0);
+    var doSoboty = (6 - d.getDay() + 7) % 7;
+    d.setDate(d.getDate() + doSoboty);
+    if (d <= teraz) d.setDate(d.getDate() + 7);
+    return d;
+  }
+  function obnov() {
+    var teraz = new Date();
+    var start = najblizsiaSobota();
+    var koniecPrebiehajucej = new Date(start);
+    koniecPrebiehajucej.setDate(koniecPrebiehajucej.getDate() - 7);
+    koniecPrebiehajucej.setHours(cielHodina + trvanieHodin, cielMinuta, 0, 0);
+    if (teraz.getDay() === 6 && teraz < koniecPrebiehajucej && koniecPrebiehajucej - teraz < trvanieHodin * 3600000) {
+      el.textContent = 'Kapitola sa práve píše';
+      return;
+    }
+    var diff = start - teraz;
+    var d = Math.floor(diff / 86400000);
+    var hod = Math.floor(diff % 86400000 / 3600000);
+    var min = Math.floor(diff % 3600000 / 60000);
+    el.textContent = (d > 0 ? d + 'd ' : '') + hod + 'h ' + min + 'm';
+  }
+  obnov();
+  setInterval(obnov, 30000);
+})();
 </script>
 </body>
 </html>

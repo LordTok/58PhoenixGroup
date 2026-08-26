@@ -30,51 +30,49 @@ insert into hodnosti (nazov, kategoria, poradie) values
   ('Kapitán',                'Nižší dôstojníci', 15),
   ('Major',                  'Vyšší dôstojníci', 16);
 
--- ---------- VYCVIKY / ZAMERANIA ----------
--- typ: 'zaklad'        = etapy zakladneho vycviku (1-6)
---      'specializacia' = zamerania (MED, MG, ...)
---      'velenie'       = veliteľské kurzy (PL, SL, TL)
---      'pokrocily'     = pokrocile vycviky (doplnite podla potreby)
+-- ---------- VYCVIKY ----------
+-- druh: 'training' = komplexna instruktaz s viacerymi praktickymi vycvikmi
+--       'course'   = kratka uvodna instruktaz s jednym praktickym vycvikom
+-- typ:  'zaklad'   = etapy zakladneho prijimacieho vycviku (ZaV, 1-6)
+--       'velenie'  = velitelska priprava
+--       'odborny'  = specializovane vycviky a kurzy
 create table if not exists vycviky (
   id serial primary key,
   skratka text unique,
   nazov text not null,
-  typ text not null check (typ in ('zaklad','specializacia','velenie','pokrocily')),
+  typ text not null check (typ in ('zaklad','velenie','odborny')),
+  druh text check (druh in ('training','course')),
   docs_link text  -- odkaz na Google Docs material, doplni sa neskor
 );
 
--- Zakladny vycvik: 6 etap
-insert into vycviky (skratka, nazov, typ) values
-  ('Z1', 'Základný výcvik — etapa 1', 'zaklad'),
-  ('Z2', 'Základný výcvik — etapa 2', 'zaklad'),
-  ('Z3', 'Základný výcvik — etapa 3', 'zaklad'),
-  ('Z4', 'Základný výcvik — etapa 4', 'zaklad'),
-  ('Z5', 'Základný výcvik — etapa 5', 'zaklad'),
-  ('Z6', 'Základný výcvik — etapa 6', 'zaklad');
+-- Zakladny prijimaci vycvik (ZaV): 6 etap
+insert into vycviky (skratka, nazov, typ, druh) values
+  ('ZaV-1', 'Základný prijímací výcvik — etapa 1', 'zaklad', 'training'),
+  ('ZaV-2', 'Základný prijímací výcvik — etapa 2', 'zaklad', 'training'),
+  ('ZaV-3', 'Základný prijímací výcvik — etapa 3', 'zaklad', 'training'),
+  ('ZaV-4', 'Základný prijímací výcvik — etapa 4', 'zaklad', 'training'),
+  ('ZaV-5', 'Základný prijímací výcvik — etapa 5', 'zaklad', 'training'),
+  ('ZaV-6', 'Základný prijímací výcvik — etapa 6', 'zaklad', 'training');
 
--- Veliteľské kurzy
-insert into vycviky (skratka, nazov, typ) values
-  ('PL', 'Platoon Leader',  'velenie'),
-  ('SL', 'Section Leader',  'velenie'),
-  ('TL', 'Team Leader',     'velenie');
+-- Trainingy
+insert into vycviky (skratka, nazov, typ, druh) values
+  ('CMD-T',    'Command training',              'velenie', 'training'),
+  ('RTO-T',    'Radio tower operator training', 'odborny', 'training'),
+  ('M-T',      'Medical training',              'odborny', 'training'),
+  ('SS/SN-T',  'Sharpshooter/Sniper training',  'odborny', 'training'),
+  ('SP/ENG-T', 'Sapper/Engineer training',      'odborny', 'training'),
+  ('MO-T',     'Mechanized operator training',  'odborny', 'training'),
+  ('UAV-T',    'UAV operator training',         'odborny', 'training'),
+  ('P-T',      'Pilot training',                'odborny', 'training'),
+  ('TM-T',     'Tactical movement training',    'odborny', 'training'),
+  ('CQC-T',    'Close Quarters Combat training','odborny', 'training');
 
--- Zamerania / specializacie
-insert into vycviky (skratka, nazov, typ) values
-  ('RTO',   'Radio Tower Operator',              'specializacia'),
-  ('MED',   'Medic',                             'specializacia'),
-  ('CLS',   'Combat Life Saver',                 'specializacia'),
-  ('MG',    'Machinegunner',                     'specializacia'),
-  ('AR',    'Automatic Rifleman',                'specializacia'),
-  ('GL',    'Grenade Launcher',                  'specializacia'),
-  ('R',     'Rifleman',                          'specializacia'),
-  ('SS',    'Sharpshooter',                      'specializacia'),
-  ('SN',    'Sniper',                            'specializacia'),
-  ('IFV-O', 'Infantry Fighting Vehicle Operátor','specializacia'),
-  ('AB',    'Ammo Bearer',                       'specializacia'),
-  ('BR',    'Breacher',                          'specializacia'),
-  ('HW',    'Heavy Weapon',                      'specializacia'),
-  ('EOD',   'Explosive Ordnance Disposal',       'specializacia'),
-  ('UAV',   'Unmanned Aerial Vehicle',           'specializacia');
+-- Kurzy
+insert into vycviky (skratka, nazov, typ, druh) values
+  ('AT-C', 'Anti-tank course',        'odborny', 'course'),
+  ('AA-C', 'Anti-air course',         'odborny', 'course'),
+  ('MG-C', 'Machine gunner course',   'odborny', 'course'),
+  ('GL-C', 'Grenade launcher course', 'odborny', 'course');
 
 -- ---------- TIMY ----------
 create table if not exists timy (
