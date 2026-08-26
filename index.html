@@ -1,986 +1,468 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>58. Phoenix Group — Arma 3 MILSIM komunita</title>
-<meta name="description" content="58. Phoenix Group — česko-slovenská Arma 3 MILSIM komunita od roku 2020. Replikujeme slovenskú armádu, príbehové misie každú sobotu, Joint Ops s ďalšími klanmi. Pridaj sa.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
 <link rel="icon" type="image/png" href="assets/favicon.png">
+<meta name="description" content="58. Phoenix Group — česko-slovenská Arma 3 MILSIM komunita od roku 2020. Replikujeme slovenskú armádu, príbehové misie každú sobotu, Joint Ops s ďalšími klanmi.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="58. Phoenix Group — Arma 3 MILSIM komunita">
 <meta property="og:description" content="Česko-slovenská MILSIM komunita od roku 2020. Replikujeme slovenskú armádu — pridaj sa k nám.">
 <meta property="og:image" content="https://lordtok.github.io/58PhoenixGroup/assets/og-nahlad.jpg">
-<meta property="og:url" content="https://lordtok.github.io/58PhoenixGroup/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --oliva: #242B1C;
-    --oliva-svetla: #35402A;
-    --oliva-panel: #2C3522;
-    --khaki: #9C9C74;
-    --khaki-svetla: #C2C29E;
-    --hneda: #8A5F44;
-    --text: #D8D8C0;
-    --text-tlm: #A8A890;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--oliva);
-    color: var(--text);
-    font-family: 'Barlow', sans-serif;
-    line-height: 1.6;
-  }
-  h1, h2, h3 {
-    font-family: 'Staatliches', sans-serif;
-    letter-spacing: 3px;
-    color: var(--khaki-svetla);
-    font-weight: 400;
-  }
-  a { color: var(--khaki-svetla); }
-  img { max-width: 100%; display: block; }
-  .sirka { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
-
-  /* ---------- NAVIGACIA ---------- */
-  nav {
-    position: sticky; top: 0; z-index: 50;
-    background: rgba(36,43,28,.92);
-    backdrop-filter: blur(6px);
-    border-bottom: 1px solid var(--oliva-svetla);
-  }
-  .nav-vnutro {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 24px; max-width: 1060px; margin: 0 auto;
-  }
-  .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-  .nav-logo img { width: 38px; height: 38px; }
-  .nav-logo span { font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--khaki-svetla); }
-  .nav-linky { display: flex; gap: 26px; }
-  .nav-linky a {
-    font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px;
-    text-decoration: none; color: var(--khaki);
-    transition: color .15s;
-  }
-  .nav-linky a:hover { color: var(--khaki-svetla); }
-  .nav-linky a.aktivna { color: var(--khaki-svetla); border-bottom: 2px solid var(--hneda); }
-  .hamburger {
-    display: none; cursor: pointer; background: none; border: none; padding: 6px;
-  }
-  .hamburger span {
-    display: block; width: 26px; height: 3px; margin: 5px 0;
-    background: var(--khaki-svetla); border-radius: 2px;
-  }
-  @media (max-width: 640px) {
-    .nav-linky {
-      display: none; position: absolute; top: 100%; left: 0; right: 0;
-      flex-direction: column; gap: 0;
-      background: var(--oliva-panel); border-bottom: 1px solid var(--oliva-svetla);
-    }
-    .nav-linky.otvorene { display: flex; }
-    .nav-linky a { padding: 14px 24px; border-top: 1px solid var(--oliva-svetla); }
-    .hamburger { display: block; }
-  }
-
-  /* ---------- HERO ---------- */
-  header {
-    background:
-      linear-gradient(rgba(36,43,28,.78), rgba(36,43,28,.94)),
-      url('assets/gal-prieskum.jpg') center 35% / cover no-repeat;
-    border-bottom: 1px solid var(--oliva-svetla);
-  }
-  .hero-vnutro {
-    display: grid; grid-template-columns: auto 1fr; gap: 56px; align-items: center;
-    max-width: 1060px; margin: 0 auto; padding: 88px 24px 100px;
-  }
-  @media (max-width: 800px) {
-    .hero-vnutro { grid-template-columns: 1fr; text-align: center; gap: 36px; padding: 56px 24px 72px; }
-    .patch { margin: 0 auto; }
-  }
-  .patch { position: relative; width: min(300px, 70vw); aspect-ratio: 1; }
-  .patch-kruh {
-    position: absolute; inset: 0; border-radius: 50%;
-    border: 3px solid var(--khaki); background: var(--oliva-svetla);
-    box-shadow: inset 0 0 0 10px var(--oliva-svetla), inset 0 0 0 12px var(--khaki);
-  }
-  .patch-stred { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-  .patch-stred .hero-patch {
-    position: absolute; width: 58%;
-    opacity: 0; transition: opacity 1.1s ease;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
-  }
-  .patch-stred .hero-patch.aktivny { opacity: 1; }
-  @media (prefers-reduced-motion: reduce) {
-    .patch-stred .hero-patch { transition: none; }
-  }
-  .patch-text { position: absolute; inset: 0; animation: rotacia 40s linear infinite; }
-  @media (prefers-reduced-motion: reduce) { .patch-text { animation: none; } }
-  @keyframes rotacia { to { transform: rotate(360deg); } }
-  .patch-text text {
-    font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3.5px;
-    fill: var(--khaki-svetla);
-  }
-  .hero-text h1 { font-size: clamp(44px, 7vw, 72px); line-height: 1.02; }
-  .hero-motto {
-    font-family: 'Staatliches', sans-serif; font-size: clamp(18px, 3vw, 24px);
-    letter-spacing: 7px; color: var(--hneda); margin-top: 6px;
-  }
-  .hero-popis { max-width: 520px; margin-top: 22px; font-size: 18px; }
-  @media (max-width: 800px) { .hero-popis { margin-inline: auto; } }
-  .hero-cta { margin-top: 32px; display: flex; gap: 16px; flex-wrap: wrap; }
-  @media (max-width: 800px) { .hero-cta { justify-content: center; } }
-
-  .tlacidlo {
-    display: inline-block; padding: 13px 30px;
-    font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 3px;
-    text-decoration: none; border-radius: 4px;
-    transition: background .15s, transform .15s;
-  }
-  .tlacidlo:focus-visible { outline: 3px solid var(--khaki-svetla); outline-offset: 3px; }
-  .tlacidlo-plne { color: var(--oliva); background: var(--khaki); border: 2px solid var(--khaki-svetla); }
-  .tlacidlo-plne:hover { background: var(--khaki-svetla); transform: translateY(-2px); }
-  .tlacidlo-obrys { color: var(--khaki-svetla); background: transparent; border: 2px solid var(--khaki); }
-  .tlacidlo-obrys:hover { background: var(--oliva-svetla); transform: translateY(-2px); }
-
-  /* ---------- SEKCIE ---------- */
-  section { padding: 72px 0; }
-  section[id] { scroll-margin-top: 64px; }
-  section:nth-of-type(even) { background: var(--oliva-panel); }
-  .sekcia-hlava { margin-bottom: 40px; }
-  .sekcia-hlava .eyebrow {
-    font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px;
-    color: var(--hneda);
-  }
-  .sekcia-hlava h2 { font-size: clamp(30px, 5vw, 42px); margin-top: 4px; }
-
-  /* O nas */
-  .onas { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
-  @media (max-width: 800px) { .onas { grid-template-columns: 1fr; } }
-  .onas p + p { margin-top: 16px; }
-  .onas strong { color: var(--khaki-svetla); font-weight: 600; }
-  .fakty { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-content: start; }
-  .fakt {
-    background: var(--oliva-svetla); border: 1px solid var(--khaki);
-    border-radius: 6px; padding: 20px 22px;
-  }
-  .fakt .cislo { font-family: 'Staatliches', sans-serif; font-size: 34px; color: var(--khaki-svetla); line-height: 1; }
-  .fakt .popisok { font-size: 14px; color: var(--text-tlm); margin-top: 6px; }
-
-  /* Timy */
-  .timy-mriezka {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 32px;
-  }
-  .tim { text-align: center; }
-  .tim img { width: 100%; max-width: 190px; margin: 0 auto; transition: transform .2s; }
-  .tim:hover img { transform: scale(1.04); }
-  .tim h3 { margin-top: 14px; font-size: 22px; letter-spacing: 2px; }
-  .tim .typ { font-size: 14px; color: var(--text-tlm); }
-
-  /* Zamerania */
-  .zamerania-uvod { max-width: 640px; margin-bottom: 32px; }
-  .stitky { display: flex; flex-wrap: wrap; gap: 10px; }
-  .stitok-zam {
-    padding: 8px 16px; border: 1px solid var(--khaki); border-radius: 4px;
-    background: var(--oliva-svetla); cursor: pointer; text-align: left;
-    font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px;
-    color: var(--khaki-svetla);
-    transition: background .15s, border-color .15s, transform .15s;
-  }
-  .stitok-zam:hover { background: var(--oliva); border-color: var(--khaki-svetla); transform: translateY(-2px); }
-  .stitok-zam:focus-visible { outline: 3px solid var(--khaki-svetla); outline-offset: 2px; }
-  .stitok-zam::after {
-    content: ' ▸'; color: var(--hneda); font-size: 14px;
-    display: inline-block; transition: transform .15s;
-  }
-  .stitok-zam:hover::after { transform: translateX(3px); }
-  .klik-hint {
-    display: inline-block; margin-top: 8px;
-    font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px;
-    color: var(--hneda); border-bottom: 1px dashed var(--hneda);
-    transition: color .15s, border-color .15s;
-  }
-  .tim button:hover .klik-hint { color: var(--khaki-svetla); border-color: var(--khaki-svetla); }
-  .stitok-zam small {
-    display: block; font-family: 'Barlow', sans-serif; font-size: 12px;
-    letter-spacing: 0; color: var(--text-tlm); text-transform: none;
-  }
-
-  /* Nabor — cesta */
-  .cesta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; counter-reset: krok; }
-  @media (max-width: 800px) { .cesta { grid-template-columns: 1fr; } }
-  .krok {
-    background: var(--oliva-svetla); border: 1px solid var(--khaki);
-    border-radius: 6px; padding: 26px 24px; position: relative;
-  }
-  .krok::before {
-    counter-increment: krok; content: counter(krok, decimal-leading-zero);
-    font-family: 'Staatliches', sans-serif; font-size: 30px; color: var(--hneda);
-    display: block; margin-bottom: 8px;
-  }
-  .krok h3 { font-size: 21px; letter-spacing: 2px; }
-  .krok p { margin-top: 8px; font-size: 15px; color: var(--text); }
-  .nabor-pozn { margin-top: 28px; max-width: 620px; color: var(--text-tlm); font-size: 15px; }
-  .nabor-cta { margin-top: 28px; }
-
-  /* Ako hrame */
-  .info-mriezka { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-  @media (max-width: 800px) { .info-mriezka { grid-template-columns: 1fr; } }
-  .info-karta {
-    background: var(--oliva-svetla); border: 1px solid var(--khaki);
-    border-radius: 6px; padding: 26px;
-  }
-  .info-karta h3 { font-size: 21px; letter-spacing: 2px; margin-bottom: 14px; }
-  .info-karta p, .info-karta li { font-size: 15px; }
-  .info-karta ul { list-style: none; }
-  .info-karta li { padding-left: 22px; position: relative; }
-  .info-karta li::before {
-    content: '▸'; position: absolute; left: 0; color: var(--hneda);
-    font-family: 'Staatliches', sans-serif;
-  }
-  .info-karta li + li { margin-top: 10px; }
-  .info-karta .vyrazne { color: var(--khaki-svetla); font-weight: 600; }
-
-  .podnadpis {
-    font-family: 'Staatliches', sans-serif; font-size: 24px; letter-spacing: 3px;
-    color: var(--khaki-svetla); margin: 44px 0 6px;
-  }
-  .podnadpis-pozn { font-size: 15px; color: var(--text-tlm); margin-bottom: 20px; max-width: 620px; }
-
-  .modpack-mriezka { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  @media (max-width: 800px) { .modpack-mriezka { grid-template-columns: repeat(2, 1fr); } }
-  .modpack {
-    display: block; text-decoration: none;
-    background: var(--oliva-svetla); border: 1px solid var(--khaki); border-radius: 6px;
-    padding: 20px; transition: transform .15s, border-color .15s;
-  }
-  .modpack:hover { transform: translateY(-3px); border-color: var(--khaki-svetla); }
-  .modpack .era {
-    font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px;
-    color: var(--hneda);
-  }
-  .modpack .nazov {
-    font-family: 'Staatliches', sans-serif; font-size: 22px; letter-spacing: 2px;
-    color: var(--khaki-svetla); margin: 2px 0 6px;
-  }
-  .modpack .popis { font-size: 13.5px; color: var(--text-tlm); }
-  .modpack .steam {
-    display: inline-block; margin-top: 12px; font-size: 13px;
-    color: var(--khaki); letter-spacing: 1px;
-  }
-  .modpack:hover .steam { color: var(--khaki-svetla); }
-
-  .mody-vlastne {
-    margin-top: 44px; border: 1px solid var(--hneda); border-radius: 8px;
-    background: linear-gradient(135deg, var(--oliva-svetla), var(--oliva-panel));
-    padding: 28px;
-  }
-  .mody-vlastne h3 { font-size: 22px; letter-spacing: 2px; margin-bottom: 4px; }
-  .mody-vlastne .kredit { font-size: 14px; color: var(--text-tlm); margin-bottom: 18px; }
-  .mody-vlastne .kredit strong { color: var(--khaki-svetla); }
-  .vlastne-mriezka { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 700px) { .vlastne-mriezka { grid-template-columns: 1fr; } }
-  .vlastny-mod {
-    display: block; text-decoration: none;
-    background: var(--oliva); border: 1px solid var(--khaki); border-radius: 6px;
-    padding: 18px 20px; transition: border-color .15s, transform .15s;
-  }
-  .vlastny-mod:hover { border-color: var(--khaki-svetla); transform: translateY(-2px); }
-  .vlastny-mod .nazov {
-    font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 1.5px;
-    color: var(--khaki-svetla);
-  }
-  .vlastny-mod .popis { font-size: 14px; color: var(--text-tlm); margin-top: 4px; }
-  .mody-vlastne .units-riadok { margin-top: 18px; font-size: 14px; color: var(--text-tlm); }
-  .mody-vlastne .units-riadok a { color: var(--khaki-svetla); }
-
-  /* Modal timu */
-  .tim button {
-    all: unset; cursor: pointer; display: block; width: 100%;
-  }
-  .tim button:focus-visible { outline: 3px solid var(--khaki-svetla); outline-offset: 4px; border-radius: 8px; }
-  dialog.tim-modal {
-    max-width: 560px; width: calc(100vw - 40px);
-    background: var(--oliva-panel); color: var(--text);
-    border: 2px solid var(--khaki); border-radius: 8px;
-    padding: 0; margin: auto;
-  }
-  dialog.tim-modal::backdrop { background: rgba(20,24,15,.8); }
-  .modal-hlava {
-    display: flex; align-items: center; gap: 18px;
-    padding: 22px 26px; border-bottom: 1px solid var(--oliva-svetla);
-  }
-  .modal-hlava img { width: 72px; height: 72px; }
-  .modal-hlava h3 { font-size: 26px; letter-spacing: 2px; }
-  .modal-hlava .rola { font-size: 14px; color: var(--text-tlm); }
-  .modal-telo { padding: 20px 26px 26px; font-size: 15px; }
-  .modal-telo h4 {
-    font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 3px;
-    color: var(--hneda); margin: 16px 0 6px;
-  }
-  .modal-telo h4:first-child { margin-top: 0; }
-  .modal-telo ul { margin-left: 18px; }
-  .modal-telo li + li { margin-top: 4px; }
-  .modal-telo .motto-timu {
-    margin-top: 18px; padding: 12px 16px;
-    background: var(--oliva); border-left: 3px solid var(--khaki);
-    font-style: italic; color: var(--khaki-svetla);
-  }
-  .modal-zavriet {
-    margin-left: auto; cursor: pointer;
-    font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px;
-    color: var(--khaki); background: none; border: 1px solid var(--khaki);
-    border-radius: 4px; padding: 6px 14px;
-  }
-  .modal-zavriet:hover { color: var(--khaki-svetla); border-color: var(--khaki-svetla); }
-  .patch-nahrada-mala {
-    width: 72px; height: 72px; border-radius: 50%;
-    border: 2px solid var(--khaki); background: var(--oliva-svetla);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Staatliches', sans-serif; font-size: 19px; color: var(--khaki-svetla);
-    flex-shrink: 0; letter-spacing: 1px;
-  }
-
-  /* Galeria */
-  .galeria-mriezka {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-  }
-  @media (max-width: 800px) { .galeria-mriezka { grid-template-columns: repeat(2, 1fr); } }
-  .galeria-mriezka button {
-    all: unset; cursor: pointer; display: block; overflow: hidden; border-radius: 6px;
-    border: 1px solid var(--oliva-svetla);
-  }
-  .galeria-mriezka button:focus-visible { outline: 3px solid var(--khaki-svetla); outline-offset: 2px; }
-  .galeria-mriezka img {
-    width: 100%; aspect-ratio: 16/10; object-fit: cover;
-    transition: transform .25s; display: block;
-  }
-  .galeria-mriezka button:hover img { transform: scale(1.05); }
-  dialog.lightbox {
-    max-width: min(1100px, 94vw); background: transparent; border: none; padding: 0; margin: auto;
-    position: relative; overflow: hidden;
-  }
-  dialog.lightbox::backdrop { background: rgba(20,24,15,.92); }
-  dialog.lightbox img { width: 100%; border-radius: 6px; border: 2px solid var(--khaki); display: block; }
-  dialog.lightbox .lightbox-zavriet {
-    position: absolute; top: 12px; right: 12px; cursor: pointer;
-    font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px;
-    color: var(--oliva); background: var(--khaki); border: none;
-    border-radius: 4px; padding: 6px 14px; opacity: .92;
-  }
-  dialog.lightbox .lightbox-zavriet:hover { opacity: 1; }
-  .lightbox-sipka {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    cursor: pointer; border: none; border-radius: 4px;
-    background: rgba(36,43,28,.75); color: var(--khaki-svetla);
-    font-size: 26px; line-height: 1; padding: 14px 12px; opacity: .85;
-  }
-  .lightbox-sipka:hover { opacity: 1; background: rgba(36,43,28,.95); }
-  .lightbox-sipka.dozadu { left: 10px; }
-  .lightbox-sipka.dopredu { right: 10px; }
-
-  /* ---------- PATICKA ---------- */
-  footer {
-    background: #1C2216; border-top: 1px solid var(--oliva-svetla);
-    padding: 48px 0 32px;
-  }
-  .paticka-mriezka {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px;
-    max-width: 1060px; margin: 0 auto; padding: 0 24px;
-  }
-  @media (max-width: 640px) { .paticka-mriezka { grid-template-columns: 1fr; text-align: center; } }
-  .paticka-logo { width: 64px; margin-bottom: 10px; }
-  @media (max-width: 640px) { .paticka-logo { margin-inline: auto; } }
-  .paticka-motto {
-    font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 4px;
-    color: var(--hneda);
-  }
-  .paticka-nadpis {
-    font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 3px;
-    color: var(--khaki-svetla); margin-bottom: 10px;
-  }
-  .paticka-stlpec a {
-    display: block; padding: 4px 0;
-    font-size: 14.5px; letter-spacing: 1px;
-    text-decoration: none; color: var(--khaki);
-  }
-  .paticka-stlpec a:hover { color: var(--khaki-svetla); }
-  .paticka-copy {
-    margin-top: 36px; text-align: center;
-    font-size: 13px; letter-spacing: 1px; color: var(--text-tlm);
-  }
+body { margin: 0; background: #242B1C; color: #D8D8C0; font-family: 'Barlow', sans-serif; line-height: 1.6; text-wrap: pretty; }
+a { color: #C2C29E; }
+a:hover { color: #E8E8CC; }
+html { scroll-behavior: smooth; }
+img { max-width: 100%; }
 </style>
-</head>
-<body>
+</helmet>
 
-<nav>
-  <div class="nav-vnutro">
-    <a class="nav-logo" href="#">
-      <img src="assets/phoenix58.png" alt="">
-      <span>58. Phoenix Group</span>
+<nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(36,43,28,.94); backdrop-filter: blur(6px); border-bottom: 1px solid #35402A;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1120px; margin: 0 auto;">
+    <a href="#" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <img src="assets/phoenix58.png" alt="" style="width: 38px; height: 38px; display: block;">
+      <span style="font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 2px; color: #C2C29E;">58. Phoenix Group</span>
     </a>
-    <button class="hamburger" aria-label="Otvoriť menu" aria-expanded="false" data-menu>
-      <span></span><span></span><span></span>
-    </button>
-    <div class="nav-linky" id="nav-linky">
-      <a href="#onas">O nás</a>
-      <a href="#timy">Tímy</a>
-      <a href="#zamerania">Zamerania</a>
-      <a href="#galeria">Galéria</a>
-      <a href="#akohrame">Ako hráme</a>
-      <a href="#nabor">Nábor</a>
+    <div style="display: flex; align-items: center; gap: 22px; flex-wrap: wrap;">
+      <a href="#onas" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulOnas }}; color: {{ navOnas }}; transition: color .2s;" style-hover="color: #C2C29E;">O nás</a>
+      <a href="#timy" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulTimy }}; color: {{ navTimy }}; transition: color .2s;" style-hover="color: #C2C29E;">Tímy</a>
+      <a href="#zamerania" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulZamerania }}; color: {{ navZamerania }}; transition: color .2s;" style-hover="color: #C2C29E;">Zamerania</a>
+      <a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kampaň</a>
+      <a href="#galeria" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulGaleria }}; color: {{ navGaleria }}; transition: color .2s;" style-hover="color: #C2C29E;">Galéria</a>
+      <a href="#nabor" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulNabor }}; color: {{ navNabor }}; transition: color .2s;" style-hover="color: #C2C29E;">Nábor</a>
+      <a href="clenska-zona.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #C2C29E; border: 1px solid #9C9C74; padding: 7px 14px; border-radius: 4px;" style-hover="background: #35402A; border-color: #C2C29E;">Členská zóna</a>
     </div>
   </div>
 </nav>
+<div style="height: 59px;"></div>
 
-<header>
-  <div class="hero-vnutro">
-  <div class="patch" aria-hidden="true">
-    <div class="patch-kruh"></div>
-    <svg class="patch-text" viewBox="0 0 300 300">
-      <defs>
-        <path id="obvod" d="M 150,150 m -120,0 a 120,120 0 1,1 240,0 a 120,120 0 1,1 -240,0"/>
-      </defs>
-      <text><textPath href="#obvod" startOffset="0%">58. PHOENIX GROUP • RISE UP TO FIRE • 58. PHOENIX GROUP • RISE UP TO FIRE •</textPath></text>
-    </svg>
-    <div class="patch-stred">
-      <img src="assets/team-fox.png" alt="" class="hero-patch aktivny">
-      <img src="assets/team-wolf.png" alt="" class="hero-patch">
-      <img src="assets/team-grizzly.png" alt="" class="hero-patch">
-      <img src="assets/team-duch.png" alt="" class="hero-patch">
-      <img src="assets/team-hotel.png" alt="" class="hero-patch">
+<header style="background: linear-gradient(rgba(36,43,28,.72), rgba(36,43,28,.95)), url('assets/gal-prieskum.jpg') center 35% / cover no-repeat; border-bottom: 1px solid #35402A;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 48px; align-items: center; max-width: 1120px; margin: 0 auto; padding: 80px 24px 88px;">
+    <div>
+      <h1 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: clamp(44px, 7vw, 72px); line-height: 1.02; margin: 0;">58. Phoenix Group</h1>
+      <p style="font-family: 'Staatliches', sans-serif; font-size: clamp(18px, 3vw, 24px); letter-spacing: 7px; color: #8A5F44; margin: 6px 0 0;">Rise up to fire</p>
+      <p style="max-width: 520px; margin: 22px 0 0; font-size: 18px;">Česko-slovenská <strong style="color: #C2C29E; font-weight: 600;">Arma 3 MILSIM</strong> komunita. Replikujeme slovenskú armádu — od pechoty cez špeciálne tímy až po vrtuľníky.</p>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 32px;">
+        <a href="https://discord.gg/2sQKH3RkG9" style="display: inline-block; padding: 13px 30px; font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 3px; text-decoration: none; border-radius: 4px; color: #242B1C; background: #9C9C74; border: 2px solid #C2C29E; transition: transform .2s, background .2s;" style-hover="background: #C2C29E; transform: translateY(-2px);">Pridaj sa na Discord</a>
+        <a href="kronika.html" style="display: inline-block; padding: 13px 30px; font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 3px; text-decoration: none; border-radius: 4px; color: #C2C29E; background: transparent; border: 2px solid #9C9C74; transition: transform .2s, background .2s;" style-hover="background: #35402A; transform: translateY(-2px);">Kronika kampane</a>
+      </div>
     </div>
-  </div>
-
-  <div class="hero-text">
-    <h1>58. Phoenix Group</h1>
-    <p class="hero-motto">Rise up to fire</p>
-    <p class="hero-popis">
-      Česko-slovenská <strong>Arma 3 MILSIM</strong> komunita.
-      Replikujeme slovenskú armádu — od pechoty cez špeciálne tímy až po vrtuľníky.
-    </p>
-    <div class="hero-cta">
-      <a class="tlacidlo tlacidlo-plne" href="https://discord.gg/2sQKH3RkG9">Pridaj sa na Discord</a>
-      <a class="tlacidlo tlacidlo-obrys" href="#onas">Spoznaj nás</a>
+    <div style="justify-self: center; position: relative; width: min(280px, 60vw); aspect-ratio: 1;">
+      <div style="position: absolute; inset: 0; border-radius: 50%; border: 3px solid #9C9C74; background: #35402A; box-shadow: inset 0 0 0 10px #35402A, inset 0 0 0 12px #9C9C74;"></div>
+      <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+        <img src="assets/phoenix58.png" alt="Znak 58. Phoenix Group" style="width: 58%; filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));">
+      </div>
     </div>
-  </div>
   </div>
 </header>
 
-<section id="onas">
-  <div class="sirka">
-    <div class="sekcia-hlava">
-      <div class="eyebrow">Kto sme</div>
-      <h2>Vojenská simulácia, priatelia navyše</h2>
+<div style="background: #1C2216; border-bottom: 1px solid #35402A;">
+  <div style="display: flex; align-items: center; gap: 20px 32px; flex-wrap: wrap; max-width: 1120px; margin: 0 auto; padding: 16px 24px;">
+    <span style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 3px; color: #8A5F44;">Najbližšia misia</span>
+    <span style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: #C2C29E;">{{ nextDate }}</span>
+    <span style="font-size: 15px; color: #D8D8C0;">Operácia Tichý hrebeň, časť III</span>
+    <span style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: #E8E8CC; background: #35402A; border: 1px solid #9C9C74; border-radius: 4px; padding: 3px 14px; font-feature-settings: 'tnum' 1;">o {{ countdown }}</span>
+    <a href="clenska-zona.html#kalendar" style="margin-left: auto; font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Celý kalendár ▸</a>
+  </div>
+</div>
+
+<section id="onas" data-reveal="" style="padding: 72px 0; scroll-margin-top: 80px;">
+  <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
+    <div style="margin-bottom: 40px;">
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Kto sme</div>
+      <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: clamp(30px, 5vw, 42px); margin: 4px 0 0;">Vojenská simulácia, priatelia navyše</h2>
     </div>
-    <div class="onas">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 48px;">
       <div>
-        <p>
-          58. Phoenix Group je komunita českých a slovenských hráčov, ktorá funguje
-          <strong>od roku 2020</strong>. Hráme misie a scenáre na MILSIM úrovni,
-          no nájdeš u nás aj akcie určené na odľahčené hranie — vážne to berieme
-          s taktikou, nie so sebou.
-        </p>
-        <p>
-          Zameriavame sa na <strong>replikáciu slovenskej armády</strong>, preto u nás
-          nájdeš prakticky všetky zamerania, ktoré armáda ponúka. Chceš byť v pechote,
-          špeciálnom tíme, za guľometom, v kokpite vrtuľníka alebo za ovládačom dronu?
-          U nás si svoje miesto nájdeš.
-        </p>
-        <p>
-          Pravidelne sa zúčastňujeme <strong>Joint Ops misií</strong> s ďalšími
-          česko-slovenskými aj zahraničnými skupinami — spoločné akcie pre desiatky
-          hráčov, na ktoré sa nezabúda.
-        </p>
+        <p style="margin: 0;">58. Phoenix Group je komunita českých a slovenských hráčov, ktorá funguje <strong style="color: #C2C29E; font-weight: 600;">od roku 2020</strong>. Hráme misie a scenáre na MILSIM úrovni, no nájdeš u nás aj akcie na odľahčené hranie — vážne to berieme s taktikou, nie so sebou.</p>
+        <p style="margin: 16px 0 0;">Zameriavame sa na <strong style="color: #C2C29E; font-weight: 600;">replikáciu slovenskej armády</strong> — pechota, špeciálne tímy, guľomety, kokpit vrtuľníka aj ovládač dronu. U nás si svoje miesto nájdeš.</p>
+        <p style="margin: 16px 0 0;">Pravidelne sa zúčastňujeme <strong style="color: #C2C29E; font-weight: 600;">Joint Ops misií</strong> s ďalšími česko-slovenskými aj zahraničnými skupinami — spoločné akcie pre desiatky hráčov.</p>
       </div>
-      <div class="fakty">
-        <div class="fakt"><div class="cislo">6+</div><div class="popisok">rokov fungovania</div></div>
-        <div class="fakt"><div class="cislo">So 15:30</div><div class="popisok">pravidelné príbehové misie</div></div>
-        <div class="fakt"><div class="cislo">18</div><div class="popisok">zameraní ako v skutočnej armáde</div></div>
-        <div class="fakt"><div class="cislo">CZ/SK</div><div class="popisok">komunita + zahraničné Joint Ops</div></div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-content: start;">
+        <div style="background: #35402A; border: 1px solid #9C9C74; border-radius: 6px; padding: 20px 22px;">
+          <div style="font-family: 'Staatliches', sans-serif; font-size: 34px; color: #C2C29E; line-height: 1;">6+</div>
+          <div style="font-size: 14px; color: #A8A890; margin-top: 6px;">rokov fungovania</div>
+        </div>
+        <div style="background: #35402A; border: 1px solid #9C9C74; border-radius: 6px; padding: 20px 22px;">
+          <div style="font-family: 'Staatliches', sans-serif; font-size: 34px; color: #C2C29E; line-height: 1;">So 15:30</div>
+          <div style="font-size: 14px; color: #A8A890; margin-top: 6px;">pravidelné príbehové misie</div>
+        </div>
+        <div style="background: #35402A; border: 1px solid #9C9C74; border-radius: 6px; padding: 20px 22px;">
+          <div style="font-family: 'Staatliches', sans-serif; font-size: 34px; color: #C2C29E; line-height: 1;">18</div>
+          <div style="font-size: 14px; color: #A8A890; margin-top: 6px;">zameraní ako v skutočnej armáde</div>
+        </div>
+        <div style="background: #35402A; border: 1px solid #9C9C74; border-radius: 6px; padding: 20px 22px;">
+          <div style="font-family: 'Staatliches', sans-serif; font-size: 34px; color: #C2C29E; line-height: 1;">CZ/SK</div>
+          <div style="font-size: 14px; color: #A8A890; margin-top: 6px;">komunita + zahraničné Joint Ops</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="timy">
-  <div class="sirka">
-    <div class="sekcia-hlava">
-      <div class="eyebrow">Štruktúra</div>
-      <h2>Naše tímy</h2>
+<section id="timy" data-reveal="" style="padding: 72px 0; background: #2C3522; scroll-margin-top: 80px;">
+  <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
+    <div style="margin-bottom: 36px;">
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Štruktúra</div>
+      <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: clamp(30px, 5vw, 42px); margin: 4px 0 0;">Naše tímy</h2>
+      <p style="max-width: 560px; margin: 12px 0 0; font-size: 15px; color: #A8A890;">Klikni na tím a zisti, čo robí, aké roly v ňom nájdeš a na akých frekvenciách ho počuješ.</p>
     </div>
-    <p class="zamerania-uvod">Klikni na patch a spoznaj jednotku zblízka.</p>
-    <div class="timy-mriezka">
-      <div class="tim">
-        <button data-modal="modal-liska">
-          <img src="assets/team-fox.png" alt="Patch Team Fox / Líška">
-          <h3>Líška</h3>
-          <div class="typ">Prieskumný tím</div>
-          <span class="klik-hint">Detail jednotky ▸</span>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; align-items: start;">
+      <sc-for list="{{ teams }}" as="tm" hint-placeholder-count="0">
+        <div style="background: #35402A; border: 1px solid {{ tm.border }}; border-radius: 6px; overflow: hidden; transition: border-color .25s, transform .25s;" style-hover="transform: translateY(-3px);">
+          <button onClick="{{ tm.toggle }}" style="display: flex; gap: 18px; align-items: flex-start; width: 100%; min-height: 148px; box-sizing: border-box; text-align: left; background: none; border: none; cursor: pointer; padding: 20px; color: inherit; font-family: inherit;">
+            <img src="{{ tm.patch }}" alt="" style="width: 84px; flex-shrink: 0;">
+            <div style="min-width: 0; flex: 1;">
+              <h3 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 2px; color: #C2C29E; font-size: 22px; margin: 0;">{{ tm.name }}</h3>
+              <div style="font-size: 13px; letter-spacing: 1px; color: #8A5F44; font-family: 'Staatliches', sans-serif;">{{ tm.role }}</div>
+              <p style="font-size: 14px; color: #A8A890; margin: 8px 0 0; line-height: 1.5;">{{ tm.short }}</p>
+            </div>
+            <span style="color: #9C9C74; font-size: 15px; transition: transform .3s; transform: {{ tm.chevRot }};">▾</span>
+          </button>
+          <div style="display: grid; grid-template-rows: {{ tm.rows }}; transition: grid-template-rows .45s ease;">
+            <div style="overflow: hidden; min-height: 0;">
+              <div style="padding: 0 20px 20px; border-top: 1px solid #4A5A38;">
+                <p style="font-size: 14.5px; margin: 14px 0 0; line-height: 1.6;">{{ tm.desc }}</p>
+                <div style="font-family: 'Staatliches', sans-serif; font-size: 12px; letter-spacing: 3px; color: #8A5F44; margin: 14px 0 8px;">Roly v tíme</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <sc-for list="{{ tm.roles }}" as="r" hint-placeholder-count="3">
+                    <span style="font-size: 12.5px; letter-spacing: 1px; padding: 3px 10px; border: 1px solid #9C9C74; border-radius: 3px; color: #C2C29E;">{{ r }}</span>
+                  </sc-for>
+                </div>
+                <div style="display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; border-top: 1px solid #4A5A38; padding-top: 12px;">
+                  <span style="font-size: 13.5px; color: #A8A890;">LR <strong style="color: #C2C29E; font-weight: 600; font-feature-settings: 'tnum' 1;">{{ tm.lr }} MHz</strong></span>
+                  <span style="font-size: 13.5px; color: #A8A890;">SR <strong style="color: #C2C29E; font-weight: 600; font-feature-settings: 'tnum' 1;">{{ tm.sr }} MHz</strong></span>
+                  <span style="font-size: 13.5px; color: #A8A890;">Volací znak <strong style="color: #C2C29E; font-weight: 600;">{{ tm.callsign }}</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="zamerania" data-reveal="" style="padding: 72px 0; scroll-margin-top: 80px;">
+  <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
+    <div style="margin-bottom: 32px;">
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Špecializácie</div>
+      <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: clamp(30px, 5vw, 42px); margin: 4px 0 0;">Nájdi si svoje zameranie</h2>
+      <p style="max-width: 620px; margin: 12px 0 0; font-size: 15.5px;">Po absolvovaní základného výcviku si vyberieš kurz špecializácie. Každé zameranie má vlastný výcvik s inštruktorom — presne ako v skutočnej armáde. Klikni na zameranie a zisti, čo ťa v ňom čaká.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 10px;">
+      <sc-for list="{{ specs }}" as="sp" hint-placeholder-count="18">
+        <button onClick="{{ sp.pick }}" style="text-align: left; cursor: pointer; background: {{ sp.bg }}; border: 1px solid {{ sp.border }}; border-radius: 4px; padding: 10px 12px; transition: background .2s, border-color .2s, transform .2s; font-family: inherit;" style-hover="transform: translateY(-2px); border-color: #C2C29E;">
+          <div style="font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; color: {{ sp.codeColor }};">{{ sp.code }}</div>
+          <div style="font-size: 12.5px; color: {{ sp.nameColor }}; line-height: 1.3; margin-top: 2px;">{{ sp.name }}</div>
         </button>
-      </div>
-      <div class="tim">
-        <button data-modal="modal-vlk">
-          <img src="assets/team-wolf.png" alt="Patch Team Wolf / Vlk">
-          <h3>Vlk</h3>
-          <div class="typ">Podpora — ťažké zbrane</div>
-          <span class="klik-hint">Detail jednotky ▸</span>
-        </button>
-      </div>
-      <div class="tim">
-        <button data-modal="modal-grizzly">
-          <img src="assets/team-grizzly.png" alt="Patch Team Grizzly">
-          <h3>Grizzly</h3>
-          <div class="typ">Mechanizovaný tím</div>
-          <span class="klik-hint">Detail jednotky ▸</span>
-        </button>
-      </div>
-      <div class="tim">
-        <button data-modal="modal-duch">
-          <img src="assets/team-duch.png" alt="Patch Tím Duch">
-          <h3>Duch</h3>
-          <div class="typ">Hĺbkový prieskum</div>
-          <span class="klik-hint">Detail jednotky ▸</span>
-        </button>
-      </div>
-      <div class="tim">
-        <button data-modal="modal-hotel">
-          <img src="assets/team-hotel.png" alt="Patch Team Hotel">
-          <h3>Hotel</h3>
-          <div class="typ">Vrtuľníkové krídlo</div>
-          <span class="klik-hint">Detail jednotky ▸</span>
-        </button>
-      </div>
-      <div class="tim">
-        <button data-modal="modal-alzbeta">
-          <img src="assets/patch-alzbeta.png" alt="Patch Alžbeta — klanový phoenix">
-          <h3>Alžbeta</h3>
-          <div class="typ">Operačné veliteľstvo</div>
-          <span class="klik-hint">Detail jednotky ▸</span>
-        </button>
+      </sc-for>
+    </div>
+    <div style="display: grid; grid-template-rows: {{ specRows }}; transition: grid-template-rows .45s ease;">
+      <div style="overflow: hidden; min-height: 0;">
+        <div style="margin-top: 18px; background: #2C3522; border: 1px solid #9C9C74; border-radius: 6px; padding: 22px 24px; display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap;">
+          <span style="font-family: 'Staatliches', sans-serif; font-size: 30px; letter-spacing: 2px; color: #C2C29E;">{{ selSpecCode }}</span>
+          <div style="flex: 1; min-width: 240px;">
+            <div style="font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 2px; color: #E8E8CC;">{{ selSpecName }}</div>
+            <p style="font-size: 14.5px; color: #D8D8C0; margin: 6px 0 0;">{{ selSpecDesc }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="zamerania">
-  <div class="sirka">
-    <div class="sekcia-hlava">
-      <div class="eyebrow">Špecializácie</div>
-      <h2>Nájdi si svoje zameranie</h2>
-    </div>
-    <p class="zamerania-uvod">
-      Po absolvovaní základného výcviku si vyberieš kurz špecializácie.
-      Každé zameranie má vlastný výcvik s inštruktorom — presne ako v skutočnej armáde.
-      Klikni na zameranie a zisti, čo ťa v ňom čaká.
-    </p>
-    <div class="stitky">
-      <button class="stitok-zam" data-zam="MED" data-nazov="Medic" data-popis="Zdravotník tímu. Ošetruje ranených priamo pod paľbou, riadi triedenie zranených a organizuje evakuáciu. Na jeho rozhodnutiach stojí, či sa tím vráti z misie kompletný — jedna z najzodpovednejších a najžiadanejších rolí.">MED<small>Medic</small></button>
-      <button class="stitok-zam" data-zam="CLS" data-nazov="Combat Life Saver" data-popis="Prvá pomoc v boji. Nie je plnohodnotný medik, ale vie zastaviť krvácanie, stabilizovať raneného a udržať ho pri živote, kým dorazí MED. Ideálny prvý zdravotnícky kurz po základnom výcviku.">CLS<small>Combat Life Saver</small></button>
-      <button class="stitok-zam" data-zam="RTO" data-nazov="Radio Telephone Operator" data-popis="Spojár. Drží rádiovú komunikáciu medzi tímom, veliteľstvom a podporou — hlási polohy, žiada MEDEVAC či palebnú podporu. Pokojný hlas v chaose boja; bez neho velenie nevie, čo sa deje v poli.">RTO<small>Radio Operator</small></button>
-      <button class="stitok-zam" data-zam="MG" data-nazov="Machinegunner" data-popis="Guľometčík. Nesie ťažký guľomet a vytvára palebnú prevahu — potláča nepriateľa, aby sa zvyšok tímu mohol hýbať. Fyzicky najťažšia výbava v tíme a rola, ktorá rozhoduje o prestrelkách.">MG<small>Machinegunner</small></button>
-      <button class="stitok-zam" data-zam="AR" data-nazov="Automatic Rifleman" data-popis="Ľahký guľometčík družstva. Pohyblivejší než MG, drží automatickú pušku s vyššou kadenciou a kryje postup svojej dvojice či roja. Chrbtová kosť palebnej sily na úrovni družstva.">AR<small>Automatic Rifleman</small></button>
-      <button class="stitok-zam" data-zam="GL" data-nazov="Grenade Launcher" data-popis="Granátometčík. Podvesný granátomet na presné aj plošné ciele — nepriateľ za múrom, v okne či v zákope prestáva byť problém. Vyžaduje cit pre balistiku a disciplínu v muničnom hospodárení.">GL<small>Grenade Launcher</small></button>
-      <button class="stitok-zam" data-zam="R" data-nazov="Rifleman" data-popis="Strelec — základ každého tímu. Puška, disciplína, tímová práca a znalosť taktických postupov. Každý u nás začína ako rifleman; je to rola, na ktorej sa učíš čítať boj a od ktorej sa odvíjajú všetky špecializácie.">R<small>Rifleman</small></button>
-      <button class="stitok-zam" data-zam="SS" data-nazov="Sharpshooter" data-popis="Presný strelec družstva. S DMR puškou eliminuje ciele na vzdialenosti, kam bežná puška nedosiahne — priamo v zostave tímu, nie samostatne. Most medzi riflemanom a sniperom.">SS<small>Sharpshooter</small></button>
-      <button class="stitok-zam" data-zam="SN" data-nazov="Sniper" data-popis="Ostreľovač. Pracuje v dvojici so spotterom, ďaleko pred vlastnými líniami — pozorovanie, hlásenie a eliminácia vysoko prioritných cieľov na extrémne vzdialenosti. Vyžaduje trpezlivosť, maskovanie a chladnú hlavu.">SN<small>Sniper</small></button>
-      <button class="stitok-zam" data-zam="IFV-O" data-nazov="IFV Operátor" data-popis="Posádka bojového vozidla pechoty. Riadenie, obsluha veže a kanóna, koordinácia s pechotným rojom — srdce mechanizovaného tímu Grizzly. Vozidlo je zbraň, transport aj kryt v jednom.">IFV-O<small>IFV Operátor</small></button>
-      <button class="stitok-zam" data-zam="AB" data-nazov="Ammo Bearer" data-popis="Nosič munície. Druhý muž guľometného tímu — nesie zásobu munície, pomáha s prebíjaním, hlási ciele a preberá zbraň, ak MG vypadne. Najrýchlejšia cesta, ako sa naučiť guľometné remeslo.">AB<small>Ammo Bearer</small></button>
-      <button class="stitok-zam" data-zam="BR" data-nazov="Breacher" data-popis="Špecialista na násilné vstupy. Výbušniny, baranidlá a brokovnica — otvára dvere, múry a cesty tam, kde ich nepriateľ zavrel. Kľúčová rola pri CQB operáciách v zastavanom priestore.">BR<small>Breacher</small></button>
-      <button class="stitok-zam" data-zam="HW" data-nazov="Heavy Weapon" data-popis="Operátor ťažkých zbraní. Mínomety, protitankové systémy Spike a Javelin, ťažké guľomety — výzbroj podporného tímu Vlk. Keď pušky nestačia, nastupuje HW.">HW<small>Heavy Weapon</small></button>
-      <button class="stitok-zam" data-zam="EOD" data-nazov="Explosive Ordnance Disposal" data-popis="Pyrotechnik. Vyhľadáva a zneškodňuje nástražné výbušné systémy, míny a nevybuchnutú muníciu — a keď treba, výbušniny aj kladie. Rola, pri ktorej sa nikto neponáhľa.">EOD<small>Pyrotechnik</small></button>
-      <button class="stitok-zam" data-zam="UAV" data-nazov="UAV Operátor" data-popis="Operátor bezpilotných prostriedkov. Prieskumné a úderné drony — oči tímu nad bojiskom, označovanie cieľov a presné údery. Hráme aj s vlastným módom Portable Drone, ktorý vznikol priamo u nás.">UAV<small>Operátor dronov</small></button>
-      <button class="stitok-zam" data-zam="TL" data-nazov="Team Leader" data-popis="Veliteľ tímu. Vedie 3–5 ľudí priamo v boji — rozdeľuje úlohy, hlási vyššiemu veleniu a nesie zodpovednosť za svojich. Prvý veliteľský stupeň; cesta k nemu vedie cez kurz velenia.">TL<small>Team Leader</small></button>
-      <button class="stitok-zam" data-zam="SL" data-nazov="Section Leader" data-popis="Veliteľ sekcie. Koordinuje viacero tímov naraz — synchronizuje ich pohyb, paľbu a úlohy v rámci operácie. Vyžaduje prehľad o celom bojisku a skúsenosti z pozície TL.">SL<small>Section Leader</small></button>
-      <button class="stitok-zam" data-zam="PL" data-nazov="Platoon Leader" data-popis="Veliteľ čaty. Najvyššia poľná veliteľská rola — velí celej operácii na zemi, komunikuje s operačným veliteľstvom Alžbeta a rozhoduje o priebehu misie. Vrchol veliteľskej cesty.">PL<small>Platoon Leader</small></button>
-    </div>
-
-<dialog class="tim-modal" id="modal-zameranie">
-  <div class="modal-hlava">
-    <div class="patch-nahrada-mala" id="zam-skratka">—</div>
-    <div><h3 id="zam-nazov">Zameranie</h3><div class="rola">Špecializácia</div></div>
-    <button class="modal-zavriet" data-zavriet>Zavrieť</button>
-  </div>
-  <div class="modal-telo">
-    <p id="zam-popis"></p>
-  </div>
-</dialog>
-  </div>
-</section>
-
-<section id="galeria">
-  <div class="sirka">
-    <div class="sekcia-hlava">
-      <div class="eyebrow">Z našich misií</div>
-      <h2>Takto to u nás vyzerá</h2>
-    </div>
-    <div class="galeria-mriezka">
-      <button data-foto="assets/gal-sniper.jpg" aria-label="Zväčšiť fotku: strelec na pozícii">
-        <img src="assets/gal-sniper.jpg" alt="Strelec s DMR puškou na skrytej pozícii v horskej dedine" loading="lazy">
-      </button>
-      <button data-foto="assets/gal-pandur.jpg" aria-label="Zväčšiť fotku: obrnené vozidlo s posádkou">
-        <img src="assets/gal-pandur.jpg" alt="Obrnený transportér s mrežovým pancierom a posádkou na veži" loading="lazy">
-      </button>
-      <button data-foto="assets/gal-cqb.jpg" aria-label="Zväčšiť fotku: zásah v budove">
-        <img src="assets/gal-cqb.jpg" alt="Dvojica pri vstupe do budovy počas CQB zásahu" loading="lazy">
-      </button>
-      <button data-foto="assets/gal-noc.jpg" aria-label="Zväčšiť fotku: nočná operácia">
-        <img src="assets/gal-noc.jpg" alt="Nočné videnie — rakety pretínajú oblohu nad morom" loading="lazy">
-      </button>
-      <button data-foto="assets/gal-uav.jpg" aria-label="Zväčšiť fotku: vypustenie prieskumného dronu">
-        <img src="assets/gal-uav.jpg" alt="Vojak vypúšťa prieskumný dron nad poľom" loading="lazy">
-      </button>
-      <button data-foto="assets/gal-prieskum.jpg" aria-label="Zväčšiť fotku: prieskumná hliadka">
-        <img src="assets/gal-prieskum.jpg" alt="Prieskumná dvojica postupuje trávou za úsvitu" loading="lazy">
-      </button>
-      <button data-foto="assets/gal-schody.jpg" aria-label="Zväčšiť fotku: nočný výstup na objekt">
-        <img src="assets/gal-schody.jpg" alt="Tím stúpa po schodisku priemyselného objektu v nočnom videní" loading="lazy">
-      </button>
-      <button data-foto="assets/gal-clny.jpg" aria-label="Zväčšiť fotku: nočný presun na člnoch">
-        <img src="assets/gal-clny.jpg" alt="Nočný presun na člnoch smerom k cieľu na mori" loading="lazy">
-      </button>
-      <button data-foto="assets/gal-strecha.jpg" aria-label="Zväčšiť fotku: prekrytie zo strechy">
-        <img src="assets/gal-strecha.jpg" alt="Dvojica kryje priestor zo strechy budovy za súmraku" loading="lazy">
-      </button>
+<section id="kampan" data-reveal="" style="padding: 0; background: linear-gradient(rgba(28,34,22,.88), rgba(28,34,22,.94)), url('assets/gal-noc.jpg') center / cover no-repeat; border-top: 1px solid #35402A; border-bottom: 1px solid #35402A; scroll-margin-top: 80px;">
+  <div style="max-width: 1120px; margin: 0 auto; padding: 80px 24px;">
+    <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Príbehová kampaň</div>
+    <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: clamp(30px, 5vw, 42px); margin: 4px 0 0;">Šesť rokov, jedna vojna</h2>
+    <p style="max-width: 560px; margin: 18px 0 0; font-size: 17px;">Naše sobotné misie píšu jednu súvislú príbehovú kampaň už od roku 2020. Kronika kampane prináša <strong style="color: #C2C29E; font-weight: 600;">interaktívnu mapu aliancií</strong>, <strong style="color: #C2C29E; font-weight: 600;">časovú os udalostí</strong> a celý príbeh od prvého výsadku.</p>
+    <div style="margin-top: 30px;">
+      <a href="kronika.html" style="display: inline-block; padding: 13px 30px; font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 3px; text-decoration: none; border-radius: 4px; color: #242B1C; background: #9C9C74; border: 2px solid #C2C29E; transition: transform .2s, background .2s;" style-hover="background: #C2C29E; transform: translateY(-2px);">Otvoriť kroniku</a>
     </div>
   </div>
 </section>
 
-<section id="akohrame">
-  <div class="sirka">
-    <div class="sekcia-hlava">
-      <div class="eyebrow">Praktické info</div>
-      <h2>Ako hráme</h2>
+<section id="galeria" data-reveal="" style="padding: 72px 0; scroll-margin-top: 80px;">
+  <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
+    <div style="margin-bottom: 36px;">
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Z našich misií</div>
+      <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: clamp(30px, 5vw, 42px); margin: 4px 0 0;">Takto to u nás vyzerá</h2>
     </div>
-    <div class="info-mriezka">
-      <div class="info-karta">
-        <h3>Kedy hráme</h3>
-        <ul>
-          <li><span class="vyrazne">Každú sobotu od 15:30</span> — pravidelné príbehové klanové misie</li>
-          <li>Bežná účasť <span class="vyrazne">10–15 hráčov</span></li>
-          <li>Spoločné misie s inými klanmi a <span class="vyrazne">Joint Ops</span> pre 30+ hráčov</li>
-        </ul>
-      </div>
-      <div class="info-karta">
-        <h3>Čo potrebuješ</h3>
-        <ul>
-          <li><span class="vyrazne">Arma 3</span> — stačí základná hra, žiadne DLC</li>
-          <li><span class="vyrazne">TeamSpeak</span> a <span class="vyrazne">Discord</span> — komunikácia a život klanu</li>
-          <li>Módy ti pomôžeme nastaviť pri vstupe</li>
-        </ul>
-      </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+      <sc-for list="{{ gallery }}" as="g" hint-placeholder-count="0">
+        <img src="{{ g.src }}" alt="{{ g.alt }}" onClick="{{ g.open }}" style="width: 100%; aspect-ratio: 16/10; object-fit: cover; border-radius: 6px; border: 1px solid #35402A; display: block; cursor: zoom-in; transition: transform .25s, border-color .25s;" style-hover="transform: scale(1.02); border-color: #9C9C74;">
+      </sc-for>
     </div>
+  </div>
+</section>
 
-    <h3 class="podnadpis">Naše modpacky</h3>
-    <p class="podnadpis-pozn">Každá éra má vlastný modpack na Steam Workshope — jedno kliknutie, Steam stiahne všetko sám.</p>
-    <div class="modpack-mriezka">
-      <a class="modpack" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2228993880" target="_blank" rel="noopener">
-        <div class="era">Súčasnosť</div>
-        <div class="nazov">Moderna</div>
-        <div class="popis">Moderné konflikty — hlavný modpack sobotných misií</div>
-        <span class="steam">Steam Workshop ▸</span>
+<div onClick="{{ lbClose }}" style="display: {{ lbDisplay }}; position: fixed; inset: 0; z-index: 100; background: rgba(20,25,15,.94); align-items: center; justify-content: center; padding: 40px; cursor: zoom-out;">
+  <button onClick="{{ lbPrev }}" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); background: rgba(53,64,42,.8); border: 1px solid #9C9C74; border-radius: 4px; color: #C2C29E; font-size: 26px; padding: 8px 16px; cursor: pointer; z-index: 2;">‹</button>
+  <figure style="margin: 0; max-width: min(1100px, 92vw); text-align: center;">
+    <sc-if value="{{ lbOpen }}" hint-placeholder-val="{{ false }}"><img src="{{ lbSrc }}" alt="{{ lbAlt }}" style="max-width: 100%; max-height: 82vh; border: 1px solid #9C9C74; border-radius: 6px; box-shadow: 0 20px 60px rgba(0,0,0,.6);"></sc-if>
+    <figcaption style="margin-top: 12px; font-size: 14.5px; color: #C2C29E;">{{ lbAlt }} <span style="color: #8A5F44; font-family: 'Staatliches', sans-serif; letter-spacing: 2px; margin-left: 10px;">{{ lbCounter }}</span></figcaption>
+  </figure>
+  <button onClick="{{ lbNext }}" style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); background: rgba(53,64,42,.8); border: 1px solid #9C9C74; border-radius: 4px; color: #C2C29E; font-size: 26px; padding: 8px 16px; cursor: pointer; z-index: 2;">›</button>
+  <button onClick="{{ lbClose }}" style="position: absolute; top: 18px; right: 18px; background: rgba(53,64,42,.8); border: 1px solid #9C9C74; border-radius: 4px; color: #C2C29E; font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; padding: 8px 14px; cursor: pointer; z-index: 2;">Zavrieť ✕</button>
+</div>
+
+<section id="modpacky" data-reveal="" style="padding: 72px 0; background: #2C3522; scroll-margin-top: 80px;">
+  <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
+    <div style="margin-bottom: 36px;">
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Výbava</div>
+      <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: clamp(30px, 5vw, 42px); margin: 4px 0 0;">Modpacky a pripojenie</h2>
+    </div>
+    <p style="max-width: 620px; margin: -20px 0 24px; font-size: 15px; color: #A8A890;">Každá éra má vlastný modpack na Steam Workshope — jedno kliknutie, Steam stiahne všetko sám.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+      <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2228993880" style="text-decoration: none; background: #35402A; border: 1px solid #9C9C74; border-radius: 6px; padding: 20px; display: grid; gap: 4px; align-content: start; transition: transform .25s, border-color .25s;" style-hover="transform: translateY(-3px); border-color: #C2C29E;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44;">Súčasnosť</div>
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 22px; letter-spacing: 2px; color: #C2C29E;">Moderna</div>
+        <p style="font-size: 13.5px; color: #A8A890; margin: 0;">Moderné konflikty — hlavný modpack sobotných misií</p>
+        <span style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1px; color: #9C9C74; margin-top: 8px;">Steam Workshop ▸</span>
       </a>
-      <a class="modpack" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2469330290" target="_blank" rel="noopener">
-        <div class="era">1947 – 1991</div>
-        <div class="nazov">Cold War</div>
-        <div class="popis">Studená vojna — východ proti západu</div>
-        <span class="steam">Steam Workshop ▸</span>
+      <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2469330290" style="text-decoration: none; background: #35402A; border: 1px solid #4A5A38; border-radius: 6px; padding: 20px; display: grid; gap: 4px; align-content: start; transition: transform .25s, border-color .25s;" style-hover="transform: translateY(-3px); border-color: #9C9C74;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44;">1947 – 1991</div>
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 22px; letter-spacing: 2px; color: #C2C29E;">Cold War</div>
+        <p style="font-size: 13.5px; color: #A8A890; margin: 0;">Studená vojna — konflikty východu a západu</p>
+        <span style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1px; color: #9C9C74; margin-top: 8px;">Steam Workshop ▸</span>
       </a>
-      <a class="modpack" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2228994186" target="_blank" rel="noopener">
-        <div class="era">1939 – 1945</div>
-        <div class="nazov">WW II</div>
-        <div class="popis">Druhá svetová vojna</div>
-        <span class="steam">Steam Workshop ▸</span>
+      <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2228994186" style="text-decoration: none; background: #35402A; border: 1px solid #4A5A38; border-radius: 6px; padding: 20px; display: grid; gap: 4px; align-content: start; transition: transform .25s, border-color .25s;" style-hover="transform: translateY(-3px); border-color: #9C9C74;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44;">1939 – 1945</div>
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 22px; letter-spacing: 2px; color: #C2C29E;">WW II</div>
+        <p style="font-size: 13.5px; color: #A8A890; margin: 0;">Druhá svetová vojna — historické operácie</p>
+        <span style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1px; color: #9C9C74; margin-top: 8px;">Steam Workshop ▸</span>
       </a>
-      <a class="modpack" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2228993580" target="_blank" rel="noopener">
-        <div class="era">Základ</div>
-        <div class="nazov">Engine</div>
-        <div class="popis">Technické jadro — potrebné pre všetky éry</div>
-        <span class="steam">Steam Workshop ▸</span>
+      <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2228993580" style="text-decoration: none; background: #35402A; border: 1px solid #4A5A38; border-radius: 6px; padding: 20px; display: grid; gap: 4px; align-content: start; transition: transform .25s, border-color .25s;" style-hover="transform: translateY(-3px); border-color: #9C9C74;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44;">Základ</div>
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 22px; letter-spacing: 2px; color: #C2C29E;">Engine</div>
+        <p style="font-size: 13.5px; color: #A8A890; margin: 0;">Technické jadro — potrebné pre všetky éry</p>
+        <span style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1px; color: #9C9C74; margin-top: 8px;">Steam Workshop ▸</span>
       </a>
     </div>
-
-    <div class="mody-vlastne">
-      <h3>Vlastné módy 58. PG</h3>
-      <p class="kredit">Vyvíja ich pre nás <strong>Pastoman</strong> — ak sa ti páčia, poteší nás palec hore na Workshope.</p>
-      <div class="vlastne-mriezka">
-        <a class="vlastny-mod" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2014515158" target="_blank" rel="noopener">
-          <div class="nazov">Slovak Armed Forces by 58. PG</div>
-          <div class="popis">Výstroj, uniformy a technika slovenskej armády</div>
+    <div style="margin-top: 28px; background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 22px 24px;">
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: #C2C29E;">Vlastné módy 58. PG</div>
+      <p style="font-size: 14px; color: #A8A890; margin: 6px 0 14px;">Vyvíja ich pre nás <strong style="color: #C2C29E; font-weight: 600;">Pastoman</strong> — ak sa ti páčia, poteší nás palec hore na Workshope.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+        <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2014515158" style="text-decoration: none; background: #35402A; border: 1px solid #4A5A38; border-radius: 6px; padding: 16px 18px; transition: border-color .25s;" style-hover="border-color: #9C9C74;">
+          <div style="font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 1.5px; color: #C2C29E;">Slovak Armed Forces by 58. PG</div>
+          <div style="font-size: 13.5px; color: #A8A890; margin-top: 4px;">Výstroj, uniformy a technika slovenskej armády</div>
         </a>
-        <a class="vlastny-mod" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2193193979" target="_blank" rel="noopener">
-          <div class="nazov">Portable Drone</div>
-          <div class="popis">Prenosný prieskumný dron do poľa</div>
+        <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2193193979" style="text-decoration: none; background: #35402A; border: 1px solid #4A5A38; border-radius: 6px; padding: 16px 18px; transition: border-color .25s;" style-hover="border-color: #9C9C74;">
+          <div style="font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 1.5px; color: #C2C29E;">Portable Drone</div>
+          <div style="font-size: 13.5px; color: #A8A890; margin-top: 4px;">Prenosný prieskumný dron do poľa</div>
         </a>
       </div>
-      <p class="units-riadok">Oficiálna jednotka: <a href="https://units.arma3.com/unit/58pg" target="_blank" rel="noopener">Arma 3 Units — 58. Phoenix Group</a></p>
+      <p style="font-size: 13.5px; color: #A8A890; margin: 14px 0 0;">Oficiálna jednotka: <a href="https://units.arma3.com/unit/58pg" style="color: #C2C29E;">Arma 3 Units — 58. Phoenix Group</a></p>
     </div>
   </div>
 </section>
 
-<section id="nabor">
-  <div class="sirka">
-    <div class="sekcia-hlava">
-      <div class="eyebrow">Nábor</div>
-      <h2>Ako sa k nám pridáš</h2>
+<section id="nabor" data-reveal="" style="padding: 72px 0; scroll-margin-top: 80px;">
+  <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
+    <div style="margin-bottom: 36px;">
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Nábor</div>
+      <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: clamp(30px, 5vw, 42px); margin: 4px 0 0;">Ako sa k nám pridáš</h2>
     </div>
-    <div class="cesta">
-      <div class="krok">
-        <h3>Napíš nám na Discord</h3>
-        <p>Stačí správa v náborovom kanáli, že máš záujem o vstup. Máme radi osobný kontakt — žiadne formuláre na tri strany.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+      <div style="background: #2C3522; border: 1px solid #9C9C74; border-radius: 6px; padding: 26px 24px; transition: transform .25s;" style-hover="transform: translateY(-3px);">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 30px; color: #8A5F44; margin-bottom: 8px;">01</div>
+        <h3 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 2px; color: #C2C29E; font-size: 21px; margin: 0;">Napíš nám na Discord</h3>
+        <p style="margin: 8px 0 0; font-size: 15px;">Stačí správa v náborovom kanáli. Máme radi osobný kontakt — žiadne formuláre na tri strany.</p>
       </div>
-      <div class="krok">
-        <h3>Pohovor s moderátorom</h3>
-        <p>Predstavíme ti fungovanie klanu a radi sa dozvieme niečo o tebe. Aj naši moderátori sú len ľudia — ozvú sa, hneď ako budú k dispozícii.</p>
+      <div style="background: #2C3522; border: 1px solid #9C9C74; border-radius: 6px; padding: 26px 24px; transition: transform .25s;" style-hover="transform: translateY(-3px);">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 30px; color: #8A5F44; margin-bottom: 8px;">02</div>
+        <h3 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 2px; color: #C2C29E; font-size: 21px; margin: 0;">Pohovor s moderátorom</h3>
+        <p style="margin: 8px 0 0; font-size: 15px;">Predstavíme ti fungovanie klanu a radi sa dozvieme niečo o tebe.</p>
       </div>
-      <div class="krok">
-        <h3>Základný výcvik</h3>
-        <p>Šesť etáp, ktoré ťa pripravia na ostré misie. Po ich zvládnutí si vyberieš špecializáciu a miesto v tíme.</p>
+      <div style="background: #2C3522; border: 1px solid #9C9C74; border-radius: 6px; padding: 26px 24px; transition: transform .25s;" style-hover="transform: translateY(-3px);">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 30px; color: #8A5F44; margin-bottom: 8px;">03</div>
+        <h3 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 2px; color: #C2C29E; font-size: 21px; margin: 0;">Základný výcvik</h3>
+        <p style="margin: 8px 0 0; font-size: 15px;">Šesť etáp a výber jedného z 18 zameraní — potom miesto v tíme.</p>
       </div>
     </div>
-    <p class="nabor-pozn">
-      Jediné, čo od teba čakáme: chuť učiť sa nové veci a hrať seriózne.
-      Na veku ani skúsenostiach nezáleží — dôležitá je chuť ponoriť sa do Arma sveta
-      a užiť si každú misiu. Stačí ti základná Arma 3, TeamSpeak a Discord — módy ti pomôžeme nastaviť.
-    </p>
-    <div class="nabor-cta">
-      <a class="tlacidlo tlacidlo-plne" href="https://discord.gg/2sQKH3RkG9">Chcem sa pridať</a>
+    <p style="margin: 28px 0 0; max-width: 620px; color: #A8A890; font-size: 15px;">Na veku ani skúsenostiach nezáleží. Stačí základná Arma 3, TeamSpeak a Discord — módy ti pomôžeme nastaviť.</p>
+    <div style="margin-top: 28px;">
+      <a href="https://discord.gg/2sQKH3RkG9" style="display: inline-block; padding: 13px 30px; font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 3px; text-decoration: none; border-radius: 4px; color: #242B1C; background: #9C9C74; border: 2px solid #C2C29E; transition: transform .2s, background .2s;" style-hover="background: #C2C29E; transform: translateY(-2px);">Chcem sa pridať</a>
     </div>
   </div>
 </section>
 
-<dialog class="tim-modal" id="modal-duch">
-  <div class="modal-hlava">
-    <img src="assets/team-duch.png" alt="">
-    <div><h3>Tím Duch</h3><div class="rola">Hĺbkový prieskum a špeciálne nasadenia</div></div>
-    <button class="modal-zavriet" data-zavriet>Zavrieť</button>
-  </div>
-  <div class="modal-telo">
-    <h4>Hlavná rola</h4>
-    <p>Dlhodobý hĺbkový prieskum (Deep Recon) a zber informácií za nepriateľskou líniou.</p>
-    <h4>Špecializácie</h4>
-    <ul>
-      <li><strong>ISR</strong> — zaistenie kritických dát o nepriateľovi</li>
-      <li><strong>Operácie s UAV</strong> — presný vzdušný prieskum a zacielenie</li>
-      <li><strong>Presná streľba (Sniper/Spotter)</strong> — eliminácia vysoko prioritných cieľov</li>
-    </ul>
-    <h4>Primárne vybavenie</h4>
-    <p>Skryté pozorovacie pozície, drony/UAV systémy, tlmené DMR a sniper pušky, pokročilé komunikačné systémy.</p>
-    <p class="motto-timu">Oči, ktoré vidia všetko skôr, než sa spustí akcia.</p>
-  </div>
-</dialog>
-
-<dialog class="tim-modal" id="modal-grizzly">
-  <div class="modal-hlava">
-    <img src="assets/team-grizzly.png" alt="">
-    <div><h3>Tím Grizzly</h3><div class="rola">Mechanizovaný tím</div></div>
-    <button class="modal-zavriet" data-zavriet>Zavrieť</button>
-  </div>
-  <div class="modal-telo">
-    <h4>Hlavná rola</h4>
-    <p>Kombinovaný úder obrnenej techniky a pechoty. Prielom nepriateľskej obrany, držanie kľúčových pozícií a rýchly presun sily tam, kde treba.</p>
-    <h4>Špecializácie</h4>
-    <ul>
-      <li><strong>Mechanizovaný útok</strong> — koordinácia IFV a pechotného roja v jednom celku</li>
-      <li><strong>Palebná podpora priamou paľbou</strong> — kanón a PTRS proti technike aj opevneniu</li>
-      <li><strong>Taktický transport</strong> — bezpečné nasadenie pechoty priamo do boja</li>
-    </ul>
-    <h4>Primárne vybavenie</h4>
-    <p>Bojové vozidlo pechoty (IFV), pechotný roj s plnou výbavou, protitankové prostriedky, obrnená podpora.</p>
-    <p class="motto-timu">Päsť, ktorá prerazí každú obranu.</p>
-  </div>
-</dialog>
-
-<dialog class="tim-modal" id="modal-vlk">
-  <div class="modal-hlava">
-    <img src="assets/team-wolf.png" alt="">
-    <div><h3>Tím Vlk</h3><div class="rola">Podporná jednotka — ťažké zbrane</div></div>
-    <button class="modal-zavriet" data-zavriet>Zavrieť</button>
-  </div>
-  <div class="modal-telo">
-    <h4>Hlavná rola</h4>
-    <p>Palebná podpora bojových tímov špecializovanými zbraňovými systémami. Ničenie obrnenej techniky, opevnených pozícií a plošných cieľov.</p>
-    <h4>Špecializácie</h4>
-    <ul>
-      <li><strong>Nepriama paľba</strong> — mínometná podpora na vyžiadanie</li>
-      <li><strong>Protitankový boj</strong> — navádzanie a odpaľovanie systémov Spike a Javelin</li>
-      <li><strong>Palebná prevaha</strong> — potlačenie nepriateľa v kritických momentoch operácie</li>
-    </ul>
-    <h4>Primárne vybavenie</h4>
-    <p>Mínomety, ATGM systémy Spike a Javelin, ťažké guľomety, špecializovaná munícia.</p>
-    <p class="motto-timu">Palebná sila, keď už nestačia pušky.</p>
-  </div>
-</dialog>
-
-<dialog class="tim-modal" id="modal-liska">
-  <div class="modal-hlava">
-    <img src="assets/team-fox.png" alt="">
-    <div><h3>Tím Líška</h3><div class="rola">Prieskumný tím</div></div>
-    <button class="modal-zavriet" data-zavriet>Zavrieť</button>
-  </div>
-  <div class="modal-telo">
-    <h4>Hlavná rola</h4>
-    <p>Taktický prieskum v blízkosti vlastných síl. Zaistenie predsunutých pozícií, prieskum trás a včasné varovanie pred nepriateľom.</p>
-    <h4>Špecializácie</h4>
-    <ul>
-      <li><strong>Bojový prieskum</strong> — kontakt s nepriateľom a určenie jeho sily a pozícií</li>
-      <li><strong>Prieskum trás a terénu</strong> — bezpečný postup hlavných síl</li>
-      <li><strong>Predsunuté pozorovanie</strong> — navádzanie paľby a hlásenie pohybu v reálnom čase</li>
-    </ul>
-    <h4>Primárne vybavenie</h4>
-    <p>Ľahká a rýchla výstroj, optika a pozorovacia technika, spojovacie prostriedky, terénne vozidlá.</p>
-    <p class="motto-timu">Vždy o krok vpred — vieme, čo je za kopcom.</p>
-  </div>
-</dialog>
-
-<dialog class="tim-modal" id="modal-hotel">
-  <div class="modal-hlava">
-    <img src="assets/team-hotel.png" alt="">
-    <div><h3>Tím Hotel</h3><div class="rola">Vrtuľníkové krídlo</div></div>
-    <button class="modal-zavriet" data-zavriet>Zavrieť</button>
-  </div>
-  <div class="modal-telo">
-    <h4>Hlavná rola</h4>
-    <p>Vzdušná preprava jednotiek a materiálu na bojisko. Rýchle nasadenie, vyzdvihnutie a zásobovanie tímov kdekoľvek v operačnom priestore.</p>
-    <h4>Špecializácie</h4>
-    <ul>
-      <li><strong>Air Assault</strong> — nasadenie pechoty priamo do akcie</li>
-      <li><strong>MEDEVAC/CASEVAC</strong> — evakuácia ranených z bojiska</li>
-      <li><strong>Logistická podpora zo vzduchu</strong> — prísun munície a materiálu</li>
-    </ul>
-    <h4>Primárne vybavenie</h4>
-    <p>UH-60 Black Hawk, navigačné a komunikačné systémy, evakuačné vybavenie.</p>
-    <p class="motto-timu">Cesta tam aj späť — vždy, keď nás potrebujete.</p>
-  </div>
-</dialog>
-
-<dialog class="tim-modal" id="modal-alzbeta">
-  <div class="modal-hlava">
-    <img src="assets/patch-alzbeta.png" alt="">
-    <div><h3>Alžbeta</h3><div class="rola">Operačné veliteľstvo</div></div>
-    <button class="modal-zavriet" data-zavriet>Zavrieť</button>
-  </div>
-  <div class="modal-telo">
-    <h4>Hlavná rola</h4>
-    <p>Plánovanie, riadenie a koordinácia všetkých operácií. Velenie jednotkám v reálnom čase a rozhodovanie na strategickej úrovni.</p>
-    <h4>Špecializácie</h4>
-    <ul>
-      <li><strong>C2 (Command & Control)</strong> — riadenie bojových operácií</li>
-      <li><strong>Koordinácia tímov</strong> — synchronizácia pozemných a vzdušných síl</li>
-      <li><strong>Spracovanie spravodajských informácií</strong> — vyhodnotenie dát z prieskumu a tvorba operačného obrazu</li>
-    </ul>
-    <h4>Primárne vybavenie</h4>
-    <p>Veliteľské stanovisko, mapové a plánovacie systémy, komunikačné uzly, spojenie so všetkými tímami.</p>
-    <p class="motto-timu">Mozog operácie — každý rozkaz má svoj dôvod.</p>
-  </div>
-</dialog>
-
-<dialog class="lightbox" id="lightbox">
-  <button class="lightbox-zavriet" data-zavriet>Zavrieť</button>
-  <button class="lightbox-sipka dozadu" data-smer="-1" aria-label="Predošlá fotka">‹</button>
-  <button class="lightbox-sipka dopredu" data-smer="1" aria-label="Ďalšia fotka">›</button>
-  <img src="" alt="Zväčšená fotografia z misie">
-</dialog>
-
-<script>
-  var heroPatche = document.querySelectorAll('.hero-patch');
-  if (heroPatche.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    var aktualny = 0;
-    setInterval(function () {
-      heroPatche[aktualny].classList.remove('aktivny');
-      aktualny = (aktualny + 1) % heroPatche.length;
-      heroPatche[aktualny].classList.add('aktivny');
-    }, 3000);
-  }
-  var burger = document.querySelector('[data-menu]');
-  var menu = document.getElementById('nav-linky');
-  burger.addEventListener('click', function () {
-    var otvorene = menu.classList.toggle('otvorene');
-    burger.setAttribute('aria-expanded', otvorene);
-  });
-  menu.querySelectorAll('a').forEach(function (odkaz) {
-    odkaz.addEventListener('click', function () {
-      menu.classList.remove('otvorene');
-      burger.setAttribute('aria-expanded', 'false');
-    });
-  });
-  document.querySelectorAll('[data-modal]').forEach(function (tlacidlo) {
-    tlacidlo.addEventListener('click', function () {
-      document.getElementById(tlacidlo.dataset.modal).showModal();
-    });
-  });
-  document.querySelectorAll('[data-zam]').forEach(function (tlacidlo) {
-    tlacidlo.addEventListener('click', function () {
-      document.getElementById('zam-skratka').textContent = tlacidlo.dataset.zam;
-      document.getElementById('zam-nazov').textContent = tlacidlo.dataset.nazov;
-      document.getElementById('zam-popis').textContent = tlacidlo.dataset.popis;
-      document.getElementById('modal-zameranie').showModal();
-    });
-  });
-  var fotky = Array.prototype.map.call(document.querySelectorAll('[data-foto]'), function (b) { return b.dataset.foto; });
-  var aktualnaFotka = 0;
-  var lightbox = document.getElementById('lightbox');
-  function ukazFotku(i) {
-    aktualnaFotka = (i + fotky.length) % fotky.length;
-    lightbox.querySelector('img').src = fotky[aktualnaFotka];
-  }
-  document.querySelectorAll('[data-foto]').forEach(function (tlacidlo, i) {
-    tlacidlo.addEventListener('click', function () { ukazFotku(i); lightbox.showModal(); });
-  });
-  document.querySelectorAll('.lightbox-sipka').forEach(function (sipka) {
-    sipka.addEventListener('click', function (e) { e.stopPropagation(); ukazFotku(aktualnaFotka + Number(sipka.dataset.smer)); });
-  });
-  lightbox.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowLeft') { e.preventDefault(); ukazFotku(aktualnaFotka - 1); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); ukazFotku(aktualnaFotka + 1); }
-  });
-  var sekcie = document.querySelectorAll('section[id]');
-  var navOdkazy = document.querySelectorAll('.nav-linky a[href^="#"]');
-  var spy = new IntersectionObserver(function (zaznamy) {
-    zaznamy.forEach(function (z) {
-      if (z.isIntersecting) {
-        navOdkazy.forEach(function (a) {
-          a.classList.toggle('aktivna', a.getAttribute('href') === '#' + z.target.id);
-        });
-      }
-    });
-  }, { rootMargin: '-40% 0px -55% 0px' });
-  sekcie.forEach(function (s) { spy.observe(s); });
-  document.querySelectorAll('[data-zavriet]').forEach(function (tlacidlo) {
-    tlacidlo.addEventListener('click', function () { tlacidlo.closest('dialog').close(); });
-  });
-  document.querySelectorAll('dialog').forEach(function (okno) {
-    okno.addEventListener('click', function (e) { if (e.target === okno) okno.close(); });
-  });
-</script>
-
-<footer>
-  <div class="paticka-mriezka">
-    <div class="paticka-stlpec">
-      <img src="assets/phoenix58.png" alt="" class="paticka-logo">
-      <p class="paticka-motto">Rise Up To Fire</p>
+<footer style="background: #1C2216; border-top: 1px solid #35402A; padding: 48px 0 32px;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; max-width: 1120px; margin: 0 auto; padding: 0 24px;">
+    <div>
+      <img src="assets/phoenix58.png" alt="" style="width: 64px; margin-bottom: 10px;">
+      <p style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 4px; color: #8A5F44; margin: 0;">Rise Up To Fire</p>
     </div>
-    <div class="paticka-stlpec">
-      <div class="paticka-nadpis">Stránka</div>
-      <a href="#onas">O nás</a>
-      <a href="#timy">Tímy</a>
-      <a href="#zamerania">Zamerania</a>
-      <a href="#galeria">Galéria</a>
-      <a href="#akohrame">Ako hráme</a>
-      <a href="#nabor">Nábor</a>
+    <div style="display: grid; gap: 8px; align-content: start;">
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 3px; color: #C2C29E; margin-bottom: 4px;">Stránka</div>
+      <a href="#onas" style="font-size: 14.5px; letter-spacing: 1px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">O nás</a>
+      <a href="#timy" style="font-size: 14.5px; letter-spacing: 1px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Tímy</a>
+      <a href="#zamerania" style="font-size: 14.5px; letter-spacing: 1px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Zamerania</a>
+      <a href="kronika.html" style="font-size: 14.5px; letter-spacing: 1px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kronika kampane</a>
+      <a href="#nabor" style="font-size: 14.5px; letter-spacing: 1px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Nábor</a>
     </div>
-    <div class="paticka-stlpec">
-      <div class="paticka-nadpis">Nájdeš nás</div>
-      <a href="https://discord.gg/2sQKH3RkG9" target="_blank" rel="noopener">Discord</a>
-      <a href="https://www.instagram.com/58_phoenix_group/" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://units.arma3.com/unit/58pg" target="_blank" rel="noopener">Arma 3 Units</a>
-      <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2014515158" target="_blank" rel="noopener">Naše módy</a>
+    <div style="display: grid; gap: 8px; align-content: start;">
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 3px; color: #C2C29E; margin-bottom: 4px;">Nájdeš nás</div>
+      <a href="https://discord.gg/2sQKH3RkG9" style="font-size: 14.5px; letter-spacing: 1px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Discord</a>
+      <a href="https://www.instagram.com/58_phoenix_group/" style="font-size: 14.5px; letter-spacing: 1px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Instagram</a>
+      <a href="https://units.arma3.com/unit/58pg" style="font-size: 14.5px; letter-spacing: 1px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Arma 3 Units</a>
+      <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2014515158" style="font-size: 14.5px; letter-spacing: 1px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Naše módy</a>
     </div>
   </div>
-  <p class="paticka-copy">© 2020–2026 · 58. Phoenix Group · Česko-slovenská Arma 3 MILSIM komunita</p>
+  <p style="margin: 36px 0 0; text-align: center; font-size: 13px; letter-spacing: 1px; color: #A8A890;">© 2020–2026 · 58. Phoenix Group · Česko-slovenská Arma 3 MILSIM komunita</p>
 </footer>
-
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { team: -1, spec: -1, lb: -1, now: Date.now(), active: "" };
+  navIds = ["onas", "timy", "zamerania", "galeria", "nabor"];
+  teamData = [
+    { name: "Líška", role: "Prieskumný tím", patch: "assets/team-fox.png", callsign: "FOX", lr: "31.0", sr: "152.0",
+      short: "Prieskum trás a predsunuté pozorovanie — vždy o krok vpred.",
+      desc: "Líška operuje pred vlastnými silami: prieskum trás, predsunuté pozorovateľne, včasné varovanie a navádzanie. Malý tím, ľahká výbava, maximálna disciplína v éteri.",
+      roles: ["Team Leader", "Prieskumník", "RTO", "Pozorovateľ", "Sharpshooter"] },
+    { name: "Vlk", role: "Podpora — ťažké zbrane", patch: "assets/team-wolf.png", callsign: "WOLF", lr: "32.0", sr: "153.0",
+      short: "Mínomety, Spike a Javelin — palebná sila, keď nestačia pušky.",
+      desc: "Vlk nesie ťažké zbrane jednotky: mínomety, ATGM systémy Spike a Javelin, ťažké guľomety. Pracuje na žiadosti o podporu z veliteľstva alebo priamo od tímov v kontakte.",
+      roles: ["Team Leader", "Heavy Weapon", "Machinegunner", "Ammo Bearer", "RTO"] },
+    { name: "Grizzly", role: "Mechanizovaný tím", patch: "assets/team-grizzly.png", callsign: "GRIZZLY", lr: "33.0", sr: "154.0",
+      short: "IFV a pechota v jednom celku — päsť, ktorá prerazí obranu.",
+      desc: "Grizzly kombinuje bojové vozidlá pechoty s vlastným výsadkom. Prielom obrany, držanie pozícií, taktický transport a krytie presunov ostatných tímov.",
+      roles: ["Section Leader", "IFV Operátor", "Rifleman", "Grenade Launcher", "Breacher", "CLS"] },
+    { name: "Duch", role: "Hĺbkový prieskum", patch: "assets/team-duch.png", callsign: "GHOST", lr: "34.0", sr: "155.0",
+      short: "Deep recon, UAV a sniper dvojice za nepriateľskou líniou.",
+      desc: "Duch pôsobí hlboko za líniou — ISR, operácie dronov, sniper/spotter dvojice a označovanie cieľov pre letectvo. Dni v teréne bez podpory, komunikácia len v oknách.",
+      roles: ["Team Leader", "Sniper", "Spotter", "Operátor dronov", "RTO"] },
+    { name: "Hotel", role: "Vrtuľníkové krídlo", patch: "assets/team-hotel.png", callsign: "HOTEL", lr: "35.0", sr: "156.0",
+      short: "Air assault a MEDEVAC na UH-60 — cesta tam aj späť.",
+      desc: "Hotel lieta UH-60 Black Hawk: vrtuľníkové výsadky, MEDEVAC pod paľbou, zásobovanie zo vzduchu a podpora door gunnerov. Bez Hotelu sa nikto nedostane ďaleko.",
+      roles: ["Pilot", "Kopilot", "Palubný technik", "Door Gunner", "Medic"] },
+    { name: "Alžbeta", role: "Operačné veliteľstvo", patch: "assets/patch-alzbeta.png", callsign: "ALŽBETA", lr: "30.0", sr: "151.0",
+      short: "C2 a koordinácia síl — mozog každej operácie.",
+      desc: "Alžbeta drží spravodajský obraz a velí operácii: koordinácia pozemných a vzdušných síl, prideľovanie podpory, spojenie s Joint Ops partnermi. Každý rozkaz má dôvod.",
+      roles: ["Platoon Leader", "RTO", "JTAC", "Spravodajský dôstojník"] }
+  ];
+  specData = [
+    ["MED", "Medic", "Jednotkový zdravotník — pokročilá ACE medicína, triáž, stabilizácia a riadenie evakuácie ranených. Najžiadanejšia rola v jednotke."],
+    ["CLS", "Combat Life Saver", "Prvá pomoc pod paľbou — zastavenie krvácania a stabilizácia raneného do príchodu medika. Základ pre každý tím."],
+    ["RTO", "Radio Operator", "Spojenie tímu s velením — ACRE siete, hlásenia, MEDEVAC 9-liner a žiadosti o palebnú podporu."],
+    ["MG", "Machinegunner", "Univerzálny guľomet — palebná prevaha, krytie presunov a umlčanie nepriateľských pozícií."],
+    ["AR", "Automatic Rifleman", "Ľahký guľomet družstva — okamžitá palebná podpora na úrovni tímu."],
+    ["GL", "Grenade Launcher", "Podvesný granátomet — ničenie krytov, dymové clony a označovanie cieľov."],
+    ["R", "Rifleman", "Základ družstva — puška, disciplína a univerzálnosť. Prvý krok každého nováčika."],
+    ["SS", "Sharpshooter", "Presná streľba na stredné vzdialenosti v rámci družstva — DMR puška a rýchle rozhodovanie."],
+    ["SN", "Sniper", "Ďiaľková presná streľba — balistika, maskovanie a práca v dvojici so spotterom."],
+    ["IFV-O", "IFV Operátor", "Obsluha bojového vozidla pechoty — strelec-operátor a vodič, spolupráca s výsadkom."],
+    ["AB", "Ammo Bearer", "Nosič munície — zásobovanie guľometných a protitankových tímov priamo v boji."],
+    ["BR", "Breacher", "Násilné vstupy — trhaviny, brokovnica, CQB a prielomy prekážok."],
+    ["HW", "Heavy Weapon", "Ťažké zbrane — mínomety, ATGM Spike a Javelin, statické systémy."],
+    ["EOD", "Pyrotechnik", "Zneškodňovanie IED a mín, demolácie a ženijná podpora postupu."],
+    ["UAV", "Operátor dronov", "Prieskumné drony — ISR obraz pre veliteľstvo a navádzanie podpory."],
+    ["TL", "Team Leader", "Vedenie štvorčlenného tímu v boji — rozkazy, formácie, hlásenia nahor."],
+    ["SL", "Section Leader", "Velenie družstvu — koordinácia tímov, podpory a plnenie zámeru veliteľa."],
+    ["PL", "Platoon Leader", "Velenie čate — plánovanie operácie, C2 a spolupráca s velením kampane."]
+  ];
+  galleryData = [
+    { src: "assets/gal-sniper.jpg", alt: "Strelec s DMR puškou na skrytej pozícii" },
+    { src: "assets/gal-pandur.jpg", alt: "Obrnený transportér s posádkou" },
+    { src: "assets/gal-cqb.jpg", alt: "Dvojica pri vstupe do budovy počas CQB zásahu" },
+    { src: "assets/gal-uav.jpg", alt: "Vojak vypúšťa prieskumný dron" },
+    { src: "assets/gal-schody.jpg", alt: "Tím stúpa po schodisku v nočnom videní" },
+    { src: "assets/gal-clny.jpg", alt: "Nočný presun na člnoch" },
+    { src: "assets/gal-prieskum.jpg", alt: "Prieskumná dvojica postupuje trávou za úsvitu" },
+    { src: "assets/gal-noc.jpg", alt: "Nočné videnie — rakety nad morom" },
+    { src: "assets/gal-strecha.jpg", alt: "Tím zaisťuje strechu budovy" }
+  ];
+  componentDidMount() {
+    const els = Array.from(document.querySelectorAll("[data-reveal]"));
+    els.forEach(el => { el.style.opacity = "0"; el.style.transform = "translateY(30px)"; el.style.transition = "opacity .7s ease, transform .7s ease"; });
+    this._io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.style.opacity = "1"; e.target.style.transform = "none"; this._io.unobserve(e.target); }
+    }), { threshold: 0.1 });
+    els.forEach(el => this._io.observe(el));
+    this._spy = new IntersectionObserver(entries => {
+      const vis = entries.filter(e => e.isIntersecting);
+      if (vis.length) this.setState({ active: vis[0].target.id });
+    }, { rootMargin: "-30% 0px -60% 0px" });
+    this.navIds.forEach(id => { const el = document.getElementById(id); if (el) this._spy.observe(el); });
+    this._t = setInterval(() => this.setState({ now: Date.now() }), 1000);
+    this._key = (e) => {
+      if (this.state.lb < 0) return;
+      if (e.key === "Escape") this.setState({ lb: -1 });
+      if (e.key === "ArrowRight") this.setState(s => ({ lb: (s.lb + 1) % this.galleryData.length }));
+      if (e.key === "ArrowLeft") this.setState(s => ({ lb: (s.lb - 1 + this.galleryData.length) % this.galleryData.length }));
+    };
+    window.addEventListener("keydown", this._key);
+  }
+  componentWillUnmount() {
+    if (this._io) this._io.disconnect();
+    if (this._spy) this._spy.disconnect();
+    clearInterval(this._t);
+    window.removeEventListener("keydown", this._key);
+  }
+  renderVals() {
+    const { team, spec, lb } = this.state;
+    const now = new Date();
+    const target = new Date(now);
+    target.setDate(now.getDate() + ((6 - now.getDay() + 7) % 7));
+    target.setHours(15, 30, 0, 0);
+    if (target <= now) target.setDate(target.getDate() + 7);
+    const ms = target - now;
+    const d = Math.floor(ms / 86400000), h = Math.floor(ms / 3600000) % 24, m = Math.floor(ms / 60000) % 60, s = Math.floor(ms / 1000) % 60;
+    const pad = n => String(n).padStart(2, "0");
+    const months = ["1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12."];
+    const selSpec = spec >= 0 ? this.specData[spec] : null;
+    const n = this.galleryData.length;
+    const nav = {};
+    this.navIds.forEach(id => {
+      const key = id.charAt(0).toUpperCase() + id.slice(1);
+      nav["nav" + key] = this.state.active === id ? "#E8E8CC" : "#9C9C74";
+      nav["ul" + key] = this.state.active === id ? "#8A5F44" : "transparent";
+    });
+    return {
+      ...nav,
+      countdown: d + "d " + pad(h) + ":" + pad(m) + ":" + pad(s),
+      nextDate: "Sobota " + target.getDate() + ". " + months[target.getMonth()] + " — 15:30",
+      teams: this.teamData.map((t, i) => ({
+        ...t,
+        toggle: () => this.setState({ team: team === i ? -1 : i }),
+        rows: team === i ? "1fr" : "0fr",
+        chevRot: team === i ? "rotate(180deg)" : "rotate(0deg)",
+        border: team === i ? "#C2C29E" : "#9C9C74"
+      })),
+      specs: this.specData.map((sd, i) => ({
+        code: sd[0], name: sd[1],
+        pick: () => this.setState({ spec: spec === i ? -1 : i }),
+        bg: spec === i ? "#9C9C74" : "#2C3522",
+        border: spec === i ? "#C2C29E" : "#4A5A38",
+        codeColor: spec === i ? "#242B1C" : "#C2C29E",
+        nameColor: spec === i ? "#35402A" : "#A8A890"
+      })),
+      specRows: spec >= 0 ? "1fr" : "0fr",
+      selSpecCode: selSpec ? selSpec[0] : "", selSpecName: selSpec ? selSpec[1] : "", selSpecDesc: selSpec ? selSpec[2] : "",
+      gallery: this.galleryData.map((g, i) => ({ ...g, open: () => this.setState({ lb: i }) })),
+      lbOpen: lb >= 0,
+      lbDisplay: lb >= 0 ? "flex" : "none",
+      lbSrc: lb >= 0 ? this.galleryData[lb].src : "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+      lbAlt: lb >= 0 ? this.galleryData[lb].alt : "",
+      lbCounter: lb >= 0 ? (lb + 1) + " / " + n : "",
+      lbClose: () => this.setState({ lb: -1 }),
+      lbPrev: (e) => { e.stopPropagation(); this.setState({ lb: (lb - 1 + n) % n }); },
+      lbNext: (e) => { e.stopPropagation(); this.setState({ lb: (lb + 1) % n }); }
+    };
+  }
+}
+</script>
 </body>
 </html>

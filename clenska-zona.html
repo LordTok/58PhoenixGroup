@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta name="description" content="58. Phoenix Group — česko-slovenská Arma 3 MILSIM komunita od roku 2020. Replikujeme slovenskú armádu, príbehové misie každú sobotu, Joint Ops s ďalšími klanmi.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Členská zóna — 58. Phoenix Group">
+<meta property="og:description" content="Česko-slovenská MILSIM komunita od roku 2020. Replikujeme slovenskú armádu — pridaj sa k nám.">
+<meta property="og:image" content="https://lordtok.github.io/58PhoenixGroup/assets/og-nahlad.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: #242B1C; color: #D8D8C0; font-family: 'Barlow', sans-serif; line-height: 1.6; text-wrap: pretty; }
+a { color: #C2C29E; }
+a:hover { color: #E8E8CC; }
+</style>
+</helmet>
+
+<nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(28,34,22,.96); backdrop-filter: blur(6px); border-bottom: 1px solid #35402A;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1120px; margin: 0 auto;">
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <img src="assets/phoenix58.png" alt="" style="width: 38px; height: 38px; display: block;">
+      <span style="font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 2px; color: #C2C29E;">58. PG · Členská zóna</span>
+    </a>
+    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <a href="index.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Domov</a>
+      <a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kronika</a>
+      <span style="display: flex; align-items: center; gap: 10px; border: 1px solid #4A5A38; border-radius: 4px; padding: 5px 12px;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #A8C29E;"></span>
+        <span style="font-size: 14px; color: #C2C29E;">des. „Straka"</span>
+        <span style="font-size: 12.5px; color: #8A5F44; font-family: 'Staatliches', sans-serif; letter-spacing: 1px;">Líška</span>
+      </span>
+    </div>
+  </div>
+</nav>
+<div style="height: 59px;"></div>
+
+<div style="border-bottom: 1px solid #35402A; background: #1C2216; position: sticky; top: 59px; z-index: 40;">
+  <div style="display: flex; gap: 4px; max-width: 1120px; margin: 0 auto; padding: 0 24px; overflow-x: auto;">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+      <button onClick="{{ t.pick }}" style="background: {{ t.bg }}; border: none; border-bottom: 3px solid {{ t.underline }}; color: {{ t.color }}; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">{{ t.label }}</button>
+    </sc-for>
+  </div>
+</div>
+
+<main style="max-width: 1120px; margin: 0 auto; padding: 40px 24px 72px;">
+
+  <div style="display: {{ showNastenka }};">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      <div style="grid-column: 1 / -1; background: linear-gradient(rgba(44,53,34,.92), rgba(44,53,34,.96)), url('assets/gal-strecha.jpg') center / cover no-repeat; border: 1px solid #9C9C74; border-radius: 6px; padding: 26px 26px 28px;">
+        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+          <span style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 4px; color: #8A5F44;">Najbližšia misia · Sobota 15:30</span>
+          <span style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; color: #E8E8CC; background: #35402A; border: 1px solid #9C9C74; border-radius: 4px; padding: 2px 12px; font-feature-settings: 'tnum' 1;">o {{ countdown }}</span>
+        </div>
+        <h1 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 2px; color: #C2C29E; font-size: clamp(28px, 4vw, 40px); margin: 6px 0 0;">Operácia Tichý hrebeň, časť III</h1>
+        <p style="max-width: 620px; margin: 12px 0 0; font-size: 15.5px;">Záverečné vyčistenie údolí Severnej provincie. Zraz na TeamSpeaku 15:00, brífing 15:15. Modpack Moderna — over si aktualizáciu vopred.</p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
+          <button style="padding: 10px 24px; font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; border-radius: 4px; color: #242B1C; background: #9C9C74; border: 2px solid #C2C29E; cursor: pointer; transition: background .2s;" style-hover="background: #C2C29E;">Prihlásiť účasť</button>
+          <button style="padding: 10px 24px; font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; border-radius: 4px; color: #C2C29E; background: transparent; border: 2px solid #9C9C74; cursor: pointer; transition: background .2s;" style-hover="background: #35402A;">Ospravedlniť sa</button>
+        </div>
+      </div>
+      <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 22px 24px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">Oznamy</div>
+        <div style="display: grid; gap: 12px;">
+          <div style="border-bottom: 1px solid #35402A; padding-bottom: 10px;">
+            <div style="font-size: 15px; color: #C2C29E; font-weight: 600;">Aktualizácia modpacku Moderna 4.2</div>
+            <div style="font-size: 13.5px; color: #A8A890;">Stiahni pred sobotou — nové vybavenie pre ženistov.</div>
+          </div>
+          <div style="border-bottom: 1px solid #35402A; padding-bottom: 10px;">
+            <div style="font-size: 15px; color: #C2C29E; font-weight: 600;">Joint Ops s 22. MEU potvrdené</div>
+            <div style="font-size: 13.5px; color: #A8A890;">5. 9. o 15:30 — prihlasovanie otvorené v kalendári.</div>
+          </div>
+          <div>
+            <div style="font-size: 15px; color: #C2C29E; font-weight: 600;">Výcvik CLS + RTO</div>
+            <div style="font-size: 13.5px; color: #A8A890;">Streda 9. 9. o 19:00 — kapacita 8 miest.</div>
+          </div>
+        </div>
+      </div>
+      <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 22px 24px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">Tvoja dochádzka</div>
+        <div style="display: flex; align-items: baseline; gap: 10px;">
+          <span style="font-family: 'Staatliches', sans-serif; font-size: 44px; color: #C2C29E; line-height: 1;">86 %</span>
+          <span style="font-size: 14px; color: #A8A890;">za posledných 12 misií</span>
+        </div>
+        <div style="display: flex; gap: 5px; margin-top: 14px;">
+          <sc-for list="{{ attend }}" as="a" hint-placeholder-count="12">
+            <span title="{{ a.label }}" style="flex: 1; height: 10px; background: {{ a.bg }}; border-radius: 2px;"></span>
+          </sc-for>
+        </div>
+        <p style="font-size: 13.5px; color: #A8A890; margin: 12px 0 0;">Účasť ✓ · Ospravedlnený — · Posledná absencia 18. 7.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: {{ showOrbat }};">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
+      <h1 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">ORBAT jednotky</h1>
+      <span style="font-size: 14px; color: #A8A890;">Ukážkové dáta — napojíme na Supabase</span>
+    </div>
+    <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">Adresár tímov a frekvencie</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 36px;">
+      <sc-for list="{{ dirTeams }}" as="d" hint-placeholder-count="6">
+        <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 14px 16px; display: grid; gap: 4px; transition: border-color .25s, transform .25s;" style-hover="border-color: #9C9C74; transform: translateY(-2px);">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="{{ d.patch }}" alt="" style="width: 34px;">
+            <div>
+              <div style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 1.5px; color: #C2C29E; line-height: 1.1;">{{ d.name }}</div>
+              <div style="font-size: 11.5px; letter-spacing: 1px; color: #8A5F44; font-family: 'Staatliches', sans-serif;">{{ d.role }}</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; margin-top: 6px; border-top: 1px solid #35402A; padding-top: 8px; font-feature-settings: 'tnum' 1;">
+            <span style="font-size: 12.5px; color: #A8A890;">LR <strong style="color: #C2C29E; font-weight: 600;">{{ d.lr }}</strong></span>
+            <span style="font-size: 12.5px; color: #A8A890;">SR <strong style="color: #C2C29E; font-weight: 600;">{{ d.sr }}</strong></span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; margin-bottom: 12px;">
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #8A5F44;">Zoznam členov</div>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="7">
+          <button onClick="{{ f.pick }}" style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1.5px; padding: 4px 12px; border-radius: 3px; cursor: pointer; background: {{ f.bg }}; border: 1px solid {{ f.border }}; color: {{ f.color }}; transition: background .2s, color .2s;">{{ f.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 90px minmax(110px, .8fr) 90px minmax(200px, 1.6fr) 100px; gap: 14px; align-items: center; padding: 10px 20px; background: #35402A; border-bottom: 1px solid #4A5A38; font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; color: #8A5F44;">
+        <span>Hodnosť</span><span>Meno</span><span>Tím</span><span>Roly s výcvikom</span><span style="justify-self: end;">Stav</span>
+      </div>
+      <sc-for list="{{ roster }}" as="m" hint-placeholder-count="12">
+        <div style="display: grid; grid-template-columns: 90px minmax(110px, .8fr) 90px minmax(200px, 1.6fr) 100px; gap: 14px; align-items: center; padding: 9px 20px; border-bottom: 1px solid #35402A; font-size: 14.5px; transition: background .2s;" style-hover="background: #313A26;">
+        <span style="font-family: 'Staatliches', sans-serif; letter-spacing: 1px; color: #9C9C74; font-size: 14px;">{{ m.rank }}</span>
+        <span style="color: #E8E8CC; font-weight: 600;">{{ m.nick }}</span>
+        <span style="font-size: 13px; color: #8A5F44; font-family: 'Staatliches', sans-serif; letter-spacing: 1px;">{{ m.team }}</span>
+        <span style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{ m.roles }}" as="r" hint-placeholder-count="3">
+            <span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border: 1px solid #4A5A38; border-radius: 3px; color: #C2C29E;">{{ r }}</span>
+          </sc-for>
+        </span>
+        <span style="justify-self: end; font-size: 12.5px; letter-spacing: 1px; padding: 2px 10px; border-radius: 3px; border: 1px solid {{ m.stBorder }}; color: {{ m.stColor }};">{{ m.status }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: {{ showKalendar }};">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 28px;">
+      <h1 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Kalendár · september 2026</h1>
+      <span style="font-size: 14px; color: #A8A890;">Klikni na misiu pre brífing a prílohy</span>
+    </div>
+    <div style="display: grid; gap: 22px;">
+      <sc-for list="{{ events }}" as="e" hint-placeholder-count="6">
+        <div>
+          <div style="display: inline-flex; align-items: center; gap: 10px; background: #35402A; border: 1px solid #4A5A38; border-bottom: none; border-radius: 6px 6px 0 0; padding: 5px 16px; margin-left: 16px; position: relative; top: 1px;">
+            <span style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; color: #C2C29E;">{{ e.day }}</span>
+            <span style="font-size: 12.5px; color: #A8A890; font-feature-settings: 'tnum' 1;">{{ e.time }}</span>
+            <span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border-radius: 3px; border: 1px solid {{ e.tagBorder }}; color: {{ e.tagColor }}; background: {{ e.tagBg }};">{{ e.type }}</span>
+          </div>
+          <div style="background: #2C3522; border: 1px solid {{ e.cardBorder }}; border-left: 4px solid {{ e.stripe }}; border-radius: 0 6px 6px 6px; overflow: hidden; transition: border-color .25s;">
+            <button onClick="{{ e.expand }}" style="display: grid; grid-template-columns: minmax(0, 1.6fr) 110px 130px 20px; gap: 16px; align-items: center; width: 100%; text-align: left; background: none; border: none; cursor: pointer; padding: 14px 20px; color: inherit; font-family: inherit;">
+              <div>
+                <div style="font-size: 16px; color: #E8E8CC; font-weight: 600;">{{ e.title }}</div>
+                <div style="font-size: 13.5px; color: #A8A890;">{{ e.note }}</div>
+              </div>
+              <span style="font-size: 13.5px; color: #A8A890;">{{ e.modpack }}</span>
+              <span onClick="{{ e.toggle }}" style="padding: 8px 14px; font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 1.5px; border-radius: 4px; cursor: pointer; text-align: center; color: {{ e.btnColor }}; background: {{ e.btnBg }}; border: 2px solid {{ e.btnBorder }}; transition: background .2s;">{{ e.btnLabel }}</span>
+              <span style="color: #9C9C74; font-size: 15px; transition: transform .3s; transform: {{ e.chevRot }};">▾</span>
+            </button>
+            <div style="display: grid; grid-template-rows: {{ e.rows }}; transition: grid-template-rows .45s ease;">
+              <div style="overflow: hidden; min-height: 0;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 4px 20px 20px; border-top: 1px solid #35402A;">
+                  <div>
+                    <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin: 14px 0 6px;">Brífing</div>
+                    <p style="font-size: 14.5px; margin: 0; line-height: 1.6;">{{ e.brief }}</p>
+                    <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin: 14px 0 6px;">Prílohy</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                      <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #9C9C74; border-radius: 3px; color: #C2C29E;">📄 {{ e.attach }}</span>
+                      <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #4A5A38; border-radius: 3px; color: #A8A890;">Zraz TS 15:00</span>
+                    </div>
+                  </div>
+                  <figure style="margin: 14px 0 0;">
+                    <img src="{{ e.img }}" alt="" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; border: 1px solid #4A5A38; display: block;">
+                    <figcaption style="font-size: 12.5px; color: #A8A890; margin-top: 6px;">{{ e.imgCap }}</figcaption>
+                  </figure>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: {{ showArchiv }};">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
+      <h1 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Archív misií · AAR</h1>
+      <span style="font-size: 14px; color: #A8A890;">After Action Reports odohraných operácií</span>
+    </div>
+    <div style="display: grid; gap: 12px;">
+      <sc-for list="{{ aars }}" as="a" hint-placeholder-count="5">
+        <div style="background: #2C3522; border: 1px solid {{ a.cardBorder }}; border-radius: 6px; overflow: hidden; transition: border-color .25s;">
+          <button onClick="{{ a.toggle }}" style="display: flex; align-items: baseline; gap: 14px; width: 100%; text-align: left; background: none; border: none; cursor: pointer; padding: 14px 20px; color: inherit; font-family: inherit; flex-wrap: wrap;">
+            <span style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 1px; color: #9C9C74; min-width: 84px;">{{ a.date }}</span>
+            <span style="font-size: 16px; color: #E8E8CC; font-weight: 600;">{{ a.name }}</span>
+            <span style="font-size: 12px; letter-spacing: 1px; padding: 2px 10px; border-radius: 3px; border: 1px solid {{ a.resBorder }}; color: {{ a.resColor }};">{{ a.result }}</span>
+            <span style="margin-left: auto; color: #9C9C74; font-size: 15px; transition: transform .3s; transform: {{ a.chevRot }};">▾</span>
+          </button>
+          <div style="display: grid; grid-template-rows: {{ a.rows }}; transition: grid-template-rows .45s ease;">
+            <div style="overflow: hidden; min-height: 0;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 0 20px 20px; border-top: 1px solid #35402A;">
+                <p style="font-size: 14.5px; margin: 14px 0 0; line-height: 1.6;">{{ a.report }}</p>
+                <figure style="margin: 14px 0 0;">
+                  <img src="{{ a.img }}" alt="" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; border: 1px solid #4A5A38; display: block;">
+                  <figcaption style="font-size: 12.5px; color: #A8A890; margin-top: 6px;">{{ a.imgCap }}</figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: {{ showVycviky }};">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
+      <h1 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Výcviky a tvoj progres</h1>
+      <span style="font-size: 14px; color: #A8A890;">des. „Straka" · Líška</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+      <sc-for list="{{ trainings }}" as="tr" hint-placeholder-count="6">
+        <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 20px 22px; transition: border-color .25s, transform .25s;" style-hover="border-color: #9C9C74; transform: translateY(-2px);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px;">
+            <div style="font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #C2C29E;">{{ tr.name }}</div>
+            <span style="font-size: 12.5px; letter-spacing: 1px; padding: 2px 10px; border-radius: 3px; border: 1px solid {{ tr.stBorder }}; color: {{ tr.stColor }}; white-space: nowrap;">{{ tr.status }}</span>
+          </div>
+          <p style="font-size: 13.5px; color: #A8A890; margin: 8px 0 0; line-height: 1.5;">{{ tr.desc }}</p>
+          <div style="margin-top: 14px;">
+            <div style="display: flex; justify-content: space-between; font-size: 12.5px; color: #A8A890; margin-bottom: 5px;">
+              <span>{{ tr.stageText }}</span><span>{{ tr.pct }} %</span>
+            </div>
+            <div style="height: 8px; background: #1C2216; border-radius: 3px; overflow: hidden;">
+              <div style="height: 100%; width: {{ tr.pct }}%; background: {{ tr.barColor }}; transition: width .6s ease;"></div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: {{ showProfil }};">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      <div style="background: #2C3522; border: 1px solid #9C9C74; border-radius: 6px; padding: 26px;">
+        <div style="display: flex; gap: 18px; align-items: center;">
+          <div style="width: 72px; height: 72px; border-radius: 50%; background: #35402A; border: 2px solid #9C9C74; display: grid; place-items: center; font-family: 'Staatliches', sans-serif; font-size: 28px; color: #C2C29E;">S</div>
+          <div>
+            <div style="font-family: 'Staatliches', sans-serif; font-size: 26px; letter-spacing: 2px; color: #C2C29E;">„Straka"</div>
+            <div style="font-size: 14px; color: #A8A890;">desiatnik · tím Líška · v jednotke od 03/2022</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 22px; border-top: 1px solid #4A5A38; padding-top: 18px;">
+          <div><div style="font-family: 'Staatliches', sans-serif; font-size: 26px; color: #C2C29E; line-height: 1;">124</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">odohraných misií</div></div>
+          <div><div style="font-family: 'Staatliches', sans-serif; font-size: 26px; color: #C2C29E; line-height: 1;">86 %</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">dochádzka</div></div>
+          <div><div style="font-family: 'Staatliches', sans-serif; font-size: 26px; color: #C2C29E; line-height: 1;">3</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">zamerania</div></div>
+        </div>
+        <div style="margin-top: 20px;">
+          <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 8px;">Zamerania</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #4A6741; border-radius: 3px; color: #A8C29E; background: rgba(74,103,65,.25);">Prieskumník</span>
+            <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #4A6741; border-radius: 3px; color: #A8C29E; background: rgba(74,103,65,.25);">RTO — spojár</span>
+            <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #9C9C74; border-radius: 3px; color: #C2C29E;">CLS — v príprave</span>
+          </div>
+        </div>
+      </div>
+      <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 14px;">Dochádzka</div>
+        <div style="display: flex; align-items: baseline; gap: 10px;">
+          <span style="font-family: 'Staatliches', sans-serif; font-size: 40px; color: #C2C29E; line-height: 1;">86 %</span>
+          <span style="font-size: 14px; color: #A8A890;">za posledných 12 misií</span>
+        </div>
+        <div style="display: flex; gap: 5px; margin-top: 14px;">
+          <sc-for list="{{ attend }}" as="a" hint-placeholder-count="12">
+            <span title="{{ a.label }}" style="flex: 1; height: 10px; background: {{ a.bg }}; border-radius: 2px;"></span>
+          </sc-for>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 18px; border-top: 1px solid #35402A; padding-top: 16px;">
+          <div><div style="font-family: 'Staatliches', sans-serif; font-size: 22px; color: #C2C29E; line-height: 1;">10</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">účastí</div></div>
+          <div><div style="font-family: 'Staatliches', sans-serif; font-size: 22px; color: #C2C29E; line-height: 1;">1</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">ospravedlnenie</div></div>
+          <div><div style="font-family: 'Staatliches', sans-serif; font-size: 22px; color: #C2C29E; line-height: 1;">1</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">absencia</div></div>
+        </div>
+      </div>
+      <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 14px;">Vyznamenania</div>
+        <div style="display: grid; gap: 14px;">
+          <div style="display: flex; gap: 14px; align-items: center;">
+            <span style="width: 44px; height: 14px; border-radius: 2px; background: linear-gradient(90deg, #8A5F44 33%, #C2C29E 33% 66%, #8A5F44 66%); border: 1px solid #4A5A38; flex-shrink: 0;"></span>
+            <div><div style="font-size: 14.5px; color: #E8E8CC; font-weight: 600;">Pochvala velenia</div><div style="font-size: 12.5px; color: #A8A890;">Op. Fénix vstáva · 11/2025</div></div>
+          </div>
+          <div style="display: flex; gap: 14px; align-items: center;">
+            <span style="width: 44px; height: 14px; border-radius: 2px; background: linear-gradient(90deg, #4A6741 25%, #A8C29E 25% 50%, #4A6741 50% 75%, #A8C29E 75%); border: 1px solid #4A5A38; flex-shrink: 0;"></span>
+            <div><div style="font-size: 14.5px; color: #E8E8CC; font-weight: 600;">Stuha Joint Ops</div><div style="font-size: 12.5px; color: #A8A890;">5+ spoločných operácií · 2024</div></div>
+          </div>
+          <div style="display: flex; gap: 14px; align-items: center;">
+            <span style="width: 44px; height: 14px; border-radius: 2px; background: linear-gradient(90deg, #9C9C74 20%, #35402A 20% 40%, #9C9C74 40% 60%, #35402A 60% 80%, #9C9C74 80%); border: 1px solid #4A5A38; flex-shrink: 0;"></span>
+            <div><div style="font-size: 14.5px; color: #E8E8CC; font-weight: 600;">Medaila kampane Vardak</div><div style="font-size: 12.5px; color: #A8A890;">100+ misií kampane · 2026</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">Kvalifikačné odznaky</div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+          <sc-for list="{{ badges }}" as="b" hint-placeholder-count="5">
+            <div style="display: grid; justify-items: center; gap: 8px; width: 88px;">
+              <div style="width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: {{ b.bg }}; border: 2px solid {{ b.border }}; box-shadow: inset 0 0 0 4px #2C3522, inset 0 0 0 5px {{ b.border }}; opacity: {{ b.opacity }};">
+                <span style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 1px; color: {{ b.codeColor }};">{{ b.code }}</span>
+              </div>
+              <div style="font-size: 12px; color: {{ b.labelColor }}; text-align: center; line-height: 1.3;">{{ b.name }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <p style="font-size: 12.5px; color: #A8A890; margin: 16px 0 0;">Plné odznaky = dokončený výcvik · obrys = prebieha</p>
+      </div>
+      <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">História povýšení</div>
+        <div style="position: relative;">
+          <div style="position: absolute; left: 7px; top: 10px; bottom: 10px; width: 2px; background: linear-gradient(to bottom, #4A5A38, #9C9C74);"></div>
+          <div style="display: grid; gap: 18px;">
+            <sc-for list="{{ ranks }}" as="rk" hint-placeholder-count="4">
+              <div style="display: grid; grid-template-columns: 16px 84px minmax(0, 1fr); gap: 14px; align-items: center;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: {{ rk.dotBg }}; border: 2px solid {{ rk.dotBorder }}; position: relative; z-index: 1; box-sizing: border-box;"></span>
+                <span style="font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: {{ rk.color }};">{{ rk.rank }}</span>
+                <span style="font-size: 13.5px; color: #A8A890;">{{ rk.note }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 14px;">Moje prihlásenia</div>
+        <div style="display: {{ signupsEmpty }}; font-size: 14.5px; color: #A8A890;">Zatiaľ nie si prihlásený na žiadnu akciu. <button onClick="{{ goKalendar }}" style="background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; font-size: 14.5px; color: #C2C29E; text-decoration: underline;">Otvoriť kalendár ▸</button></div>
+        <div style="display: grid; gap: 10px;">
+          <sc-for list="{{ mySignups }}" as="s" hint-placeholder-count="0">
+            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; background: #35402A; border: 1px solid #4A5A38; border-left: 3px solid #4A6741; border-radius: 4px; padding: 10px 14px;">
+              <span style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 1px; color: #9C9C74; white-space: nowrap;">{{ s.day }} · {{ s.time }}</span>
+              <span style="font-size: 14.5px; color: #E8E8CC; font-weight: 600; flex: 1; min-width: 160px;">{{ s.title }}</span>
+              <button onClick="{{ s.unsign }}" style="padding: 5px 12px; font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1.5px; border-radius: 3px; cursor: pointer; color: #C29E8A; background: transparent; border: 1px solid #8A5F44; transition: background .2s;" style-hover="background: rgba(138,95,68,.2);">Odhlásiť</button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">Služobný záznam</div>
+        <div style="display: grid; gap: 0;">
+          <div style="display: grid; grid-template-columns: 92px minmax(0,1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid #35402A; font-size: 14.5px;"><span style="color: #9C9C74; font-family: 'Staatliches', sans-serif; letter-spacing: 1px;">08/2026</span><span>Účasť — Op. Tichý hrebeň II</span></div>
+          <div style="display: grid; grid-template-columns: 92px minmax(0,1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid #35402A; font-size: 14.5px;"><span style="color: #9C9C74; font-family: 'Staatliches', sans-serif; letter-spacing: 1px;">06/2026</span><span>Povýšenie na desiatnika</span></div>
+          <div style="display: grid; grid-template-columns: 92px minmax(0,1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid #35402A; font-size: 14.5px;"><span style="color: #9C9C74; font-family: 'Staatliches', sans-serif; letter-spacing: 1px;">04/2026</span><span>Dokončený výcvik RTO</span></div>
+          <div style="display: grid; grid-template-columns: 92px minmax(0,1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid #35402A; font-size: 14.5px;"><span style="color: #9C9C74; font-family: 'Staatliches', sans-serif; letter-spacing: 1px;">11/2025</span><span>Pochvala velenia — Op. Fénix vstáva</span></div>
+          <div style="display: grid; grid-template-columns: 92px minmax(0,1fr); gap: 12px; padding: 10px 0; font-size: 14.5px;"><span style="color: #9C9C74; font-family: 'Staatliches', sans-serif; letter-spacing: 1px;">03/2022</span><span>Nástup do jednotky — základný výcvik</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer style="background: #1C2216; border-top: 1px solid #35402A; padding: 28px 24px;">
+  <p style="margin: 0; text-align: center; font-size: 13px; letter-spacing: 1px; color: #A8A890;">© 2020–2026 · 58. Phoenix Group · Interná členská zóna — ukážkové dáta</p>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 0, signed: {}, openEv: -1, openAar: -1, now: Date.now(), filter: "Všetci" };
+  tabHashes = ["", "orbat", "kalendar", "archiv", "vycviky", "profil"];
+  tabDefs = ["Nástenka", "ORBAT", "Kalendár", "Archív", "Výcviky", "Môj profil"];
+  teamDir = [
+    { name: "Alžbeta", role: "Veliteľstvo", patch: "assets/patch-alzbeta.png", lr: "30.0", sr: "151.0" },
+    { name: "Líška", role: "Prieskum", patch: "assets/team-fox.png", lr: "31.0", sr: "152.0" },
+    { name: "Vlk", role: "Ťažké zbrane", patch: "assets/team-wolf.png", lr: "32.0", sr: "153.0" },
+    { name: "Grizzly", role: "Mechanizovaný", patch: "assets/team-grizzly.png", lr: "33.0", sr: "154.0" },
+    { name: "Duch", role: "Hĺbkový prieskum", patch: "assets/team-duch.png", lr: "34.0", sr: "155.0" },
+    { name: "Hotel", role: "Vrtuľníky", patch: "assets/team-hotel.png", lr: "35.0", sr: "156.0" }
+  ];
+  rosterData = [
+    { rank: "npor.", nick: "Havran", team: "Alžbeta", roles: ["PL", "RTO", "JTAC"], status: "Aktívny" },
+    { rank: "rtm.", nick: "Sova", team: "Alžbeta", roles: ["SL", "RTO", "MED"], status: "Aktívny" },
+    { rank: "čat.", nick: "Ďateľ", team: "Alžbeta", roles: ["RTO"], status: "Záloha" },
+    { rank: "čat.", nick: "Rys", team: "Líška", roles: ["TL", "R", "SS"], status: "Aktívny" },
+    { rank: "des.", nick: "Straka", team: "Líška", roles: ["R", "RTO"], status: "Aktívny" },
+    { rank: "slob.", nick: "Kuna", team: "Líška", roles: ["R", "UAV"], status: "Aktívny" },
+    { rank: "voj.", nick: "Jazvec", team: "Líška", roles: ["R"], status: "Nováčik" },
+    { rank: "čat.", nick: "Medveď", team: "Vlk", roles: ["TL", "HW", "MG"], status: "Aktívny" },
+    { rank: "des.", nick: "Bizón", team: "Vlk", roles: ["HW", "AB"], status: "Aktívny" },
+    { rank: "slob.", nick: "Diviak", team: "Vlk", roles: ["MG", "AB"], status: "Aktívny" },
+    { rank: "rtm.", nick: "Baran", team: "Grizzly", roles: ["SL", "IFV-O"], status: "Aktívny" },
+    { rank: "des.", nick: "Tur", team: "Grizzly", roles: ["IFV-O", "GL"], status: "Aktívny" },
+    { rank: "slob.", nick: "Los", team: "Grizzly", roles: ["IFV-O", "R", "CLS"], status: "Aktívny" },
+    { rank: "voj.", nick: "Srnec", team: "Grizzly", roles: ["R"], status: "Nováčik" },
+    { rank: "čat.", nick: "Tieň", team: "Duch", roles: ["TL", "SN"], status: "Aktívny" },
+    { rank: "des.", nick: "Hmla", team: "Duch", roles: ["SS", "RTO", "UAV"], status: "Aktívny" },
+    { rank: "slob.", nick: "Šero", team: "Duch", roles: ["UAV", "EOD"], status: "Záloha" },
+    { rank: "rtm.", nick: "Sokol", team: "Hotel", roles: ["Pilot", "TL"], status: "Aktívny" },
+    { rank: "des.", nick: "Orol", team: "Hotel", roles: ["Pilot", "MED"], status: "Aktívny" },
+    { rank: "slob.", nick: "Jastrab", team: "Hotel", roles: ["MG", "CLS"], status: "Aktívny" }
+  ];
+  eventDefs = [
+    { day: "So 29. 8.", time: "15:30", title: "Operácia Tichý hrebeň, časť III", note: "Zraz na TS 15:00 · brífing 15:15", type: "Interná", modpack: "Moderna", kind: "misia",
+      brief: "Záverečné vyčistenie údolí Severnej provincie. Líška a Duch zaisťujú prieskum kót, Grizzly vedie hlavný postup údolím, Hotel drží MEDEVAC pohotovosť. Očakávaný odpor: pechota s ATGM.", attach: "OPORD-2026-31.pdf", img: "assets/gal-prieskum.jpg", imgCap: "AO — hrebeň nad údolím, foto z prieskumu" },
+    { day: "So 5. 9.", time: "15:30", title: "Joint Ops s 22. MEU", note: "Spoločná operácia · 30+ hráčov", type: "Joint Ops", modpack: "Moderna", kind: "joint",
+      brief: "Spoločný obojživelný výsadok s 22. MEU. My staviame prieskum a vrtuľníkové krídlo, partneri mechanizovanú pechotu. Jednotný ACRE plán — frekvencie v prílohe.", attach: "COMMS-PLAN-JO22.pdf", img: "assets/gal-clny.jpg", imgCap: "Nočný presun na člnoch — nácvik výsadku" },
+    { day: "St 9. 9.", time: "19:00", title: "Výcvik CLS + RTO", note: "Kapacita 8 miest · inštruktor Sova", type: "Výcvik", modpack: "Engine", kind: "vycvik",
+      brief: "Kombinovaný večerný výcvik: prvá pomoc pod paľbou (CLS etapa 3) a rádiová prevádzka pre nováčikov. Prines si vlastné poznámky z minulej etapy.", attach: "sylabus-CLS-3.pdf", img: "assets/gal-schody.jpg", imgCap: "Výcvikový priestor — CQB dom" },
+    { day: "So 12. 9.", time: "15:30", title: "Operácia Tichý hrebeň, časť IV", note: "Pokračovanie kampane", type: "Interná", modpack: "Moderna", kind: "misia",
+      brief: "Nadväzuje na výsledok časti III — presný zámer sa dozvieš na brífingu podľa toho, ako dopadne sobota. Veliteľstvo pripravuje dve vetvy scenára.", attach: "WARNORD-2026-32.pdf", img: "assets/gal-pandur.jpg", imgCap: "Mechanizovaná zostava Grizzly" },
+    { day: "St 16. 9.", time: "19:00", title: "Pilotný výcvik — Hotel", note: "Len pre vrtuľníkové krídlo", type: "Výcvik", modpack: "Engine", kind: "vycvik",
+      brief: "Nočné lietanie s NVG: okruhy, pristátia v neoznačenej LZ, núdzové postupy pri výpadku motora. Povinné pre nových kopilotov.", attach: "sylabus-NVG.pdf", img: "assets/gal-noc.jpg", imgCap: "Nočné podmienky — NVG" },
+    { day: "So 19. 9.", time: "15:30", title: "Odľahčená akcia — Zeus", note: "Otvorené aj pre nováčikov", type: "Voľná", modpack: "Moderna", kind: "volna",
+      brief: "Oddychová sobota mimo kampane — Zeus scenár na želanie. Ideálna príležitosť vyskúšať si novú rolu bez tlaku na výsledok.", attach: "bez príloh", img: "assets/gal-cqb.jpg", imgCap: "CQB nácvik z minulej voľnej akcie" }
+  ];
+  aarDefs = [
+    { date: "22. 8.", name: "Op. Tichý hrebeň II", result: "Úspech", img: "assets/gal-sniper.jpg", imgCap: "Prekrytie postupu — DMR pozícia",
+      report: "Obsadené obe kóty nad údolím. Duch odhalil mínometnú pozíciu skôr, než stihla zasiahnuť hlavný postup — umlčaná Vlkom na druhú salvu. Jedna evakuácia, žiadne straty. Pripomienka z debrífu: hlásiť prechody medzi SR sieťami skôr." },
+    { date: "15. 8.", name: "Op. Tichý hrebeň I", result: "Čiastočný", img: "assets/gal-uav.jpg", imgCap: "ISR obraz pred postupom",
+      report: "Vstup do údolia zabezpečený, ale severný priesmyk ostal v rukách milícií po strate IFV na míne. EOD odviedol dobrú prácu na sekundárnom vstupe. Pokračujeme časťou II s upraveným plánom." },
+    { date: "8. 8.", name: "Joint Ops — Redwood", result: "Úspech", img: "assets/gal-clny.jpg", imgCap: "Spoločný nočný výsadok",
+      report: "Spoločná operácia s Redwood PMC — nočný výsadok na pobrežie a raid na sklad zbraní. Naša úloha (prieskum + door gunneri) splnená bez strát. Partneri ocenili disciplínu v éteri." },
+    { date: "1. 8.", name: "Op. Posledný konvoj", result: "Úspech", img: "assets/gal-pandur.jpg", imgCap: "Konvoj pred výjazdom",
+      report: "Eskorta humanitárneho konvoja cez sporné územie. Dve léčky — obe odrazené, konvoj bez strát. Grizzly si sadol ako predné aj zadné krytie, výborná komunikácia s Alžbetou." },
+    { date: "25. 7.", name: "Op. Studňa", result: "Neúspech", img: "assets/gal-cqb.jpg", imgCap: "Vstup do komplexu",
+      report: "Raid na veliteľské stanovište milícií zlyhal na strate momentu prekvapenia — hliadka nás odhalila pri infiltrácii. Organizovaný ústup bez strát. Poučenie: viac času na pozorovanie pred vstupom, menej rádiovej prevádzky pri infiltrácii." }
+  ];
+  trainingDefs = [
+    { name: "Základný výcvik", desc: "Šesť etáp — pohyb, komunikácia, zdravoveda, streľba, taktika tímu, záverečné cvičenie.", stage: 6, total: 6, status: "Dokončený" },
+    { name: "Prieskumník", desc: "Práca v prieskumnej hliadke, pozorovanie, hlásenia SALUTE, skryté presuny.", stage: 4, total: 4, status: "Dokončený" },
+    { name: "RTO — spojár", desc: "Rádiová prevádzka, ACRE siete, žiadosti o podporu, MEDEVAC 9-liner.", stage: 3, total: 3, status: "Dokončený" },
+    { name: "CLS — zdravotník", desc: "Rozšírená zdravoveda ACE — triáž, stabilizácia, evakuácia ranených.", stage: 2, total: 4, status: "Prebieha" },
+    { name: "Sniper / spotter", desc: "Presná streľba na veľké vzdialenosti, balistika, práca v dvojici.", stage: 0, total: 5, status: "Dostupný" },
+    { name: "Operátor UAV", desc: "Prieskumné drony — ovládanie, ISR obraz pre veliteľstvo, koordinácia s JTAC.", stage: 0, total: 3, status: "Dostupný" }
+  ];
+  attendData = [1,1,1,0,1,1,1,1,2,1,1,1];
+  badgeData = [
+    { code: "ZV", name: "Základný výcvik", done: true },
+    { code: "PRI", name: "Prieskumník", done: true },
+    { code: "RTO", name: "Spojár", done: true },
+    { code: "CLS", name: "Zdravotník", done: false },
+    { code: "JO", name: "Joint Ops veterán", done: true }
+  ];
+  rankData = [
+    { rank: "voj.", note: "Nástup do jednotky · 03/2022", state: "past" },
+    { rank: "slob.", note: "Po základnom výcviku · 11/2022", state: "past" },
+    { rank: "des.", note: "Aktuálna hodnosť · od 06/2026", state: "now" },
+    { rank: "čat.", note: "Ďalšia hodnosť — vyžaduje výcvik TL", state: "next" }
+  ];
+  componentDidMount() {
+    const map = { orbat: 1, kalendar: 2, archiv: 3, vycviky: 4, profil: 5 };
+    const h = (location.hash || "").replace("#", "").toLowerCase();
+    if (map[h] != null) this.setState({ tab: map[h] });
+    this._t = setInterval(() => this.setState({ now: Date.now() }), 1000);
+  }
+  componentWillUnmount() { clearInterval(this._t); }
+  renderVals() {
+    const { tab, signed, openEv, openAar } = this.state;
+    const now = new Date();
+    const target = new Date(now);
+    target.setDate(now.getDate() + ((6 - now.getDay() + 7) % 7));
+    target.setHours(15, 30, 0, 0);
+    if (target <= now) target.setDate(target.getDate() + 7);
+    const ms = target - now;
+    const pad = n => String(n).padStart(2, "0");
+    const countdown = Math.floor(ms / 86400000) + "d " + pad(Math.floor(ms / 3600000) % 24) + ":" + pad(Math.floor(ms / 60000) % 60) + ":" + pad(Math.floor(ms / 1000) % 60);
+    const stMap = { "Aktívny": ["#4A6741", "#A8C29E"], "Nováčik": ["#9C9C74", "#C2C29E"], "Záloha": ["#5A4A3A", "#A8A890"] };
+    const tagMap = { "Interná": ["#4A6741", "#A8C29E", "rgba(74,103,65,.25)"], "Joint Ops": ["#9C9C74", "#C2C29E", "transparent"], "Výcvik": ["#8A5F44", "#C29E8A", "rgba(138,95,68,.2)"], "Voľná": ["#5A6B45", "#A8A890", "transparent"] };
+    const resMap = { "Úspech": ["#4A6741", "#A8C29E"], "Čiastočný": ["#9C9C74", "#C2C29E"], "Neúspech": ["#8A5F44", "#C29E8A"] };
+    const attLabels = ["Účasť", "Absencia", "Ospravedlnený"];
+    return {
+      countdown,
+      tabs: this.tabDefs.map((label, i) => ({
+        label,
+        pick: () => { this.setState({ tab: i }); history.replaceState(null, "", i === 0 ? location.pathname + location.search : "#" + this.tabHashes[i]); },
+        bg: i === tab ? "#242B1C" : "transparent",
+        underline: i === tab ? "#9C9C74" : "transparent",
+        color: i === tab ? "#C2C29E" : "#7A7A5C"
+      })),
+      showNastenka: tab === 0 ? "block" : "none",
+      showOrbat: tab === 1 ? "block" : "none",
+      showKalendar: tab === 2 ? "block" : "none",
+      showArchiv: tab === 3 ? "block" : "none",
+      showVycviky: tab === 4 ? "block" : "none",
+      showProfil: tab === 5 ? "block" : "none",
+      dirTeams: this.teamDir.map(d => ({ ...d })),
+      filters: ["Všetci", "Záloha"].map(label => ({
+        label,
+        pick: () => this.setState({ filter: label }),
+        bg: this.state.filter === label ? "#9C9C74" : "transparent",
+        border: this.state.filter === label ? "#C2C29E" : "#4A5A38",
+        color: this.state.filter === label ? "#242B1C" : "#9C9C74"
+      })),
+      roster: this.rosterData.filter(m => this.state.filter === "Záloha" ? m.status === "Záloha" : true).map(m => ({ ...m, stBorder: stMap[m.status][0], stColor: stMap[m.status][1] })),
+      attend: this.attendData.map((v, i) => ({ bg: v === 1 ? "#A8C29E" : v === 2 ? "#9C9C74" : "#5A4A3A", label: attLabels[v === 1 ? 0 : v === 0 ? 1 : 2] })),
+      events: this.eventDefs.map((e, i) => {
+        const s = !!signed[i], tg = tagMap[e.type], open = openEv === i;
+        return { ...e, tagBorder: tg[0], tagColor: tg[1], tagBg: tg[2],
+          stripe: e.kind === "vycvik" ? "#8A5F44" : e.kind === "joint" ? "#9C9C74" : "#4A6741",
+          cardBorder: open ? "#9C9C74" : "#4A5A38",
+          expand: () => this.setState({ openEv: open ? -1 : i }),
+          rows: open ? "1fr" : "0fr",
+          chevRot: open ? "rotate(180deg)" : "rotate(0deg)",
+          toggle: (ev) => { ev.stopPropagation(); this.setState(st => ({ signed: { ...st.signed, [i]: !st.signed[i] } })); },
+          btnLabel: s ? "Prihlásený ✓" : "Prihlásiť",
+          btnColor: s ? "#242B1C" : "#C2C29E", btnBg: s ? "#9C9C74" : "transparent", btnBorder: s ? "#C2C29E" : "#9C9C74" };
+      }),
+      aars: this.aarDefs.map((a, i) => {
+        const open = openAar === i, r = resMap[a.result];
+        return { ...a, resBorder: r[0], resColor: r[1],
+          cardBorder: open ? "#9C9C74" : "#4A5A38",
+          toggle: () => this.setState({ openAar: open ? -1 : i }),
+          rows: open ? "1fr" : "0fr",
+          chevRot: open ? "rotate(180deg)" : "rotate(0deg)" };
+      }),
+      badges: this.badgeData.map(b => ({
+        ...b,
+        bg: b.done ? "#35402A" : "transparent",
+        border: b.done ? "#9C9C74" : "#4A5A38",
+        codeColor: b.done ? "#C2C29E" : "#7A7A5C",
+        labelColor: b.done ? "#D8D8C0" : "#7A7A5C",
+        opacity: b.done ? 1 : 0.85
+      })),
+      ranks: this.rankData.map(r => ({
+        ...r,
+        dotBg: r.state === "now" ? "#C2C29E" : r.state === "past" ? "#9C9C74" : "#2C3522",
+        dotBorder: r.state === "next" ? "#4A5A38" : "#9C9C74",
+        color: r.state === "now" ? "#E8E8CC" : r.state === "past" ? "#C2C29E" : "#7A7A5C"
+      })),
+      mySignups: this.eventDefs.map((e, i) => ({ ...e, idx: i })).filter(e => !!signed[e.idx]).map(e => ({
+        ...e,
+        unsign: () => this.setState(st => ({ signed: { ...st.signed, [e.idx]: false } }))
+      })),
+      signupsEmpty: Object.keys(signed).some(k => signed[k]) ? "none" : "block",
+      goKalendar: () => { this.setState({ tab: 2 }); history.replaceState(null, "", "#kalendar"); },
+      trainings: this.trainingDefs.map(tr => {
+        const pct = Math.round(tr.stage / tr.total * 100);
+        const stC = tr.status === "Dokončený" ? ["#4A6741", "#A8C29E"] : tr.status === "Prebieha" ? ["#9C9C74", "#C2C29E"] : ["#5A6B45", "#A8A890"];
+        return { ...tr, pct, stageText: "Etapa " + tr.stage + " z " + tr.total, stBorder: stC[0], stColor: stC[1],
+          barColor: tr.status === "Dokončený" ? "#A8C29E" : "#9C9C74" };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
