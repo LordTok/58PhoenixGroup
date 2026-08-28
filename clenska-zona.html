@@ -840,7 +840,15 @@ class Component extends DCLogic {
 (function(){
   var SUPA_URL = "https://hrfvenycjsenjlbpztsd.supabase.co";
   var SUPA_ANON = "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq";
-  var klient = window.supabase.createClient(SUPA_URL, SUPA_ANON);
+  window.pgSupaKlient = window.pgSupaKlient || function () {
+    if (!window.__pgSupa && window.supabase) {
+      window.__pgSupa = window.supabase.createClient(SUPA_URL, SUPA_ANON, {
+        auth: { storageKey: "pg58_auth", persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      });
+    }
+    return window.__pgSupa || null;
+  };
+  var klient = window.pgSupaKlient();
   var ov = document.getElementById("pg-auth-overlay");
   function ukaz(stav, text) {
     ["login","denied","chyba"].forEach(function(k){
@@ -850,6 +858,7 @@ class Component extends DCLogic {
     ov.style.display = "flex";
   }
   async function over() {
+    if (!klient) { ukaz("chyba", ""); return; }
     var s = await klient.auth.getSession();
     var sess = s.data ? s.data.session : null;
     if (!sess) { ukaz("login", ""); return; }
@@ -885,20 +894,30 @@ class Component extends DCLogic {
     ov.style.display = "none";
   }
   window.pgLogin = function () {
+    if (!klient) return;
     klient.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: location.origin + location.pathname } });
   };
   window.pgLogout = async function () {
-    try { await klient.auth.signOut(); } catch (e) {}
+    try { if (klient) await klient.auth.signOut(); } catch (e) {}
     try { localStorage.removeItem("pg_ucet"); localStorage.setItem("pg_rola", "member"); } catch (e) {}
     location.reload();
   };
   over();
 })();
 </script>
+
 <script>
 (function(){
   var SUPA_URL = "https://hrfvenycjsenjlbpztsd.supabase.co";
   var SUPA_ANON = "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq";
+  window.pgSupaKlient = window.pgSupaKlient || function () {
+    if (!window.__pgSupa && window.supabase) {
+      window.__pgSupa = window.supabase.createClient(SUPA_URL, SUPA_ANON, {
+        auth: { storageKey: "pg58_auth", persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      });
+    }
+    return window.__pgSupa || null;
+  };
   function najdiOdkaz() {
     var vsetky = document.querySelectorAll('a[href="clenska-zona.html"]');
     for (var i = 0; i < vsetky.length; i++) {
@@ -913,6 +932,9 @@ class Component extends DCLogic {
     var odkaz = najdiOdkaz();
     if (!odkaz || !kes) return;
     odkaz.textContent = "Členská zóna";
+    var nav = odkaz.closest ? odkaz.closest("nav") : null;
+    var vzor = nav ? nav.querySelector('a[href="index.html"]') : null;
+    if (vzor) { odkaz.style.cssText = vzor.style.cssText; }
     if (document.getElementById("pg-nav-chip")) return;
     var chip = document.createElement("button");
     chip.id = "pg-nav-chip";
@@ -929,27 +951,32 @@ class Component extends DCLogic {
         try { localStorage.removeItem("pg_ucet"); localStorage.setItem("pg_rola", "member"); } catch (e) {}
         location.reload();
       };
-      try {
-        if (window.supabase) {
-          window.supabase.createClient(SUPA_URL, SUPA_ANON).auth.signOut().then(hotovo, hotovo);
-          return;
-        }
-      } catch (e) {}
-      hotovo();
+      var k = window.pgSupaKlient();
+      if (k) { k.auth.signOut().then(hotovo, hotovo); } else { hotovo(); }
     };
     odkaz.parentNode.insertBefore(chip, odkaz.nextSibling);
   };
+  function strazca() {
+    var nav = document.querySelector("nav");
+    if (!nav || nav.__pgStraz) return;
+    nav.__pgStraz = true;
+    new MutationObserver(function () {
+      if (!document.getElementById("pg-nav-chip")) window.pgNavChip();
+    }).observe(nav, { childList: true, subtree: true });
+  }
   function over() {
-    if (!window.supabase) { window.pgNavChip(); return; }
-    var k = window.supabase.createClient(SUPA_URL, SUPA_ANON);
+    var k = window.pgSupaKlient();
+    strazca();
+    if (!k) { window.pgNavChip(); return; }
     k.auth.getSession().then(function (r) {
       var s = r && r.data ? r.data.session : null;
       if (s) { window.pgNavChip(); }
       else { try { localStorage.removeItem("pg_ucet"); } catch (e) {} }
     }, function () { window.pgNavChip(); });
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", over);
-  else over();
+  function start() { over(); [400, 1200, 3000].forEach(function (t) { setTimeout(function(){ strazca(); if (document.getElementById("pg-nav-chip")) return; over(); }, t); }); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
 })();
 </script>
 </body>
