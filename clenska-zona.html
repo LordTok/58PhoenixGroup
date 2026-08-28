@@ -519,12 +519,7 @@ a:hover { color: #E8E8CC; }
   <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva sledovacie cookies ani analytické nástroje tretích strán. Nastavenia sa ukladajú iba lokálne vo vašom prehliadači a neopúšťajú vaše zariadenie. Členská zóna bude po spustení používať prihlásenie cez Discord — spracúvané budú len údaje nevyhnutné na správu členstva (meno, ID a role na serveri).</p>
 </div>
 </footer>
-<div id="pg-ucet" style="position: fixed; right: 16px; bottom: 16px; z-index: 60; display: none; align-items: center; gap: 10px; background: #2C3522; border: 1px solid #4A5A38; border-radius: 999px; padding: 6px 14px 6px 6px; box-shadow: 0 4px 16px rgba(0,0,0,.4);">
-  <img id="pg-ucet-avatar" src="" alt="" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: #242B1C;">
-  <span id="pg-ucet-nick" style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 1px; color: #E8E8CC;"></span>
-  <span id="pg-ucet-rola" style="font-size: 11px; letter-spacing: 1px; padding: 2px 10px; border-radius: 999px; background: rgba(156,156,116,.2); border: 1px solid #9C9C74; color: #C2C29E;"></span>
-  <button onclick="pgLogout()" style="border: none; cursor: pointer; background: transparent; color: #A8A890; font-size: 12px; letter-spacing: 1px; font-family: 'Staatliches', sans-serif;">Odhlásiť</button>
-</div>
+
 <div style="display: {{ toastShow }}; position: fixed; left: 50%; bottom: 78px; transform: translateX(-50%); z-index: 70; background: #35402A; border: 1px solid #9C9C74; border-radius: 6px; padding: 12px 22px; color: #D8D8C0; font-size: 14px; box-shadow: 0 4px 16px rgba(0,0,0,.4);">
   <span style="color:#C2C29E;">✎</span> Toto je náhľad — zmeny sa zatiaľ neukladajú.
 </div>
@@ -854,14 +849,6 @@ class Component extends DCLogic {
     document.getElementById("pg-auth-stav").textContent = text || "";
     ov.style.display = "flex";
   }
-  function ucet(v, rola) {
-    var el = document.getElementById("pg-ucet");
-    document.getElementById("pg-ucet-nick").textContent = v.nick || "";
-    document.getElementById("pg-ucet-rola").textContent = rola === "velitel" ? "Veliteľ" : "Člen";
-    var av = document.getElementById("pg-ucet-avatar");
-    if (v.avatar_url) { av.src = v.avatar_url; av.style.display = "block"; } else { av.style.display = "none"; }
-    el.style.display = "flex";
-  }
   async function over() {
     var s = await klient.auth.getSession();
     var sess = s.data ? s.data.session : null;
@@ -893,7 +880,8 @@ class Component extends DCLogic {
       return;
     }
     try { sessionStorage.removeItem("pg_auth_reload"); } catch (e) {}
-    ucet(v, rola);
+    try { localStorage.setItem("pg_ucet", JSON.stringify({ nick: v.nick || "", rola: rola, avatar: v.avatar_url || "" })); } catch (e) {}
+    if (window.pgNavChip) window.pgNavChip();
     ov.style.display = "none";
   }
   window.pgLogin = function () {
@@ -901,10 +889,67 @@ class Component extends DCLogic {
   };
   window.pgLogout = async function () {
     try { await klient.auth.signOut(); } catch (e) {}
-    try { localStorage.setItem("pg_rola", "member"); } catch (e) {}
+    try { localStorage.removeItem("pg_ucet"); localStorage.setItem("pg_rola", "member"); } catch (e) {}
     location.reload();
   };
   over();
+})();
+</script>
+<script>
+(function(){
+  var SUPA_URL = "https://hrfvenycjsenjlbpztsd.supabase.co";
+  var SUPA_ANON = "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq";
+  function najdiOdkaz() {
+    var vsetky = document.querySelectorAll('a[href="clenska-zona.html"]');
+    for (var i = 0; i < vsetky.length; i++) {
+      var t = (vsetky[i].textContent || "").trim();
+      if (t === "Prihlásiť" || t === "Členská zóna") return vsetky[i];
+    }
+    return null;
+  }
+  window.pgNavChip = function () {
+    var kes = null;
+    try { kes = JSON.parse(localStorage.getItem("pg_ucet") || "null"); } catch (e) {}
+    var odkaz = najdiOdkaz();
+    if (!odkaz || !kes) return;
+    odkaz.textContent = "Členská zóna";
+    if (document.getElementById("pg-nav-chip")) return;
+    var chip = document.createElement("button");
+    chip.id = "pg-nav-chip";
+    chip.title = "Odhlásiť sa";
+    chip.style.cssText = "display:flex;align-items:center;gap:8px;cursor:pointer;border:1px solid #4A5A38;background:#2C3522;border-radius:999px;padding:4px 12px 4px 4px;";
+    var html = "";
+    if (kes.avatar) html += '<img src="' + kes.avatar + '" alt="" style="width:26px;height:26px;border-radius:50%;object-fit:cover;background:#242B1C;">';
+    html += '<span style="font-family:\'Staatliches\',sans-serif;font-size:13px;letter-spacing:1px;color:#E8E8CC;">' + (kes.nick || "") + '</span>';
+    html += '<span style="font-size:10px;letter-spacing:1px;padding:1px 8px;border-radius:999px;background:rgba(156,156,116,.2);border:1px solid #9C9C74;color:#C2C29E;">' + (kes.rola === "velitel" ? "Veliteľ" : "Člen") + '</span>';
+    chip.innerHTML = html;
+    chip.onclick = function () {
+      if (!confirm("Odhlásiť sa?")) return;
+      var hotovo = function () {
+        try { localStorage.removeItem("pg_ucet"); localStorage.setItem("pg_rola", "member"); } catch (e) {}
+        location.reload();
+      };
+      try {
+        if (window.supabase) {
+          window.supabase.createClient(SUPA_URL, SUPA_ANON).auth.signOut().then(hotovo, hotovo);
+          return;
+        }
+      } catch (e) {}
+      hotovo();
+    };
+    odkaz.parentNode.insertBefore(chip, odkaz.nextSibling);
+  };
+  function over() {
+    if (!window.supabase) { window.pgNavChip(); return; }
+    var k = window.supabase.createClient(SUPA_URL, SUPA_ANON);
+    k.auth.getSession().then(function (r) {
+      var s = r && r.data ? r.data.session : null;
+      if (s) { window.pgNavChip(); }
+      else { try { localStorage.removeItem("pg_ucet"); } catch (e) {} }
+    }, function () { window.pgNavChip(); });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", over);
+  else over();
 })();
 </script>
 </body>

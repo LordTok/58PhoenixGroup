@@ -521,5 +521,63 @@ class Component extends DCLogic {
   setInterval(obnov, 30000);
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var SUPA_URL = "https://hrfvenycjsenjlbpztsd.supabase.co";
+  var SUPA_ANON = "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq";
+  function najdiOdkaz() {
+    var vsetky = document.querySelectorAll('a[href="clenska-zona.html"]');
+    for (var i = 0; i < vsetky.length; i++) {
+      var t = (vsetky[i].textContent || "").trim();
+      if (t === "Prihlásiť" || t === "Členská zóna") return vsetky[i];
+    }
+    return null;
+  }
+  window.pgNavChip = function () {
+    var kes = null;
+    try { kes = JSON.parse(localStorage.getItem("pg_ucet") || "null"); } catch (e) {}
+    var odkaz = najdiOdkaz();
+    if (!odkaz || !kes) return;
+    odkaz.textContent = "Členská zóna";
+    if (document.getElementById("pg-nav-chip")) return;
+    var chip = document.createElement("button");
+    chip.id = "pg-nav-chip";
+    chip.title = "Odhlásiť sa";
+    chip.style.cssText = "display:flex;align-items:center;gap:8px;cursor:pointer;border:1px solid #4A5A38;background:#2C3522;border-radius:999px;padding:4px 12px 4px 4px;";
+    var html = "";
+    if (kes.avatar) html += '<img src="' + kes.avatar + '" alt="" style="width:26px;height:26px;border-radius:50%;object-fit:cover;background:#242B1C;">';
+    html += '<span style="font-family:\'Staatliches\',sans-serif;font-size:13px;letter-spacing:1px;color:#E8E8CC;">' + (kes.nick || "") + '</span>';
+    html += '<span style="font-size:10px;letter-spacing:1px;padding:1px 8px;border-radius:999px;background:rgba(156,156,116,.2);border:1px solid #9C9C74;color:#C2C29E;">' + (kes.rola === "velitel" ? "Veliteľ" : "Člen") + '</span>';
+    chip.innerHTML = html;
+    chip.onclick = function () {
+      if (!confirm("Odhlásiť sa?")) return;
+      var hotovo = function () {
+        try { localStorage.removeItem("pg_ucet"); localStorage.setItem("pg_rola", "member"); } catch (e) {}
+        location.reload();
+      };
+      try {
+        if (window.supabase) {
+          window.supabase.createClient(SUPA_URL, SUPA_ANON).auth.signOut().then(hotovo, hotovo);
+          return;
+        }
+      } catch (e) {}
+      hotovo();
+    };
+    odkaz.parentNode.insertBefore(chip, odkaz.nextSibling);
+  };
+  function over() {
+    if (!window.supabase) { window.pgNavChip(); return; }
+    var k = window.supabase.createClient(SUPA_URL, SUPA_ANON);
+    k.auth.getSession().then(function (r) {
+      var s = r && r.data ? r.data.session : null;
+      if (s) { window.pgNavChip(); }
+      else { try { localStorage.removeItem("pg_ucet"); } catch (e) {} }
+    }, function () { window.pgNavChip(); });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", over);
+  else over();
+})();
+</script>
 </body>
 </html>
