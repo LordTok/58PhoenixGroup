@@ -8,6 +8,11 @@
 <body>
 <x-dc>
 <helmet>
+<style>@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .18s; }</style>
+<link rel="prefetch" href="clenska-zona.html">
+<link rel="prefetch" href="kronika.html">
+<link rel="prefetch" href="podpora.html">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <meta name="description" content="58. Phoenix Group — česko-slovenská Arma 3 MILSIM komunita od roku 2020. Replikujeme slovenskú armádu, príbehové misie každú sobotu, Joint Ops s ďalšími klanmi.">
 <meta property="og:type" content="website">
@@ -28,24 +33,31 @@ img { max-width: 100%; }
 </helmet>
 
 <nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(36,43,28,.94); backdrop-filter: blur(6px); border-bottom: 1px solid #35402A;">
-  <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1120px; margin: 0 auto;">
-    <a href="#" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+  <div style="box-sizing: content-box; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1120px; margin: 0 auto;">
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
       <img src="assets/phoenix58.png" alt="" style="width: 38px; height: 38px; display: block;">
       <span style="font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 2px; color: #C2C29E;">58. Phoenix Group</span>
     </a>
     <div style="display: flex; align-items: center; gap: 22px; flex-wrap: wrap;">
-      <a href="#onas" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulOnas }}; color: {{ navOnas }}; transition: color .2s;" style-hover="color: #C2C29E;">O nás</a>
-      <a href="#timy" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulTimy }}; color: {{ navTimy }}; transition: color .2s;" style-hover="color: #C2C29E;">Tímy</a>
-      <a href="#zamerania" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulZamerania }}; color: {{ navZamerania }}; transition: color .2s;" style-hover="color: #C2C29E;">Zamerania</a>
-        <a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kampaň</a>
-      <a href="#galeria" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulGaleria }}; color: {{ navGaleria }}; transition: color .2s;" style-hover="color: #C2C29E;">Galéria</a>
-      <a href="#nabor" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid {{ ulNabor }}; color: {{ navNabor }}; transition: color .2s;" style-hover="color: #C2C29E;">Nábor</a>
+      <a href="index.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #C2C29E;" style-hover="color: #C2C29E;">Domov</a>
+      <a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kampaň</a>
       <a href="podpora.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Podpora</a>
-<a href="clenska-zona.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #C2C29E; border: 1px solid #9C9C74; padding: 7px 14px; border-radius: 4px;" style-hover="background: #35402A; border-color: #C2C29E;">Členská zóna</a>
+      <a href="clenska-zona.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #C2C29E; border: 1px solid #9C9C74; padding: 7px 14px; border-radius: 4px;" style-hover="background: #35402A; border-color: #C2C29E;">Prihlásiť</a>
+      <a href="admin.html" style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; text-decoration: none; color: #8A5F44; border: 1px solid #6E4C36; padding: 6px 12px; border-radius: 4px;" title="Veliteľské rozhranie">⚙ Admin</a>
     </div>
   </div>
 </nav>
 <div style="height: 59px;"></div>
+<div style="border-bottom: 1px solid #35402A; background: #1C2216; position: fixed; top: 59px; left: 0; right: 0; z-index: 40;">
+  <div style="box-sizing: content-box; display: flex; gap: 4px; max-width: 1120px; margin: 0 auto; padding: 0 24px; overflow-x: auto;">
+    <a href="#onas" style="border-bottom: 3px solid {{ ulOnas }}; color: {{ navOnas }}; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; text-decoration: none; white-space: nowrap; transition: color .2s, border-color .2s;" style-hover="color: #C2C29E;">O nás</a>
+    <a href="#timy" style="border-bottom: 3px solid {{ ulTimy }}; color: {{ navTimy }}; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; text-decoration: none; white-space: nowrap; transition: color .2s, border-color .2s;" style-hover="color: #C2C29E;">Tímy</a>
+    <a href="#zamerania" style="border-bottom: 3px solid {{ ulZamerania }}; color: {{ navZamerania }}; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; text-decoration: none; white-space: nowrap; transition: color .2s, border-color .2s;" style-hover="color: #C2C29E;">Zamerania</a>
+    <a href="#galeria" style="border-bottom: 3px solid {{ ulGaleria }}; color: {{ navGaleria }}; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; text-decoration: none; white-space: nowrap; transition: color .2s, border-color .2s;" style-hover="color: #C2C29E;">Galéria</a>
+    <a href="#nabor" style="border-bottom: 3px solid {{ ulNabor }}; color: {{ navNabor }}; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; text-decoration: none; white-space: nowrap; transition: color .2s, border-color .2s;" style-hover="color: #C2C29E;">Nábor</a>
+  </div>
+</div>
+<div style="height: 49px;"></div>
 
 <header style="background: linear-gradient(rgba(36,43,28,.72), rgba(36,43,28,.95)), url('assets/gal-prieskum.jpg') center 35% / cover no-repeat; border-bottom: 1px solid #35402A;">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 48px; align-items: center; max-width: 1120px; margin: 0 auto; padding: 80px 24px 88px;">
@@ -73,11 +85,11 @@ img { max-width: 100%; }
     <span style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: #C2C29E;">{{ nextDate }}</span>
     <span style="font-size: 15px; color: #D8D8C0;">Operácia Tichý hrebeň, časť III</span>
     <span style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: #E8E8CC; background: #35402A; border: 1px solid #9C9C74; border-radius: 4px; padding: 3px 14px; font-feature-settings: 'tnum' 1;">o {{ countdown }}</span>
-    <a href="clenska-zona.html#kalendar" style="margin-left: auto; font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Celý kalendár ▸</a>
+    
   </div>
 </div>
 
-<section id="onas" data-reveal="" style="padding: 72px 0; scroll-margin-top: 80px;">
+<section id="onas" data-reveal="" style="padding: 72px 0; scroll-margin-top: 118px;">
   <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
     <div style="margin-bottom: 40px;">
       <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Kto sme</div>
@@ -111,7 +123,7 @@ img { max-width: 100%; }
   </div>
 </section>
 
-<section id="timy" data-reveal="" style="padding: 72px 0; background: #2C3522; scroll-margin-top: 80px;">
+<section id="timy" data-reveal="" style="padding: 72px 0; background: #2C3522; scroll-margin-top: 118px;">
   <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
     <div style="margin-bottom: 36px;">
       <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Štruktúra</div>
@@ -154,7 +166,7 @@ img { max-width: 100%; }
   </div>
 </section>
 
-<section id="zamerania" data-reveal="" style="padding: 72px 0; scroll-margin-top: 80px;">
+<section id="zamerania" data-reveal="" style="padding: 72px 0; scroll-margin-top: 118px;">
   <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
     <div style="margin-bottom: 32px;">
       <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Špecializácie</div>
@@ -183,7 +195,7 @@ img { max-width: 100%; }
   </div>
 </section>
 
-<section id="kampan" data-reveal="" style="padding: 0; background: linear-gradient(rgba(28,34,22,.88), rgba(28,34,22,.94)), url('assets/gal-noc.jpg') center / cover no-repeat; border-top: 1px solid #35402A; border-bottom: 1px solid #35402A; scroll-margin-top: 80px;">
+<section id="kampan" data-reveal="" style="padding: 0; background: linear-gradient(rgba(28,34,22,.88), rgba(28,34,22,.94)), url('assets/gal-noc.jpg') center / cover no-repeat; border-top: 1px solid #35402A; border-bottom: 1px solid #35402A; scroll-margin-top: 118px;">
   <div style="max-width: 1120px; margin: 0 auto; padding: 80px 24px;">
     <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Príbehová kampaň</div>
     <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: clamp(30px, 5vw, 42px); margin: 4px 0 0;">Šesť rokov, jedna vojna</h2>
@@ -199,7 +211,7 @@ img { max-width: 100%; }
   </div>
 </section>
 
-<section id="galeria" data-reveal="" style="padding: 72px 0; scroll-margin-top: 80px;">
+<section id="galeria" data-reveal="" style="padding: 72px 0; scroll-margin-top: 118px;">
   <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
     <div style="margin-bottom: 36px;">
       <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Z našich misií</div>
@@ -223,7 +235,7 @@ img { max-width: 100%; }
   <button onClick="{{ lbClose }}" style="position: absolute; top: 18px; right: 18px; background: rgba(53,64,42,.8); border: 1px solid #9C9C74; border-radius: 4px; color: #C2C29E; font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; padding: 8px 14px; cursor: pointer; z-index: 2;">Zavrieť ✕</button>
 </div>
 
-<section id="modpacky" data-reveal="" style="padding: 72px 0; background: #2C3522; scroll-margin-top: 80px;">
+<section id="modpacky" data-reveal="" style="padding: 72px 0; background: #2C3522; scroll-margin-top: 118px;">
   <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
     <div style="margin-bottom: 36px;">
       <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Výbava</div>
@@ -274,7 +286,7 @@ img { max-width: 100%; }
   </div>
 </section>
 
-<section id="nabor" data-reveal="" style="padding: 72px 0; scroll-margin-top: 80px;">
+<section id="nabor" data-reveal="" style="padding: 72px 0; scroll-margin-top: 118px;">
   <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
     <div style="margin-bottom: 36px;">
       <div style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: #8A5F44;">Nábor</div>
@@ -327,6 +339,11 @@ img { max-width: 100%; }
     </div>
   </div>
   <p style="margin: 36px 0 0; text-align: center; font-size: 13px; letter-spacing: 1px; color: #A8A890;">© 2020–2026 · 58. Phoenix Group · Česko-slovenská Arma 3 MILSIM komunita</p>
+
+<div style="max-width: 880px; margin: 26px auto 0; padding: 18px 24px 0; border-top: 1px solid rgba(74,90,56,.45); text-align: center;">
+  <p style="margin: 0 0 8px; font-size: 12px; line-height: 1.65; color: #8F8F7A;">58. Phoenix Group je fanúšikovská herná komunita (MILSIM) pre hru <strong style="color:#A8A890; font-weight:600;">Arma 3</strong>. Všetok obsah webu — jednotky, hodnosti, výcviky, operácie aj vyznamenania — je čisto herný a fiktívny. Nie sme skutočná vojenská ani polovojenská organizácia a nemáme žiadne prepojenie s ozbrojenými silami, štátnymi inštitúciami ani reálnymi konfliktami. Arma 3 je produkt spoločnosti Bohemia Interactive a.s.; tento fanúšikovský web s ňou nie je oficiálne spojený.</p>
+  <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva sledovacie cookies ani analytické nástroje tretích strán. Nastavenia sa ukladajú iba lokálne vo vašom prehliadači a neopúšťajú vaše zariadenie. Členská zóna bude po spustení používať prihlásenie cez Discord — spracúvané budú len údaje nevyhnutné na správu členstva (meno, ID a role na serveri).</p>
+</div>
 </footer>
 </x-dc>
 <script type="text/x-dc" data-dc-script>

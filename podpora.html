@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Podpora a prvé kroky — 58. Phoenix Group</title>
+<style>@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .18s; }</style>
+<link rel="prefetch" href="clenska-zona.html">
+<link rel="prefetch" href="index.html">
+<link rel="prefetch" href="kronika.html">
+
 <meta name="description" content="Od Discordu po prvý výcvik — návod na pripojenie, modpacky, TeamSpeak, riešenie problémov a pravidlá 58. Phoenix Group.">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <meta property="og:type" content="website">
@@ -24,7 +30,7 @@
   body { background: var(--oliva); color: var(--text); font-family: 'Barlow', sans-serif; line-height: 1.6; }
   h1, h2, h3 { font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: var(--khaki-svetla); font-weight: 400; }
   a { color: var(--khaki-svetla); }
-  .sirka { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  .sirka { box-sizing: content-box; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
   nav {
     position: sticky; top: 0; z-index: 50;
@@ -50,7 +56,7 @@
   .podpora-hero p { max-width: 620px; margin: 18px auto 0; font-size: 17px; }
 
   section { padding: 68px 0; }
-  section[id] { scroll-margin-top: 64px; }
+  section[id] { scroll-margin-top: 118px; }
   .sekcia-hlava { margin-bottom: 34px; }
   .sekcia-hlava .eyebrow { font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: var(--hneda); }
   .sekcia-hlava h2 { font-size: clamp(28px, 4.5vw, 40px); margin-top: 4px; }
@@ -125,22 +131,30 @@
 </head>
 <body>
 
-<nav>
-  <div class="nav-vnutro">
-    <a class="nav-logo" href="index.html">
-      <img src="assets/phoenix58.png" alt="">
-      <span>58. Phoenix Group</span>
+<nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(36,43,28,.94); backdrop-filter: blur(6px); border-bottom: 1px solid #35402A;">
+  <div style="box-sizing: content-box; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1120px; margin: 0 auto;">
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <img src="assets/phoenix58.png" alt="" style="width: 38px; height: 38px; display: block;">
+      <span style="font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 2px; color: #C2C29E;">58. Phoenix Group</span>
     </a>
-    <div class="nav-linky">
-      <a href="index.html">Domov</a>
-      <a href="#prve-kroky" class="tu">Prvé kroky</a>
-      <a href="#problemy">Riešenie problémov</a>
-      <a href="#pravidla">Pravidlá</a>
-      <a href="kronika.html">Kronika</a>
+    <div style="display: flex; align-items: center; gap: 22px; flex-wrap: wrap;">
+      <a href="index.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Domov</a>
+      <a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kampaň</a>
+      <a href="podpora.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #C2C29E;" style-hover="color: #C2C29E;">Podpora</a>
+      <a href="clenska-zona.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #C2C29E; border: 1px solid #9C9C74; padding: 7px 14px; border-radius: 4px;" style-hover="background: #35402A; border-color: #C2C29E;">Prihlásiť</a>
+      <a href="admin.html" style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; text-decoration: none; color: #8A5F44; border: 1px solid #6E4C36; padding: 6px 12px; border-radius: 4px;" title="Veliteľské rozhranie">⚙ Admin</a>
     </div>
   </div>
 </nav>
-
+<div style="height: 59px;"></div>
+<div style="border-bottom: 1px solid #35402A; background: #1C2216; position: fixed; top: 59px; left: 0; right: 0; z-index: 40;">
+  <div style="box-sizing: content-box; display: flex; gap: 4px; max-width: 1120px; margin: 0 auto; padding: 0 24px; overflow-x: auto;">
+    <a href="#prve-kroky" style="border-bottom: 3px solid transparent; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; text-decoration: none; white-space: nowrap; transition: color .2s, border-color .2s;" style-hover="color: #C2C29E;">Prvé kroky</a>
+    <a href="#problemy" style="border-bottom: 3px solid transparent; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; text-decoration: none; white-space: nowrap; transition: color .2s, border-color .2s;" style-hover="color: #C2C29E;">Riešenie problémov</a>
+    <a href="#pravidla" style="border-bottom: 3px solid transparent; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; text-decoration: none; white-space: nowrap; transition: color .2s, border-color .2s;" style-hover="color: #C2C29E;">Pravidlá</a>
+  </div>
+</div>
+<div style="height: 49px;"></div>
 <header class="podpora-hero">
   <div class="eyebrow">Podpora</div>
   <h1>Od Discordu po prvý výcvik</h1>
@@ -242,6 +256,11 @@
     <a href="https://www.instagram.com/58_phoenix_group/">Instagram</a>
   </div>
   <p class="paticka-copy">© 2020–2026 · 58. Phoenix Group · Podpora a prvé kroky</p>
+
+<div style="max-width: 880px; margin: 26px auto 0; padding: 18px 24px 0; border-top: 1px solid rgba(74,90,56,.45); text-align: center;">
+  <p style="margin: 0 0 8px; font-size: 12px; line-height: 1.65; color: #8F8F7A;">58. Phoenix Group je fanúšikovská herná komunita (MILSIM) pre hru <strong style="color:#A8A890; font-weight:600;">Arma 3</strong>. Všetok obsah webu — jednotky, hodnosti, výcviky, operácie aj vyznamenania — je čisto herný a fiktívny. Nie sme skutočná vojenská ani polovojenská organizácia a nemáme žiadne prepojenie s ozbrojenými silami, štátnymi inštitúciami ani reálnymi konfliktami. Arma 3 je produkt spoločnosti Bohemia Interactive a.s.; tento fanúšikovský web s ňou nie je oficiálne spojený.</p>
+  <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva sledovacie cookies ani analytické nástroje tretích strán. Nastavenia sa ukladajú iba lokálne vo vašom prehliadači a neopúšťajú vaše zariadenie. Členská zóna bude po spustení používať prihlásenie cez Discord — spracúvané budú len údaje nevyhnutné na správu členstva (meno, ID a role na serveri).</p>
+</div>
 </footer>
 
 </body>

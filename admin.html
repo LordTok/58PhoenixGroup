@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veliteľské rozhranie — 58. Phoenix Group</title>
+<meta name="description" content="Veliteľské a administrátorské rozhranie 58. Phoenix Group — správa členov, výcvikov a záznam aktivity.">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Veliteľské rozhranie — 58. Phoenix Group">
+<meta property="og:image" content="https://lordtok.github.io/58PhoenixGroup/assets/og-nahlad.jpg">
+<style>@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .18s; }</style>
+<link rel="prefetch" href="index.html">
+<link rel="prefetch" href="kronika.html">
+<link rel="prefetch" href="clenska-zona.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --oliva: #242B1C; --oliva-svetla: #35402A; --oliva-panel: #2C3522;
+    --khaki: #9C9C74; --khaki-svetla: #C2C29E; --hneda: #8A5F44; --tan: #C2A57B;
+    --text: #D8D8C0; --text-tlm: #A8A890; --linka: #4A5A38;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--oliva); color: var(--text); font-family: 'Barlow', sans-serif; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: var(--khaki-svetla); font-weight: 400; }
+  a { color: var(--khaki-svetla); }
+  .sirka { box-sizing: content-box; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  nav { position: sticky; top: 0; z-index: 50; background: rgba(36,43,28,.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--oliva-svetla); }
+  .nav-vnutro { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1160px; margin: 0 auto; }
+  .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .nav-logo img { width: 38px; height: 38px; }
+  .nav-logo span { font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--khaki-svetla); }
+  .nav-logo .odznak { font-size: 11px; letter-spacing: 2px; color: var(--hneda); border: 1px solid var(--hneda); border-radius: 3px; padding: 1px 7px; margin-left: 4px; }
+  .nav-linky { display: flex; gap: 22px; flex-wrap: wrap; align-items: center; }
+  .nav-linky a { font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: var(--khaki); }
+  .nav-linky a:hover { color: var(--khaki-svetla); }
+
+  .druhy-rad { border-bottom: 1px solid var(--oliva-svetla); background: #1C2216; position: sticky; top: 59px; z-index: 40; }
+  .druhy-vnutro { display: flex; gap: 4px; max-width: 1160px; margin: 0 auto; padding: 0 24px; overflow-x: auto; }
+  .druhy-rad button { background: none; border: none; border-bottom: 3px solid transparent; color: var(--khaki); font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s; }
+  .druhy-rad button.tu { color: var(--khaki-svetla); border-bottom-color: var(--khaki); }
+  .druhy-rad button:hover { color: var(--khaki-svetla); }
+
+  header.admin-hero { padding: 30px 0 22px; border-bottom: 1px solid var(--oliva-svetla); }
+  .admin-hero .eyebrow { font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 5px; color: var(--hneda); }
+  .admin-hero h1 { font-size: clamp(28px, 5vw, 40px); margin-top: 2px; }
+  .admin-hero .stitok { display: inline-block; margin-left: 12px; font-family: 'Staatliches', sans-serif; font-size: 12px; letter-spacing: 2px; color: var(--hneda); border: 1px dashed var(--hneda); border-radius: 3px; padding: 2px 10px; vertical-align: middle; }
+  .admin-hero p { color: var(--text-tlm); font-size: 14.5px; margin-top: 8px; max-width: 680px; }
+
+  section { padding: 32px 0; }
+  .panel { display: none; }
+  .panel.aktivny { display: block; }
+
+  .mriezka { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: start; }
+  @media (max-width: 860px) { .mriezka { grid-template-columns: 1fr; } }
+
+  .zoznam-clenov { background: var(--oliva-panel); border: 1px solid var(--linka); border-radius: 8px; overflow: hidden; }
+  .zoznam-clenov .hlava { padding: 14px 18px; border-bottom: 1px solid var(--linka); font-family: 'Staatliches', sans-serif; letter-spacing: 2px; color: var(--hneda); font-size: 13px; }
+  .zoznam-clenov .hladaj { padding: 12px 14px; border-bottom: 1px solid var(--linka); }
+  .zoznam-clenov .hladaj input { width: 100%; background: var(--oliva); border: 1px solid var(--linka); border-radius: 5px; color: var(--text); padding: 8px 12px; font-family: inherit; font-size: 14px; }
+  .clen-polozka { display: flex; align-items: center; gap: 12px; padding: 11px 16px; cursor: pointer; border-bottom: 1px solid rgba(74,90,56,.5); transition: background .15s; }
+  .clen-polozka:hover { background: #313A26; }
+  .clen-polozka.vybrany { background: #35402A; box-shadow: inset 3px 0 0 var(--khaki); }
+  .clen-polozka img { width: 30px; height: 30px; object-fit: contain; }
+  .clen-polozka .meno { font-family: 'Staatliches', sans-serif; letter-spacing: 1px; color: var(--khaki-svetla); font-size: 16px; }
+  .clen-polozka .pod { font-size: 12px; color: var(--text-tlm); }
+
+  .karta-hlava { background: linear-gradient(rgba(44,53,34,.94), rgba(36,43,28,.97)), url('assets/gal-prieskum.jpg') center 30% / cover no-repeat; border: 1px solid var(--khaki); border-radius: 8px; padding: 24px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .karta-hlava .avatar { width: 84px; height: 84px; border-radius: 50%; background: var(--oliva-svetla); border: 2px solid var(--khaki); display: grid; place-items: center; font-family: 'Staatliches', sans-serif; font-size: 32px; color: var(--khaki-svetla); flex-shrink: 0; }
+  .karta-hlava .meno { font-family: 'Staatliches', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--khaki-svetla); }
+  .karta-hlava .riadok { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px; font-size: 14px; color: var(--text); }
+  .karta-hlava .riadok img { width: 30px; height: 30px; object-fit: contain; }
+
+  .sekcia-editor { background: var(--oliva-panel); border: 1px solid var(--linka); border-radius: 8px; padding: 22px; margin-top: 18px; }
+  .sekcia-editor > .nadpis { font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: var(--hneda); margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+  label.pole { display: block; margin-bottom: 14px; }
+  label.pole span { display: block; font-size: 12.5px; color: var(--text-tlm); margin-bottom: 5px; }
+  .vstup { width: 100%; box-sizing: border-box; background: var(--oliva); border: 1px solid var(--linka); border-radius: 5px; color: var(--text); padding: 9px 12px; font-family: inherit; font-size: 14px; }
+  .btn { background: var(--hneda); color: #F0E6D8; border: none; border-radius: 5px; padding: 9px 18px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 14px; cursor: pointer; }
+  .btn:hover { background: #9a6a4c; }
+  .btn2 { background: transparent; color: var(--khaki-svetla); border: 1px solid var(--khaki); border-radius: 5px; padding: 9px 16px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 13px; cursor: pointer; }
+  .btn-rad { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .odznaky-mriezka { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .odznak-bunka { position: relative; display: grid; justify-items: center; gap: 6px; padding: 12px 8px 10px; text-align: center; border: 1px solid var(--linka); border-radius: 8px; background: var(--oliva); cursor: pointer; transition: border-color .15s, background .15s; }
+  .odznak-bunka:hover { border-color: var(--khaki); background: #2A331F; }
+  .odznak-bunka img { width: 62px; height: 62px; object-fit: contain; transition: filter .2s, opacity .2s; }
+  .odznak-bunka .u { font-size: 11.5px; color: var(--text-tlm); }
+  .odznak-bunka.nema img { filter: grayscale(1) brightness(.55); opacity: .4; }
+  .odznak-bunka.nema { border-style: dashed; }
+  .odznak-bunka .znacka { position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+  .odznak-bunka.ma .znacka { background: var(--khaki); color: var(--oliva); }
+  .odznak-bunka.nema .znacka { background: transparent; color: var(--linka); border: 1px solid var(--linka); }
+  .urovne { display: flex; gap: 3px; margin-top: 2px; flex-wrap: wrap; justify-content: center; }
+  .urovne button { border: 1px solid var(--linka); background: var(--oliva-svetla); color: var(--text-tlm); border-radius: 3px; font-family: 'Staatliches', sans-serif; font-size: 10px; letter-spacing: .5px; padding: 2px 5px; cursor: pointer; }
+  .urovne button.akt { background: var(--hneda); color: #F0E6D8; border-color: var(--hneda); }
+  .stuzka-riadok { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--linka); border-radius: 6px; margin-bottom: 8px; background: var(--oliva); }
+  .stuzka-riadok .pruh { width: 74px; height: 20px; border: 1px solid #1C2216; border-radius: 2px; flex-shrink: 0; }
+  .stuzka-riadok .medaila { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #1C2216; flex-shrink: 0; display: grid; place-items: center; font-size: 13px; }
+  .stuzka-riadok .nazov { flex: 1; font-size: 14px; }
+  .stuzka-riadok .prep { border: 1px solid var(--khaki); background: transparent; color: var(--khaki-svetla); border-radius: 4px; font-family: 'Staatliches', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 5px 12px; cursor: pointer; }
+  .stuzka-riadok.ma .prep { background: var(--hneda); color: #F0E6D8; border-color: var(--hneda); }
+  .stuzka-riadok.nema { opacity: .6; }
+  .xp-riadok { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .xp-riadok input[type=number] { width: 120px; }
+  .ulozene-info { font-size: 12.5px; color: var(--text-tlm); margin-top: 10px; }
+  .xp-edit-riadok { display: grid; grid-template-columns: minmax(0, 1fr) 92px 32px; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .xp-edit-riadok .kos { width: 30px; height: 30px; background: var(--oliva-svetla); border: 1px solid #7A3B2E; border-radius: 4px; color: #C98B7A; cursor: pointer; font-size: 13px; }
+  .xp-pridaj { background: transparent; color: var(--khaki-svetla); border: 1px dashed var(--khaki); border-radius: 5px; padding: 8px 14px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 12.5px; cursor: pointer; width: 100%; }
+  .xp-toggle { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--linka); border-radius: 6px; margin-bottom: 8px; background: var(--oliva); }
+  .xp-toggle .nazov { flex: 1; font-size: 14px; }
+  .xp-toggle .prep { border: 1px solid var(--khaki); background: transparent; color: var(--khaki-svetla); border-radius: 4px; font-family: 'Staatliches', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 5px 14px; cursor: pointer; min-width: 64px; }
+  .xp-toggle.zap .prep { background: var(--khaki); color: var(--oliva); border-color: var(--khaki); }
+  .rebricek { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; }
+  .rebricek .stupienok { background: var(--oliva); border: 1px solid var(--linka); border-radius: 999px; padding: 4px 12px; font-size: 12.5px; color: var(--text); white-space: nowrap; }
+  .rebricek .stupienok strong { color: var(--khaki-svetla); font-weight: 600; }
+  .rebricek .sipka { color: var(--hneda); font-size: 13px; }
+  .ud-chip { border: 1px solid var(--linka); background: var(--oliva); color: var(--text); border-radius: 999px; padding: 6px 14px; font-size: 13px; cursor: pointer; }
+  .ud-chip.akt { background: var(--oliva-svetla); border-color: var(--khaki); color: var(--khaki-svetla); }
+  .ud-chip .typ { font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 11px; color: var(--hneda); margin-right: 6px; }
+  .doch-riadok { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--linka); border-radius: 6px; margin-bottom: 8px; background: var(--oliva); flex-wrap: wrap; }
+  .doch-riadok .meno { flex: 1; min-width: 140px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; color: var(--khaki-svetla); font-size: 15px; }
+  .doch-stavy { display: flex; gap: 6px; }
+  .doch-stavy button { border: 1px solid var(--linka); background: transparent; color: var(--text-tlm); border-radius: 4px; font-family: 'Staatliches', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 5px 12px; cursor: pointer; }
+  .doch-stavy button.dorazil-akt { background: #4A6741; border-color: #7FB069; color: #E8F0DC; }
+  .doch-stavy button.osprav-akt { background: #6E4C36; border-color: #C2A57B; color: #F0E6D8; }
+  .doch-stavy button.nedorazil-akt { background: #7A3B2E; border-color: #C98B7A; color: #F5E0DA; }
+  .vyc-riadok { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--linka); border-radius: 6px; margin-bottom: 8px; background: var(--oliva); flex-wrap: wrap; }
+  .vyc-riadok .kodv { font-family: 'Staatliches', sans-serif; letter-spacing: 1px; color: var(--tan); font-size: 14px; min-width: 70px; }
+  .vyc-riadok .info { flex: 1; min-width: 160px; font-size: 14px; }
+  .vyc-riadok .info .kto { font-family: 'Staatliches', sans-serif; letter-spacing: 1px; color: var(--khaki-svetla); }
+  .vyc-riadok.hotovy { opacity: .65; }
+  .urovne-vyber { display: flex; gap: 6px; }
+  .urovne-vyber button { border: 1px solid var(--hneda); background: var(--oliva-svetla); color: var(--tan); border-radius: 4px; font-family: 'Staatliches', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 5px 11px; cursor: pointer; }
+
+  .log { background: var(--oliva-panel); border: 1px solid var(--linka); border-radius: 8px; overflow: hidden; }
+  .log .riadok { display: grid; grid-template-columns: 150px 130px minmax(0, 1fr); gap: 14px; padding: 12px 18px; border-bottom: 1px solid rgba(74,90,56,.5); font-size: 14px; align-items: center; }
+  .log .riadok:hover { background: #313A26; }
+  .log .cas { font-size: 12.5px; color: var(--text-tlm); font-feature-settings: 'tnum' 1; }
+  .log .kto { font-family: 'Staatliches', sans-serif; letter-spacing: 1px; color: var(--khaki-svetla); }
+  .log .akcia strong { color: var(--tan); font-weight: 500; }
+  .log .hlava { display: grid; grid-template-columns: 150px 130px minmax(0, 1fr); gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--linka); font-family: 'Staatliches', sans-serif; letter-spacing: 2px; color: var(--hneda); font-size: 12px; }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(calc(100% + 40px)); z-index: 80; background: var(--oliva-svetla); border: 1px solid var(--khaki); border-radius: 6px; padding: 12px 22px; color: var(--text); font-size: 14px; box-shadow: 0 4px 16px rgba(0,0,0,.4); transition: transform .3s; }
+  .toast.zobraz { transform: translateX(-50%) translateY(0); }
+
+  footer { background: #1C2216; border-top: 1px solid var(--oliva-svetla); padding: 30px 0; text-align: center; margin-top: 20px; }
+  .paticka-copy { font-size: 13px; letter-spacing: 1px; color: var(--text-tlm); }
+</style>
+</head>
+<body>
+
+<nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(36,43,28,.94); backdrop-filter: blur(6px); border-bottom: 1px solid #35402A;">
+  <div style="box-sizing: content-box; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1120px; margin: 0 auto;">
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <img src="assets/phoenix58.png" alt="" style="width: 38px; height: 38px; display: block;">
+      <span style="font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 2px; color: #C2C29E;">58. Phoenix Group</span>
+    </a>
+    <div style="display: flex; align-items: center; gap: 22px; flex-wrap: wrap;">
+      <a href="index.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Domov</a>
+      <a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kampaň</a>
+      <a href="podpora.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Podpora</a>
+      <a href="clenska-zona.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #C2C29E; border: 1px solid #9C9C74; padding: 7px 14px; border-radius: 4px;" style-hover="background: #35402A; border-color: #C2C29E;">Prihlásiť</a>
+      <a href="admin.html" style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; text-decoration: none; color: #8A5F44; border: 1px solid #6E4C36; padding: 6px 12px; border-radius: 4px;" title="Veliteľské rozhranie">⚙ Admin</a>
+    </div>
+  </div>
+</nav>
+<div style="height: 59px;"></div>
+<div style="border-bottom: 1px solid #35402A; background: #1C2216; position: fixed; top: 59px; left: 0; right: 0; z-index: 40;">
+  <div style="box-sizing: content-box; display: flex; gap: 4px; max-width: 1120px; margin: 0 auto; padding: 0 24px; overflow-x: auto;">
+    <button id="tab-clenovia" onclick="prepni('clenovia', this)" style="border: none; border-bottom: 3px solid #9C9C74; background: none; color: #C2C29E; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Karty členov</button>
+    <button id="tab-doch" onclick="prepni('doch', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Dochádzky</button>
+    <button id="tab-vyc" onclick="prepni('vyc', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Výcviky</button>
+    <button id="tab-log" onclick="prepni('log', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Záznam aktivity</button>
+    <button id="tab-xp" onclick="prepni('xp', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">XP systém</button>
+  </div>
+</div>
+<div style="height: 49px;"></div>
+<header class="admin-hero">
+  <div class="sirka">
+    <div class="eyebrow">Veliteľské rozhranie</div>
+    <h1>Správa jednotky <span class="stitok">NÁHĽAD — ukladá sa len v prehliadači</span></h1>
+    <p>Vyber člena a uprav presne to, čo vidí vo svojom profile — hodnosť, tím, status, odznaky, stužky aj XP. Každá zmena sa v ostrej verzii zapíše do záznamu aktivity nižšie.</p>
+  </div>
+</header>
+
+<section>
+  <div class="sirka">
+
+    <div id="panel-clenovia" class="panel aktivny">
+      <div class="mriezka">
+        <aside class="zoznam-clenov">
+          <div class="hlava">Členovia jednotky</div>
+          <div class="hladaj"><input class="vstup" id="hladaj-vstup" placeholder="Hľadať člena…" oninput="filtrujClenov(this.value)"></div>
+          <div id="zoznam"></div>
+        </aside>
+
+        <div>
+          <div class="karta-hlava">
+            <div class="avatar" id="k-avatar">S</div>
+            <div>
+              <div class="meno" id="k-meno">des. „Straka"</div>
+              <div class="riadok">
+                <img id="k-insignia" src="assets/hodnosti/04-desiatnik.png" alt="">
+                <span id="k-hodnost">desiatnik</span>
+                <span style="color:var(--linka)">·</span>
+                <span id="k-od" style="color:var(--text-tlm)">v jednotke od 03/2022</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sekcia-editor">
+            <div class="nadpis">Základné údaje</div>
+            <div class="grid2">
+              <label class="pole"><span>Hodnosť</span>
+                <select class="vstup" id="e-hodnost" onchange="nahlad()">
+                  <option>Vojak 1. stupňa</option><option>Vojak 2. stupňa</option><option>Slobodník</option>
+                  <option selected>Desiatnik</option><option>Čatár</option><option>Rotný</option>
+                  <option>Rotmajster</option><option>Nadrotmajster</option><option>Poručík</option>
+                  <option>Nadporučík</option><option>Kapitán</option><option>Major</option>
+                </select>
+              </label>
+              
+            </div>
+            <label class="pole"><span>Status</span>
+              <select class="vstup" id="e-status">
+                <option selected>Aktívny</option><option>Neaktívny</option><option>Na dovolenke</option><option>Rezerva</option>
+              </select>
+            </label>
+            <button class="btn" onclick="ulozZakladne()">Uložiť zmeny</button>
+          </div>
+
+          <div class="sekcia-editor">
+            <div class="nadpis">Kvalifikačné odznaky a úrovne</div>
+            <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 14px;">Klikni na odznak pre udelenie/odobratie. Pri udelenom nastav úroveň.</p>
+            <div class="odznaky-mriezka" id="odznaky"></div>
+          </div>
+
+          <div class="sekcia-editor">
+            <div class="nadpis">Stužky a pochvaly</div>
+            <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 14px;">Prepni, ktoré stužky má člen udelené.</p>
+            <div id="stuzky"></div>
+          </div>
+
+          <div class="sekcia-editor">
+            <div class="nadpis">Vyznamenania</div>
+            <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 14px;">Prepni, ktoré vyznamenania má člen udelené.</p>
+            <div id="vyznamenania"></div>
+          </div>
+
+          <div class="sekcia-editor">
+            <div class="nadpis">Veterancia (XP)</div>
+            <div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:14px; flex-wrap:wrap;">
+              <label class="pole" style="margin:0; flex:1; min-width:220px;"><span>Rýchle udelenie zo sadzobníka</span><select class="vstup" id="rychle-sel"></select></label>
+              <button class="btn" onclick="rychloUdel()">Pripísať</button>
+            </div>
+            <div class="xp-riadok">
+              <label class="pole" style="margin:0;"><span>Aktuálne XP</span><input class="vstup" type="number" id="e-xp" oninput="nahladXp()"></label>
+              <label class="pole" style="margin:0; flex:1; min-width:180px;"><span>Dôvod zmeny (do záznamu)</span><input class="vstup" id="e-xp-dovod" placeholder="misia / oprava / bonus"></label>
+            </div>
+            <div class="ulozene-info" id="xp-nahlad">Stupeň: —</div>
+            <button class="btn" style="margin-top:14px;" onclick="ulozXp()">Uložiť XP</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-log" class="panel">
+      <div class="log">
+        <div class="hlava"><span>Kedy</span><span>Kto</span><span>Čo sa zmenilo</span></div>
+        <div id="log-riadky"></div>
+      </div>
+      <p style="color:var(--text-tlm); font-size:13px; margin-top:14px;">V ostrej verzii sa sem automaticky zapíše každá zmena — kto ju spravil, koho sa týkala a čo presne zmenil. Toto je ukážkový obsah.</p>
+    </div>
+
+    <div id="panel-xp" class="panel">
+      <p style="font-size: 14px; color: var(--text-tlm); max-width: 760px; margin: 0 0 20px;">Ako to funguje: XP sa pripisuje <strong style="color:var(--khaki-svetla)">automaticky</strong> — z potvrdenej dochádzky (záložka Dochádzky) a zo splnených výcvikov (záložka Výcviky) podľa sadzobníka nižšie. <strong style="color:var(--khaki-svetla)">Ručne</strong> cez Rýchle udelenie v Karte člena. Stupne sa prepočítavajú okamžite, aj v profile člena.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; align-items: start;">
+
+        <div class="sekcia-editor" style="margin-top: 0;">
+          <div class="nadpis">01 · Ako sa XP získava</div>
+          <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 12px;">Sadzobník odmien. Použije sa pri potvrdení „Dorazil" v Dochádzkach a pri splnení výcviku.</p>
+          <div id="xp-odmeny"></div>
+          <button class="xp-pridaj" onclick="pridajOdmenu()">+ Pridať odmenu</button>
+        </div>
+
+        <div class="sekcia-editor" style="margin-top: 0;">
+          <div class="nadpis">02 · Ako sa XP stráca</div>
+          <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 12px;">Penalizácie sa aplikujú pri označení „Nedorazil" bez ospravedlnenia. Zadávaj so znamienkom mínus.</p>
+          <div id="xp-penal"></div>
+          <button class="xp-pridaj" onclick="pridajPenal()">+ Pridať penalizáciu</button>
+          <div id="xp-decay" style="margin-top: 16px;"></div>
+        </div>
+
+        <div class="sekcia-editor" style="margin-top: 0;">
+          <div class="nadpis">03 · Stupne veterancie</div>
+          <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 12px;">Názov a hranica XP, od ktorej stupeň platí. Zoradí sa automaticky a hneď platí aj v profile člena.</p>
+          <div class="xp-edit-riadok" style="margin-bottom: 4px;"><span style="font-size:11.5px; color:var(--hneda); letter-spacing:2px; font-family:'Staatliches',sans-serif;">NÁZOV</span><span style="font-size:11.5px; color:var(--hneda); letter-spacing:2px; font-family:'Staatliches',sans-serif;">OD XP</span><span></span></div>
+          <div id="xp-stupne"></div>
+          <button class="xp-pridaj" onclick="pridajStupen()">+ Pridať stupeň</button>
+          <div class="ulozene-info" style="margin-top:14px;">Rebríček:</div>
+          <div class="rebricek" id="xp-rebricek"></div>
+        </div>
+
+        <div class="sekcia-editor" style="margin-top: 0;">
+          <div class="nadpis">04 · Automatizácia</div>
+          <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 12px;">Čo systém vykoná sám. V ostrej verzii to po každej misii vyhodnotí server z dochádzky.</p>
+          <div id="xp-auto"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="panel-doch" class="panel">
+      <div class="sekcia-editor" style="margin-top: 0;">
+        <div class="nadpis">Vypísané udalosti</div>
+        <div id="doch-udalosti" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;"></div>
+        <div class="nadpis" id="doch-nazov" style="margin-bottom: 4px;"></div>
+        <p class="ulozene-info" id="doch-sadzby" style="margin: 0 0 14px;"></p>
+        <div id="doch-clenovia"></div>
+      </div>
+    </div>
+
+    <div id="panel-vyc" class="panel">
+      <div class="sekcia-editor" style="margin-top: 0;">
+        <div class="nadpis">Prihlásení na výcviky</div>
+        <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 14px;">Odškrtnutím vyberieš dosiahnutú úroveň — systém pripíše XP podľa sadzobníka a udelí odznak do karty člena.</p>
+        <div id="vyc-cakajuce"></div>
+        <div class="nadpis" style="margin-top: 22px;">Splnené</div>
+        <div id="vyc-hotove"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="toast" id="toast"><span style="color:var(--tan)">✓</span> Uložené do prehliadača (dočasný náhľad).</div>
+
+<footer>
+  <p class="paticka-copy">© 2020–2026 · 58. Phoenix Group · Veliteľské rozhranie</p>
+
+<div style="max-width: 880px; margin: 26px auto 0; padding: 18px 24px 0; border-top: 1px solid rgba(74,90,56,.45); text-align: center;">
+  <p style="margin: 0 0 8px; font-size: 12px; line-height: 1.65; color: #8F8F7A;">58. Phoenix Group je fanúšikovská herná komunita (MILSIM) pre hru <strong style="color:#A8A890; font-weight:600;">Arma 3</strong>. Všetok obsah webu — jednotky, hodnosti, výcviky, operácie aj vyznamenania — je čisto herný a fiktívny. Nie sme skutočná vojenská ani polovojenská organizácia a nemáme žiadne prepojenie s ozbrojenými silami, štátnymi inštitúciami ani reálnymi konfliktami. Arma 3 je produkt spoločnosti Bohemia Interactive a.s.; tento fanúšikovský web s ňou nie je oficiálne spojený.</p>
+  <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva sledovacie cookies ani analytické nástroje tretích strán. Nastavenia sa ukladajú iba lokálne vo vašom prehliadači a neopúšťajú vaše zariadenie. Členská zóna bude po spustení používať prihlásenie cez Discord — spracúvané budú len údaje nevyhnutné na správu členstva (meno, ID a role na serveri).</p>
+</div>
+</footer>
+
+<script>
+  // ---- Katalógy ----
+  var HODNOSTI = ["Vojak 1. stupňa","Vojak 2. stupňa","Slobodník","Desiatnik","Čatár","Rotný","Rotmajster","Nadrotmajster","Štábny nadrotmajster","Podpráporčík","Práporčík","Nadpráporčík","Poručík","Nadporučík","Kapitán","Major","Podplukovník","Plukovník"];
+  var HOD_IMG = ["01-vojak-1-stupna","02-vojak-2-stupna","03-slobodnik","04-desiatnik","05-catar","06-rotny","07-rotmajster","08-nadrotmajster","09-stabny-nadrotmajster","10-podpraporcik","11-praporcik","12-nadpraporcik","13-porucik","14-nadporucik","15-kapitan","16-major","17-podplukovnik","18-plukovnik"];
+  var HOD_SKR = {"Vojak 1. stupňa":"voj.","Vojak 2. stupňa":"voj.","Slobodník":"slob.","Desiatnik":"des.","Čatár":"čat.","Rotný":"rtn.","Rotmajster":"rtm.","Nadrotmajster":"nrtm.","Štábny nadrotmajster":"šnrtm.","Podpráporčík":"ppráp.","Práporčík":"práp.","Nadpráporčík":"npráp.","Poručík":"por.","Nadporučík":"npor.","Kapitán":"kpt.","Major":"mjr.","Podplukovník":"pplk.","Plukovník":"plk."};
+  var TIMY = [["Líška","team-fox"],["Vlk","team-wolf"],["Grizzly","team-grizzly"],["Duch","team-duch"],["Hotel","team-hotel"],["Alžbeta","patch-alzbeta"],["Rosnička (záloha)","team-fox"]];
+  var VYCVIKY = [["zav","Základný výcvik"],["cmd","Command training"],["rto","RTO training"],["med","Medical training"],["mg","Machine gunner course"],["aa","Anti-air course"],["at","Anti-tank course"],["tm","Tactical movement"],["cqc","CQC training"],["gl","Grenade launcher course"]];
+  var UROVNE = ["bronz","striebro","zlato"];
+  var STUZKY = [["Pochvala velenia","linear-gradient(90deg,#8A5F44 0 30%,#C2C29E 30% 50%,#8A5F44 50% 70%,#C2C29E 70% 100%)"],["Operácia Tichý hrebeň","linear-gradient(90deg,#4A5A38 0 20%,#9C9C74 20% 80%,#4A5A38 80% 100%)"],["Joint Ops veterán","linear-gradient(90deg,#2d69ad 0 15%,#C2C29E 15% 50%,#8A5F44 50% 85%,#2d69ad 85% 100%)"]];
+  var VYZNAMENANIA = [["Medaila za vernosť", "#C2A57B", "★"], ["Kríž za odvahu", "#9C9C74", "✚"], ["Medaila Joint Ops", "#2d69ad", "◆"], ["Za zásluhy o jednotku", "#8A5F44", "✪"]];
+  var XP_DEFAULT = {
+    stupne: [["Nováčik",0],["Vojak kampane",300],["Skúsený operátor",800],["Veterán",1600],["Legenda Vardaku",2600]],
+    odmeny: [["Účasť na misii",50],["Účasť na výcviku",30],["Dokončený výcvik — bronz",40],["Dokončený výcvik — striebro",60],["Dokončený výcvik — zlato",80],["Pochvala velenia",25],["Vedenie misie (Zeus / veliteľ)",40]],
+    penalizacie: [["Neúčasť bez ospravedlnenia",-30],["Predčasné opustenie misie",-20]],
+    auto: { dochadzka: true, ospravedlnenie: true, penalizacie: true },
+    decay: { aktivne: true, tyzden: 10 }
+  };
+  function nacitajXpCfg() {
+    try { var s = localStorage.getItem("pg_xp_config"); if (s) { var c = JSON.parse(s);
+      return { stupne: c.stupne || XP_DEFAULT.stupne, odmeny: c.odmeny || XP_DEFAULT.odmeny,
+               penalizacie: c.penalizacie || XP_DEFAULT.penalizacie, auto: Object.assign({}, XP_DEFAULT.auto, c.auto || {}), decay: Object.assign({}, XP_DEFAULT.decay, c.decay || {}) }; } } catch(e){}
+    return JSON.parse(JSON.stringify(XP_DEFAULT));
+  }
+  var XPCFG = nacitajXpCfg();
+  function ulozXpCfg() {
+    XPCFG.stupne.sort(function(a,b){ return a[1]-b[1]; });
+    try { localStorage.setItem("pg_xp_config", JSON.stringify(XPCFG)); } catch(e){}
+  }
+
+  // ---- Predvolení členovia (demo východisko) ----
+  var VYCHOZI = {
+    "straka": { i:"S", meno:'„Straka"', hod:"Desiatnik", tim:"Líška", od:"03/2022", status:"Aktívny",
+      odznaky:{ zav:"zlato", rto:"striebro", med:"bronz" }, stuzky:["Pochvala velenia","Joint Ops veterán"], xp:1240 },
+    "havran": { i:"H", meno:'„Havran"', hod:"Nadporučík", tim:"Alžbeta", od:"01/2021", status:"Aktívny",
+      odznaky:{ zav:"zlato", cmd:"zlato", rto:"zlato" }, stuzky:["Pochvala velenia","Operácia Tichý hrebeň","Joint Ops veterán"], xp:2410 },
+    "sova": { i:"S", meno:'„Sova"', hod:"Rotmajster", tim:"Alžbeta", od:"06/2021", status:"Aktívny",
+      odznaky:{ zav:"zlato", med:"zlato", rto:"striebro" }, stuzky:["Pochvala velenia"], xp:1720 },
+    "vlk": { i:"V", meno:'„Vlk"', hod:"Čatár", tim:"Grizzly", od:"09/2022", status:"Aktívny",
+      odznaky:{ zav:"striebro" }, stuzky:[], xp:640 },
+    "rys": { i:"R", meno:'„Rys"', hod:"Vojak 1. stupňa", tim:"Duch", od:"02/2026", status:"Aktívny",
+      odznaky:{}, stuzky:[], xp:80 }
+  };
+
+  var KLUC = "pg_admin_data_v1", LOGKLUC = "pg_admin_log_v1";
+  var DATA = nacitaj(), LOG = nacitajLog(), aktivny = "straka";
+
+  function nacitaj() {
+    try { var s = localStorage.getItem(KLUC); if (s) return JSON.parse(s); } catch(e){}
+    return JSON.parse(JSON.stringify(VYCHOZI));
+  }
+  function uložData() { try { localStorage.setItem(KLUC, JSON.stringify(DATA)); } catch(e){} }
+  function nacitajLog() {
+    try { var s = localStorage.getItem(LOGKLUC); if (s) return JSON.parse(s); } catch(e){}
+    return [
+      { cas:"26.08. 21:18", kto:"npor. Havran", akcia:'pridal misiu <strong>Operácia Čierny les</strong> do kalendára' },
+      { cas:"26.08. 20:44", kto:"kpt. Orol", akcia:'povýšil <strong>čat. Vlk</strong> — Rotný → Čatár' },
+      { cas:"24.08. 18:30", kto:"kpt. Orol", akcia:'upravil náborový text na verejnej stránke' }
+    ];
+  }
+  function zapisLog(akcia) {
+    var d = new Date(), p = function(n){ return (n<10?"0":"")+n; };
+    var cas = p(d.getDate())+"."+p(d.getMonth()+1)+". "+p(d.getHours())+":"+p(d.getMinutes());
+    LOG.unshift({ cas: cas, kto: "ty (náhľad)", akcia: akcia });
+    try { localStorage.setItem(LOGKLUC, JSON.stringify(LOG)); } catch(e){}
+    vykresliLog();
+  }
+  function menoClena(id) { var c = DATA[id]; return (HOD_SKR[c.hod]||"") + " " + c.meno.replace(/[„"]/g,""); }
+
+  // ---- Zoznam členov ----
+  function vykresliZoznam(filter) {
+    var host = document.getElementById("zoznam"); host.innerHTML = "";
+    Object.keys(DATA).forEach(function(id) {
+      var c = DATA[id];
+      if (filter && menoClena(id).toLowerCase().indexOf(filter.toLowerCase()) < 0) return;
+      var hi = HOD_IMG[HODNOSTI.indexOf(c.hod)] || "01-vojak-1-stupna";
+      var el = document.createElement("div");
+      el.className = "clen-polozka" + (id === aktivny ? " vybrany" : "");
+      el.innerHTML = '<img src="assets/hodnosti/'+hi+'.png" alt=""><div><div class="meno">'+menoClena(id)+'</div><div class="pod">'+c.hod+" · "+c.tim.replace(" (záloha)","")+'</div></div>';
+      el.onclick = function(){ aktivny = id; vykresliVsetko(); };
+      host.appendChild(el);
+    });
+  }
+  function filtrujClenov(v){ vykresliZoznam(v); }
+
+  // ---- Karta + editor ----
+  function vykresliKartu() {
+    var c = DATA[aktivny];
+    var hodIdx = HODNOSTI.indexOf(c.hod);
+    var hi = HOD_IMG[hodIdx] || "01-vojak-1-stupna";
+    var timPatch = (TIMY.filter(function(t){return t[0]===c.tim;})[0]||["","team-fox"])[1];
+    document.getElementById("k-avatar").textContent = c.i;
+    document.getElementById("k-meno").textContent = menoClena(aktivny);
+    document.getElementById("k-insignia").src = "assets/hodnosti/"+hi+".png";
+    document.getElementById("k-hodnost").textContent = c.hod.toLowerCase();
+    document.getElementById("k-od").textContent = "v jednotke od "+c.od;
+    // editor selecty
+    var sh = document.getElementById("e-hodnost"); sh.innerHTML = "";
+    HODNOSTI.forEach(function(x){ var o=document.createElement("option"); o.text=x; o.selected=(x===c.hod); sh.add(o); });
+    var ss = document.getElementById("e-status"); ss.innerHTML = "";
+    ["Aktívny","Neaktívny","Na dovolenke","Rezerva"].forEach(function(x){ var o=document.createElement("option"); o.text=x; o.selected=(x===c.status); ss.add(o); });
+    document.getElementById("e-xp").value = c.xp;
+    naplnRychle();
+    nahladXp();
+  }
+
+  function vykresliOdznaky() {
+    var c = DATA[aktivny], host = document.getElementById("odznaky"); host.innerHTML = "";
+    VYCVIKY.forEach(function(v){
+      var kod=v[0], nazov=v[1], ma = c.odznaky[kod], uroven = ma || "zlato";
+      var el = document.createElement("div");
+      el.className = "odznak-bunka " + (ma ? "ma" : "nema");
+      var urovneHtml = UROVNE.map(function(u){
+        return '<button class="'+(ma===u?"akt":"")+'" onclick="nastavUroven(event,\''+kod+'\',\''+u+'\')">'+u.charAt(0).toUpperCase()+u.slice(1)+'</button>';
+      }).join("");
+      el.innerHTML =
+        '<span class="znacka">'+(ma?"✓":"+")+'</span>'+
+        '<img src="assets/odznaky/odznak-'+kod+'-'+uroven+'.png" alt="">'+
+        '<span class="u">'+nazov+'</span>'+
+        '<div class="urovne">'+urovneHtml+'</div>';
+      el.querySelector("img").onclick = function(){ prepniOdznak(kod); };
+      el.querySelector(".znacka").onclick = function(){ prepniOdznak(kod); };
+      host.appendChild(el);
+    });
+  }
+  function prepniOdznak(kod) {
+    var c = DATA[aktivny];
+    if (c.odznaky[kod]) { if (!confirm('Naozaj odobrať tento odznak?')) return; delete c.odznaky[kod]; zapisLog('odobral <strong>'+menoClena(aktivny)+'</strong> odznak <strong>'+kod.toUpperCase()+'</strong>'); }
+    else { c.odznaky[kod] = "bronz"; zapisLog('udelil <strong>'+menoClena(aktivny)+'</strong> odznak <strong>'+kod.toUpperCase()+' · bronz</strong>'); }
+    uložData(); vykresliOdznaky(); toast();
+  }
+  function nastavUroven(ev, kod, u) {
+    ev.stopPropagation();
+    var c = DATA[aktivny];
+    if (!c.odznaky[kod]) { c.odznaky[kod] = u; }
+    else if (c.odznaky[kod] === u) { }
+    else { c.odznaky[kod] = u; }
+    zapisLog('nastavil <strong>'+menoClena(aktivny)+'</strong> odznak <strong>'+kod.toUpperCase()+' · '+u+'</strong>');
+    uložData(); vykresliOdznaky(); toast();
+  }
+
+  function vykresliVyzn() {
+    var c = DATA[aktivny]; if (!c.vyzn) c.vyzn = [];
+    var host = document.getElementById("vyznamenania"); host.innerHTML = "";
+    VYZNAMENANIA.forEach(function(v){
+      var nazov = v[0], farba = v[1], znak = v[2], ma = c.vyzn.indexOf(nazov) > -1;
+      var el = document.createElement("div");
+      el.className = "stuzka-riadok " + (ma ? "ma" : "nema");
+      el.innerHTML = '<span class="medaila" style="background:' + farba + '22; border-color:' + farba + '; color:' + farba + '">' + znak + '</span><span class="nazov">' + nazov + '</span><button class="prep">' + (ma ? "Udelené ✓" : "Udeliť") + '</button>';
+      el.querySelector(".prep").onclick = function(){ prepniVyzn(nazov); };
+      host.appendChild(el);
+    });
+  }
+  function prepniVyzn(nazov) {
+    var c = DATA[aktivny]; if (!c.vyzn) c.vyzn = [];
+    var k = c.vyzn.indexOf(nazov);
+    if (k > -1) { if (!confirm('Naozaj odobrať toto vyznamenanie?')) return; c.vyzn.splice(k, 1); zapisLog('odobral <strong>' + menoClena(aktivny) + '</strong> vyznamenanie <strong>' + nazov + '</strong>'); }
+    else { c.vyzn.push(nazov); zapisLog('udelil <strong>' + menoClena(aktivny) + '</strong> vyznamenanie <strong>' + nazov + '</strong>'); }
+    uložData(); vykresliVyzn(); toast();
+  }
+  function vykresliStuzky() {
+    var c = DATA[aktivny], host = document.getElementById("stuzky"); host.innerHTML = "";
+    STUZKY.forEach(function(s){
+      var nazov=s[0], grad=s[1], ma = c.stuzky.indexOf(nazov) > -1;
+      var el = document.createElement("div");
+      el.className = "stuzka-riadok " + (ma ? "ma" : "nema");
+      el.innerHTML = '<span class="pruh" style="background:'+grad+'"></span><span class="nazov">'+nazov+'</span><button class="prep">'+(ma?"Udelená ✓":"Udeliť")+'</button>';
+      el.querySelector(".prep").onclick = function(){ prepniStuzku(nazov); };
+      host.appendChild(el);
+    });
+  }
+  function prepniStuzku(nazov) {
+    var c = DATA[aktivny], k = c.stuzky.indexOf(nazov);
+    if (k > -1) { if (!confirm('Naozaj odobrať túto stužku?')) return; c.stuzky.splice(k,1); zapisLog('odobral <strong>'+menoClena(aktivny)+'</strong> stužku <strong>'+nazov+'</strong>'); }
+    else { c.stuzky.push(nazov); zapisLog('udelil <strong>'+menoClena(aktivny)+'</strong> stužku <strong>'+nazov+'</strong>'); }
+    uložData(); vykresliStuzky(); toast();
+  }
+
+  function stupenPreXp(xp) {
+    var st = XPCFG.stupne, akt = st.length ? st[0][0] : "—", dalsi = null;
+    for (var k=0;k<st.length;k++){ if (xp >= st[k][1]) akt = st[k][0]; else { dalsi = st[k]; break; } }
+    return { akt: akt, dalsi: dalsi };
+  }
+  function nahladXp() {
+    var xp = parseInt(document.getElementById("e-xp").value || "0", 10);
+    var s = stupenPreXp(xp);
+    document.getElementById("xp-nahlad").innerHTML = "Stupeň: <strong style='color:var(--khaki-svetla)'>"+s.akt+"</strong>" + (s.dalsi ? " · do stupňa "+s.dalsi[0]+" ostáva "+(s.dalsi[1]-xp)+" XP" : " · najvyšší stupeň");
+  }
+  function ulozZakladne() {
+    var c = DATA[aktivny];
+    var noveHod = document.getElementById("e-hodnost").value;
+    var noveStatus = document.getElementById("e-status").value;
+    var zmeny = [];
+    if (noveHod !== c.hod) { zmeny.push("hodnosť "+c.hod+" → "+noveHod); c.hod = noveHod; }
+    if (noveStatus !== c.status) { zmeny.push("status → "+noveStatus); c.status = noveStatus; }
+    uložData();
+    if (zmeny.length) zapisLog('upravil <strong>'+menoClena(aktivny)+'</strong> — '+zmeny.join(", "));
+    vykresliZoznam(""); vykresliKartu(); toast();
+  }
+  function ulozXp() {
+    var c = DATA[aktivny], nove = parseInt(document.getElementById("e-xp").value||"0",10);
+    var dovod = document.getElementById("e-xp-dovod").value;
+    if (nove !== c.xp) { zapisLog('upravil <strong>'+menoClena(aktivny)+'</strong> XP '+c.xp+' → '+nove+(dovod?" ("+dovod+")":"")); c.xp = nove; uložData(); }
+    document.getElementById("e-xp-dovod").value = "";
+    toast();
+  }
+
+  function vykresliLog() {
+    var host = document.getElementById("log-riadky"); host.innerHTML = "";
+    LOG.forEach(function(l){
+      var el = document.createElement("div"); el.className = "riadok";
+      el.innerHTML = '<span class="cas">'+l.cas+'</span><span class="kto">'+l.kto+'</span><span class="akcia">'+l.akcia+'</span>';
+      host.appendChild(el);
+    });
+  }
+
+  function vykresliVsetko() { vykresliZoznam(document.getElementById("hladaj-vstup") ? document.getElementById("hladaj-vstup").value : ""); vykresliKartu(); vykresliOdznaky(); vykresliStuzky(); vykresliVyzn(); }
+
+  function riadokXp(hodnoty, idx, pole, minJeden) {
+    var r = document.createElement("div"); r.className = "xp-edit-riadok";
+    var n = document.createElement("input"); n.className = "vstup"; n.value = hodnoty[0];
+    n.onchange = function(){ XPCFG[pole][idx][0] = n.value.trim() || hodnoty[0]; ulozXpCfg(); vykresliXp(); nahladXp(); };
+    var x = document.createElement("input"); x.className = "vstup"; x.type = "number"; x.value = hodnoty[1];
+    x.onchange = function(){ XPCFG[pole][idx][1] = parseInt(x.value||"0",10); ulozXpCfg(); vykresliXp(); nahladXp(); };
+    var k = document.createElement("button"); k.className = "kos"; k.textContent = "🗑"; k.title = "Odstrániť";
+    k.onclick = function(){ if (minJeden && XPCFG[pole].length <= 1) return; if (!confirm('Naozaj odstrániť „' + XPCFG[pole][idx][0] + '“?')) return; zapisLog('odstránil z XP systému: <strong>' + XPCFG[pole][idx][0] + '</strong>'); XPCFG[pole].splice(idx,1); ulozXpCfg(); vykresliXp(); nahladXp(); toast(); };
+    r.appendChild(n); r.appendChild(x); r.appendChild(k);
+    return r;
+  }
+  function vykresliXp() {
+    var hs = document.getElementById("xp-stupne"); hs.innerHTML = "";
+    XPCFG.stupne.forEach(function(s, i){ hs.appendChild(riadokXp(s, i, "stupne", true)); });
+    var ho = document.getElementById("xp-odmeny"); ho.innerHTML = "";
+    XPCFG.odmeny.forEach(function(o, i){ ho.appendChild(riadokXp(o, i, "odmeny", false)); });
+    var hp = document.getElementById("xp-penal"); hp.innerHTML = "";
+    XPCFG.penalizacie.forEach(function(p, i){ hp.appendChild(riadokXp(p, i, "penalizacie", false)); });
+    var reb = document.getElementById("xp-rebricek"); reb.innerHTML = "";
+    XPCFG.stupne.forEach(function(s, i){
+      if (i > 0) { var sip = document.createElement("span"); sip.className = "sipka"; sip.textContent = "→"; reb.appendChild(sip); }
+      var el = document.createElement("span"); el.className = "stupienok";
+      el.innerHTML = "<strong>" + s[0] + "</strong> " + s[1] + "+";
+      reb.appendChild(el);
+    });
+    var ha = document.getElementById("xp-auto"); ha.innerHTML = "";
+    [["dochadzka","XP z dochádzky sa pripisuje automaticky po misii"],
+     ["ospravedlnenie","Ospravedlnená neúčasť je bez penalizácie"],
+     ["penalizacie","Penalizácie sa aplikujú automaticky"]].forEach(function(t){
+      var kluc = t[0], el = document.createElement("div");
+      el.className = "xp-toggle" + (XPCFG.auto[kluc] ? " zap" : "");
+      el.innerHTML = '<span class="nazov">' + t[1] + '</span><button class="prep">' + (XPCFG.auto[kluc] ? "Zapnuté" : "Vypnuté") + '</button>';
+      el.querySelector(".prep").onclick = function(){
+        XPCFG.auto[kluc] = !XPCFG.auto[kluc]; ulozXpCfg();
+        zapisLog((XPCFG.auto[kluc] ? 'zapol' : 'vypol') + ' pravidlo XP: <strong>' + t[1] + '</strong>');
+        vykresliXp();
+  vykresliDoch();
+  vykresliVyc(); toast();
+      };
+      ha.appendChild(el);
+    });
+    var hd = document.getElementById("xp-decay"); hd.innerHTML = "";
+    var dt = document.createElement("div");
+    dt.className = "xp-toggle" + (XPCFG.decay.aktivne ? " zap" : "");
+    dt.innerHTML = '<span class="nazov">Klesanie XP pri neaktivite</span><button class="prep">' + (XPCFG.decay.aktivne ? "Zapnuté" : "Vypnuté") + '</button>';
+    dt.querySelector(".prep").onclick = function(){ XPCFG.decay.aktivne = !XPCFG.decay.aktivne; ulozXpCfg(); zapisLog((XPCFG.decay.aktivne ? 'zapol' : 'vypol') + ' klesanie XP pri neaktivite'); vykresliXp(); toast(); };
+    hd.appendChild(dt);
+    var dr = document.createElement("div");
+    dr.style.cssText = "display:flex; align-items:center; gap:10px; margin-top:8px;" + (XPCFG.decay.aktivne ? "" : "opacity:.5;");
+    dr.innerHTML = '<input class="vstup" type="number" min="0" style="width:90px;" value="' + XPCFG.decay.tyzden + '"><span style="font-size:13px; color:var(--text-tlm);">XP za každý týždeň bez účasti · nahlásená neaktivita a ospravedlnenie chránia</span>';
+    dr.querySelector("input").onchange = function(){ XPCFG.decay.tyzden = Math.max(0, parseInt(this.value||"0",10)); ulozXpCfg(); };
+    hd.appendChild(dr);
+    naplnRychle();
+  }
+  function naplnRychle() {
+    var sel = document.getElementById("rychle-sel"); if (!sel) return;
+    sel.innerHTML = "";
+    var go = document.createElement("optgroup"); go.label = "Odmeny";
+    XPCFG.odmeny.forEach(function(o, i){ var op = document.createElement("option"); op.value = "odmeny|" + i; op.text = o[0] + " (+" + o[1] + " XP)"; go.appendChild(op); });
+    var gp = document.createElement("optgroup"); gp.label = "Penalizácie";
+    XPCFG.penalizacie.forEach(function(p, i){ var op = document.createElement("option"); op.value = "penalizacie|" + i; op.text = p[0] + " (" + p[1] + " XP)"; gp.appendChild(op); });
+    sel.appendChild(go); sel.appendChild(gp);
+  }
+  function rychloUdel() {
+    var sel = document.getElementById("rychle-sel"); if (!sel || !sel.value) return;
+    var cast = sel.value.split("|"), polozka = XPCFG[cast[0]][parseInt(cast[1],10)];
+    if (!polozka) return;
+    var c = DATA[aktivny]; c.xp = Math.max(0, c.xp + polozka[1]);
+    uložData();
+    zapisLog((polozka[1] >= 0 ? 'pripísal' : 'strhol') + ' <strong>' + menoClena(aktivny) + '</strong>: ' + polozka[0] + ' (' + (polozka[1] >= 0 ? '+' : '') + polozka[1] + ' XP)');
+    vykresliKartu(); toast();
+  }
+  function pridajStupen() { var max = XPCFG.stupne.length ? XPCFG.stupne[XPCFG.stupne.length-1][1] : 0; XPCFG.stupne.push(["Nový stupeň", max + 500]); zapisLog('pridal stupeň veterancie'); ulozXpCfg(); vykresliXp(); toast(); }
+  function pridajOdmenu() { XPCFG.odmeny.push(["Nová aktivita", 10]); zapisLog('pridal XP odmenu'); ulozXpCfg(); vykresliXp(); toast(); }
+  function pridajPenal() { XPCFG.penalizacie.push(["Nové porušenie", -10]); zapisLog('pridal penalizáciu'); ulozXpCfg(); vykresliXp(); toast(); }
+
+  // ===== DOCHÁDZKY =====
+  var UDALOSTI = [
+    { id: "m1", typ: "misia",  nazov: "Operácia Tichý hrebeň, časť III", datum: "29. 8. 2026" },
+    { id: "m2", typ: "misia",  nazov: "Joint Ops s 22. MEU",             datum: "5. 9. 2026" },
+    { id: "v1", typ: "vycvik", nazov: "Výcvik CLS + RTO",                datum: "9. 9. 2026" }
+  ];
+  var DOCH = (function(){ try { var s = localStorage.getItem("pg_admin_dochadzka"); if (s) return JSON.parse(s); } catch(e){} return {}; })();
+  var dochAktivna = "m1";
+  function ulozDoch() { try { localStorage.setItem("pg_admin_dochadzka", JSON.stringify(DOCH)); } catch(e){} }
+  function sadzbaUcast(typ) {
+    var hlad = typ === "misia" ? "Účasť na misii" : "Účasť na výcviku";
+    var r = XPCFG.odmeny.filter(function(o){ return o[0].indexOf(hlad) === 0; })[0];
+    return r ? r[1] : (typ === "misia" ? 50 : 30);
+  }
+  function sadzbaNeucast() {
+    var r = XPCFG.penalizacie.filter(function(p){ return p[0].indexOf("Neúčasť") === 0; })[0];
+    return r ? r[1] : -30;
+  }
+  function dochEfekt(stav, typ) {
+    if (stav === "dorazil")   return XPCFG.auto.dochadzka   ? sadzbaUcast(typ)  : 0;
+    if (stav === "nedorazil") return XPCFG.auto.penalizacie ? sadzbaNeucast()   : 0;
+    return 0;
+  }
+  function nastavDoch(memberId, stav) {
+    var ud = UDALOSTI.filter(function(u){ return u.id === dochAktivna; })[0];
+    DOCH[ud.id] = DOCH[ud.id] || {};
+    var stary = DOCH[ud.id][memberId] || null;
+    var novy = (stary === stav) ? null : stav;
+    var delta = dochEfekt(novy, ud.typ) - dochEfekt(stary, ud.typ);
+    if (delta !== 0) { DATA[memberId].xp = Math.max(0, DATA[memberId].xp + delta); uložData(); }
+    DOCH[ud.id][memberId] = novy; ulozDoch();
+    if (novy === "dorazil") zapisLog('potvrdil dochádzku <strong>' + menoClena(memberId) + '</strong> — ' + ud.nazov + (delta ? ' (+' + delta + ' XP)' : ''));
+    else if (novy === "nedorazil") zapisLog('označil neúčasť <strong>' + menoClena(memberId) + '</strong> — ' + ud.nazov + (delta ? ' (' + delta + ' XP)' : ''));
+    else if (novy === "osprav") zapisLog('ospravedlnil <strong>' + menoClena(memberId) + '</strong> — ' + ud.nazov);
+    else zapisLog('zrušil záznam dochádzky <strong>' + menoClena(memberId) + '</strong> — ' + ud.nazov);
+    vykresliDoch(); if (memberId === aktivny) vykresliKartu(); toast();
+  }
+  function vykresliDoch() {
+    var hu = document.getElementById("doch-udalosti"); hu.innerHTML = "";
+    UDALOSTI.forEach(function(u){
+      var b = document.createElement("button");
+      b.className = "ud-chip" + (u.id === dochAktivna ? " akt" : "");
+      b.innerHTML = '<span class="typ">' + (u.typ === "misia" ? "MISIA" : "VÝCVIK") + '</span>' + u.datum + ' · ' + u.nazov;
+      b.onclick = function(){ dochAktivna = u.id; vykresliDoch(); };
+      hu.appendChild(b);
+    });
+    var ud = UDALOSTI.filter(function(u){ return u.id === dochAktivna; })[0];
+    document.getElementById("doch-nazov").textContent = ud.nazov + " — " + ud.datum;
+    document.getElementById("doch-sadzby").textContent = "Dorazil +" + sadzbaUcast(ud.typ) + " XP · Nedorazil " + sadzbaNeucast() + " XP · Ospravedlnený 0 XP (podľa sadzobníka a pravidiel automatizácie)";
+    var hc = document.getElementById("doch-clenovia"); hc.innerHTML = "";
+    Object.keys(DATA).forEach(function(id){
+      var stav = (DOCH[ud.id] || {})[id] || null;
+      var el = document.createElement("div"); el.className = "doch-riadok";
+      el.innerHTML = '<span class="meno">' + menoClena(id) + '</span>'
+        + '<div class="doch-stavy">'
+        + '<button class="' + (stav === "dorazil" ? "dorazil-akt" : "") + '">Dorazil</button>'
+        + '<button class="' + (stav === "osprav" ? "osprav-akt" : "") + '">Ospravedlnený</button>'
+        + '<button class="' + (stav === "nedorazil" ? "nedorazil-akt" : "") + '">Nedorazil</button>'
+        + '</div>';
+      var btns = el.querySelectorAll("button");
+      btns[0].onclick = function(){ nastavDoch(id, "dorazil"); };
+      btns[1].onclick = function(){ nastavDoch(id, "osprav"); };
+      btns[2].onclick = function(){ nastavDoch(id, "nedorazil"); };
+      hc.appendChild(el);
+    });
+  }
+
+  // ===== VÝCVIKY =====
+  var VYC_MAP = { "ZaV":"zav", "CMD-T":"cmd", "RTO-T":"rto", "M-T":"med", "TM-T":"tm", "CQC-T":"cqc", "AT-C":"at", "AA-C":"aa", "MG-C":"mg", "GL-C":"gl" };
+  var VYC_NAZVY = { "ZaV":"Základný prijímací výcvik", "CMD-T":"Command training", "RTO-T":"Radio tower operator", "M-T":"Medical training", "SS/SN-T":"Sharpshooter/Sniper", "SP/ENG-T":"Sapper/Engineer", "MO-T":"Mechanized operator", "UAV-T":"UAV operator", "P-T":"Pilot training", "TM-T":"Tactical movement", "CQC-T":"Close Quarters Combat", "AT-C":"Anti-tank course", "AA-C":"Anti-air course", "MG-C":"Machine gunner course", "GL-C":"Grenade launcher course" };
+  var VYC_EXTRA = (function(){ try { var s = localStorage.getItem("pg_admin_vyc_extra"); if (s) return JSON.parse(s); } catch(e){} return { havran: ["P-T"], vlk: ["MG-C"] }; })();
+  var VYC_DONE = (function(){ try { var s = localStorage.getItem("pg_admin_vyc_done"); if (s) return JSON.parse(s); } catch(e){} return []; })();
+  var vycVyber = null;
+  function ulozVyc() { try { localStorage.setItem("pg_admin_vyc_extra", JSON.stringify(VYC_EXTRA)); localStorage.setItem("pg_admin_vyc_done", JSON.stringify(VYC_DONE)); } catch(e){} }
+  function vycPrihlasky() {
+    var vsetky = [];
+    try { var s = localStorage.getItem("pg_vycvik_prihlasky"); if (s) { var p = JSON.parse(s); Object.keys(p).forEach(function(skr){ if (p[skr]) vsetky.push({ member: "straka", skr: skr }); }); } } catch(e){}
+    Object.keys(VYC_EXTRA).forEach(function(m){ VYC_EXTRA[m].forEach(function(skr){ vsetky.push({ member: m, skr: skr }); }); });
+    return vsetky.filter(function(v){ return VYC_DONE.map(function(d){ return d.kluc; }).indexOf(v.member + "|" + v.skr) < 0; });
+  }
+  function sadzbaVycvik(uroven) {
+    var hlad = "Dokončený výcvik — " + uroven;
+    var r = XPCFG.odmeny.filter(function(o){ return o[0] === hlad; })[0];
+    return r ? r[1] : ({ bronz: 40, striebro: 60, zlato: 80 })[uroven];
+  }
+  function splnVyc(member, skr, uroven) {
+    var kod = VYC_MAP[skr], xp = sadzbaVycvik(uroven);
+    var c = DATA[member]; if (!c) return;
+    if (kod) { c.odznaky[kod] = uroven; }
+    c.xp = Math.max(0, c.xp + xp);
+    uložData();
+    VYC_DONE.unshift({ kluc: member + "|" + skr, uroven: uroven });
+    if (member === "straka") {
+      try { var s = localStorage.getItem("pg_vycvik_prihlasky"); var p = s ? JSON.parse(s) : {}; delete p[skr]; localStorage.setItem("pg_vycvik_prihlasky", JSON.stringify(p)); } catch(e){}
+    } else if (VYC_EXTRA[member]) { VYC_EXTRA[member] = VYC_EXTRA[member].filter(function(x){ return x !== skr; }); }
+    ulozVyc();
+    zapisLog('označil výcvik <strong>' + skr + '</strong> (' + menoClena(member) + ') ako splnený — ' + uroven + ' (+' + xp + ' XP' + (kod ? ', odznak udelený' : '') + ')');
+    vycVyber = null; vykresliVyc(); vykresliOdznaky(); if (member === aktivny) vykresliKartu(); toast();
+  }
+  function vykresliVyc() {
+    var hc = document.getElementById("vyc-cakajuce"); hc.innerHTML = "";
+    var caka = vycPrihlasky();
+    if (!caka.length) { hc.innerHTML = '<div class="ulozene-info">Nikto nečaká na splnenie výcviku.</div>'; }
+    caka.forEach(function(v){
+      var el = document.createElement("div"); el.className = "vyc-riadok";
+      var kluc = v.member + "|" + v.skr;
+      var akcia;
+      if (vycVyber === kluc) {
+        akcia = '<div class="urovne-vyber"><button>Bronz</button><button>Striebro</button><button>Zlato</button><button style="border-color:var(--linka); color:var(--text-tlm);">×</button></div>';
+      } else {
+        akcia = '<button class="btn2">Splnené ▾</button>';
+      }
+      el.innerHTML = '<span class="kodv">' + v.skr + '</span><span class="info"><span class="kto">' + menoClena(v.member) + '</span> · ' + (VYC_NAZVY[v.skr] || v.skr) + '</span>' + akcia;
+      if (vycVyber === kluc) {
+        var ub = el.querySelectorAll(".urovne-vyber button");
+        ub[0].onclick = function(){ splnVyc(v.member, v.skr, "bronz"); };
+        ub[1].onclick = function(){ splnVyc(v.member, v.skr, "striebro"); };
+        ub[2].onclick = function(){ splnVyc(v.member, v.skr, "zlato"); };
+        ub[3].onclick = function(){ vycVyber = null; vykresliVyc(); };
+      } else {
+        el.querySelector(".btn2").onclick = function(){ vycVyber = kluc; vykresliVyc(); };
+      }
+      hc.appendChild(el);
+    });
+    var hh = document.getElementById("vyc-hotove"); hh.innerHTML = "";
+    if (!VYC_DONE.length) { hh.innerHTML = '<div class="ulozene-info">Zatiaľ žiadny splnený výcvik.</div>'; }
+    VYC_DONE.forEach(function(d){
+      var cast = d.kluc.split("|");
+      var el = document.createElement("div"); el.className = "vyc-riadok hotovy";
+      el.innerHTML = '<span class="kodv">' + cast[1] + '</span><span class="info"><span class="kto">' + menoClena(cast[0]) + '</span> · ' + (VYC_NAZVY[cast[1]] || cast[1]) + '</span><span style="font-size:12.5px; color:var(--khaki-svetla);">Splnené ✓ ' + d.uroven + '</span>';
+      hh.appendChild(el);
+    });
+  }
+
+  function prepni(panel, btn) {
+    document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("aktivny"); });
+    document.getElementById("panel-" + panel).classList.add("aktivny");
+    ["tab-clenovia","tab-doch","tab-vyc","tab-log","tab-xp"].forEach(function(id){ var b=document.getElementById(id); b.style.color="#9C9C74"; b.style.borderBottomColor="transparent"; });
+    btn.style.color = "#C2C29E"; btn.style.borderBottomColor = "#9C9C74";
+  }
+
+  var toastT;
+  function toast() {
+    var t = document.getElementById("toast"); t.classList.add("zobraz");
+    clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.remove("zobraz"); }, 2200);
+  }
+  function nahlad() {
+    document.getElementById("k-hodnost").textContent = document.getElementById("e-hodnost").value.toLowerCase();
+  }
+
+  vykresliVsetko();
+  vykresliLog();
+  vykresliXp();
+</script>
+
+</body>
+</html>
