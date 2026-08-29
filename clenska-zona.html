@@ -207,22 +207,7 @@ a:hover { color: #E8E8CC; }
         <span></span><span>Člen</span><span>Roly s výcvikom</span><span style="justify-self: end;">Stav</span><span></span>
       </div>
       <div style="display: {{ emRoster }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">ORBAT sa naplní po pridaní členov cez Discord.</div></div>
-<div style="display: {{ dataDisplay }};"><sc-for list="{{ roster }}" as="m" hint-placeholder-count="12">
-<div style="display: grid; grid-template-columns: 44px minmax(140px, 1fr) minmax(180px, 1.6fr) 118px 30px; gap: 14px; align-items: center; padding: 10px 20px; border-bottom: 1px solid #35402A; font-size: 14.5px; transition: background .2s;" style-hover="background: #313A26;">
-  <img src="{{ m.insig }}" alt="" style="width: 38px; height: 38px; object-fit: contain; justify-self: center;">
-  <span style="min-width: 0;">
-    <span style="display: block; color: #E8E8CC; font-weight: 600; line-height: 1.25;">{{ m.nick }}</span>
-    <span style="display: block; font-size: 12px; color: #9C9C74; font-family: 'Staatliches', sans-serif; letter-spacing: 1.5px;">{{ m.rankFull }}</span>
-  </span>
-  <span style="display: flex; gap: 6px; flex-wrap: wrap;">
-    <sc-for list="{{ m.roles }}" as="r" hint-placeholder-count="3">
-      <span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border: 1px solid #4A5A38; border-radius: 3px; color: #C2C29E;">{{ r }}</span>
-    </sc-for>
-  </span>
-  <span style="justify-self: end; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; letter-spacing: 1px; padding: 3px 11px; border-radius: 999px; background: {{ m.stBg }}; border: 1px solid {{ m.stBorder }}; color: {{ m.stColor }}; white-space: nowrap;"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ m.stDot }};"></span>{{ m.status }}</span>
-  <button onClick="{{ ulozAtrapa }}" title="Upraviť" style="display: {{ editShow }}; align-items: center; justify-content: center; width: 26px; height: 26px; background: #35402A; border: 1px solid #8A5F44; border-radius: 5px; color: #C2A57B; cursor: pointer; font-size: 13px;">✎</button>
-</div>
-</sc-for>
+<div style="display: block;"><div id="pg-roster-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam členov…</div></div>
     </div>
   </div>
 
@@ -818,7 +803,7 @@ class Component extends DCLogic {
     document.getElementById("pg-auth-stav").textContent = text || "";
     ov.style.display = "flex";
   }
-  function dnu() { ov.style.display = "none"; if (window.pgNavChip) window.pgNavChip(); naplnProfil(); naplnKalendar(); naplnArchiv(); }
+  function dnu() { ov.style.display = "none"; if (window.pgNavChip) window.pgNavChip(); naplnProfil(); naplnKalendar(); naplnArchiv(); naplnRoster(); }
   function tagFarby(typ) {
     if (typ === "vycvik") return ["#4A5A38", "#9C9C74", "rgba(156,156,116,.12)", "#8A5F44"];
     if (typ === "event")  return ["#4A5A38", "#A8A890", "rgba(168,168,144,.12)", "#5A6B44"];
@@ -911,6 +896,47 @@ class Component extends DCLogic {
     box.innerHTML = misie.map(function(m){ return misiaKarta(m, false); }).join("");
     naviazPrihlasky(box);
   }
+  function clenRiadok(m) {
+    var d = m.vstup ? new Date(m.vstup) : null;
+    var vstupTxt = d ? d.toLocaleDateString("sk-SK", { day:"numeric", month:"numeric", year:"numeric" }) : "—";
+    var avatar = m.avatar_url
+      ? '<img src="' + m.avatar_url + '" alt="" style="width:38px; height:38px; border-radius:50%; object-fit:cover; background:#35402A; justify-self:center;">'
+      : '<div style="width:38px; height:38px; border-radius:50%; background:#35402A; display:grid; place-items:center; font-family:\'Staatliches\',sans-serif; color:#C2C29E; justify-self:center;">' + (m.nick||"?").charAt(0).toUpperCase() + '</div>';
+    var velitelOdznak = m.je_velitel
+      ? '<span style="font-size:10.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; background:rgba(156,156,116,.2); border:1px solid #9C9C74; color:#C2C29E;">VELITEĽ</span>'
+      : '';
+    var h = '<div style="display:grid; grid-template-columns:44px minmax(140px,1fr) minmax(180px,1.6fr) 118px; gap:14px; align-items:center; padding:10px 20px; border-bottom:1px solid #35402A; font-size:14.5px;">';
+    h += avatar;
+    h += '<span style="min-width:0;"><span style="display:block; color:#E8E8CC; font-weight:600; line-height:1.25;">' + (m.nick||"") + '</span>'
+      + '<span style="display:block; font-size:12px; color:#9C9C74; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; margin-top:2px;">' + (m.hodnost || "—") + '</span></span>';
+    // špecializácie — zatiaľ prázdne miesto (doplníme keď budú Discord roly výcvikov)
+    h += '<span style="font-size:12.5px; color:#6b6b56; font-style:italic;">' + velitelOdznak + '</span>';
+    h += '<span style="font-size:13px; color:#A8A890; justify-self:end;">' + vstupTxt + '</span>';
+    h += '</div>';
+    return h;
+  }
+  async function naplnRoster(pokus) {
+    pokus = pokus || 0;
+    var box = document.getElementById("pg-roster-db");
+    if (!box) { if (pokus < 30) setTimeout(function(){ naplnRoster(pokus+1); }, 250); return; }
+    var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
+    if (!kk) return;
+    var sess = (await kk.auth.getSession()).data.session;
+    if (!sess) return;
+    try {
+      var r = await fetch(SUPA_URL + "/functions/v1/nacitaj-clenov", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
+        body: "{}"
+      });
+      var v = await r.json();
+      if (!r.ok || v.error) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Členov sa nepodarilo načítať.</div>'; return; }
+      if (!v.clenovia || !v.clenovia.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Zatiaľ žiadni členovia v databáze.</div>'; return; }
+      // hlavička
+      var head = '<div style="display:grid; grid-template-columns:44px minmax(140px,1fr) minmax(180px,1.6fr) 118px; gap:14px; padding:8px 20px; font-family:\'Staatliches\',sans-serif; letter-spacing:2px; font-size:12px; color:#8A5F44; border-bottom:1px solid #4A5A38;"><span></span><span>ČLEN</span><span>ŠPECIALIZÁCIE</span><span style="justify-self:end;">NA DISCORDE OD</span></div>';
+      box.innerHTML = head + v.clenovia.map(clenRiadok).join("");
+    } catch (e) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Chyba: ' + e.message + '</div>'; }
+  }
   async function naplnArchiv(pokus) {
     pokus = pokus || 0;
     var box = document.getElementById("pg-archiv-db");
@@ -1002,6 +1028,7 @@ class Component extends DCLogic {
     if (typeof naplnKalendar === "function") naplnKalendar();
     if (typeof naplnArchiv === "function") naplnArchiv();
     if (typeof naplnProfil === "function") naplnProfil();
+    if (typeof naplnRoster === "function") naplnRoster();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ setTimeout(spustSekcie, 400); });
   else setTimeout(spustSekcie, 400);
