@@ -819,22 +819,75 @@ class Component extends DCLogic {
     ov.style.display = "flex";
   }
   function dnu() { ov.style.display = "none"; if (window.pgNavChip) window.pgNavChip(); naplnProfil(); naplnKalendar(); naplnArchiv(); }
-  function misiaKarta(m) {
+  function tagFarby(typ) {
+    if (typ === "vycvik") return ["#4A5A38", "#9C9C74", "rgba(156,156,116,.12)", "#8A5F44"];
+    if (typ === "event")  return ["#4A5A38", "#A8A890", "rgba(168,168,144,.12)", "#5A6B44"];
+    return ["#8A5F44", "#C2A57A", "rgba(138,95,68,.15)", "#8A5F44"]; // misia
+  }
+  function misiaKarta(m, archiv) {
     var d = m.datum ? new Date(m.datum) : null;
     var den = d ? d.toLocaleDateString("sk-SK", { weekday:"short", day:"numeric", month:"numeric" }) : "";
     var cas = d ? d.toLocaleTimeString("sk-SK", { hour:"2-digit", minute:"2-digit" }) : "";
-    var typLabel = m.typ === "vycvik" ? "VÝCVIK" : (m.typ === "event" ? "EVENT" : "MISIA");
-    var html = '<div style="background:#2C3522; border:1px solid #4A5A38; border-radius:8px; padding:18px 20px; margin-bottom:16px;">';
-    html += '<div style="display:inline-flex; align-items:center; gap:8px; background:#35402A; border:1px solid #4A5A38; border-radius:4px; padding:3px 12px; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; font-size:12px; color:#9C9C74; margin-bottom:10px;">' + typLabel + '</div>';
-    html += '<div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:baseline;">';
-    html += '<div style="font-family:\'Staatliches\',sans-serif; font-size:20px; letter-spacing:1px; color:#C2C29E;">' + (m.nazov||"") + '</div>';
-    html += '<div style="font-size:14px; color:#A8A890;">' + den + (cas ? " · " + cas : "") + '</div></div>';
-    if (m.brief) html += '<div style="margin-top:10px; font-size:14px; color:#D8D8C0; line-height:1.6;">' + m.brief + '</div>';
-    if (m.modpack) html += '<div style="margin-top:8px; font-size:12.5px; color:#8A8A6E;">Modpack: ' + m.modpack + '</div>';
-    html += '</div>';
-    return html;
+    var typLabel = m.typ === "vycvik" ? "Výcvik" : (m.typ === "event" ? "Event" : "Misia");
+    var f = tagFarby(m.typ);
+    var tagBorder = f[0], tagColor = f[1], tagBg = f[2], stripe = f[3];
+    var h = '<div style="margin-bottom: 22px;">';
+    // ZÁLOŽKA hore (zložkový vzhľad)
+    h += '<div style="display: inline-flex; align-items: center; gap: 10px; background: #35402A; border: 1px solid #4A5A38; border-bottom: none; border-radius: 6px 6px 0 0; padding: 5px 16px; margin-left: 16px; position: relative; top: 1px;">'
+      + '<span style="font-family: \'Staatliches\', sans-serif; font-size: 15px; letter-spacing: 2px; color: #C2C29E;">' + den + '</span>'
+      + '<span style="font-size: 12.5px; color: #A8A890;">' + cas + '</span>'
+      + '<span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border-radius: 3px; border: 1px solid ' + tagBorder + '; color: ' + tagColor + '; background: ' + tagBg + ';">' + typLabel + '</span>'
+      + '</div>';
+    // TELO karty s ľavým prúžkom
+    h += '<div style="background: #2C3522; border: 1px solid #4A5A38; border-left: 4px solid ' + stripe + '; border-radius: 0 6px 6px 6px; padding: 18px 20px;">';
+    h += '<div style="font-family: \'Staatliches\', sans-serif; font-size: 21px; letter-spacing: 1px; color: #C2C29E; margin-bottom: 6px;">' + (m.nazov || "") + '</div>';
+    if (m.brief) h += '<div style="font-size: 14px; color: #D8D8C0; line-height: 1.65; margin-bottom: 10px;">' + m.brief + '</div>';
+    var meta = [];
+    if (m.modpack) meta.push("Modpack: " + m.modpack);
+    if (typeof m.pocet_prihlasenych === "number") meta.push("Prihlásených: " + m.pocet_prihlasenych);
+    if (meta.length) h += '<div style="font-size: 12.5px; color: #8A8A6E; margin-bottom: ' + (archiv ? "0" : "14") + 'px;">' + meta.join("  ·  ") + '</div>';
+    // PRIHLASOVACIE TLAČIDLÁ (len kalendár, nie archív)
+    if (!archiv) {
+      var jePr = m.moj_stav === "prihlaseny";
+      var jeOs = m.moj_stav === "ospravedlneny";
+      h += '<div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">'
+        + '<button data-akcia="prihlasit" data-misia="' + m.id + '" style="cursor:pointer; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; font-size:14px; padding:8px 18px; border-radius:5px; border:1px solid ' + (jePr ? "#7FB069" : "#4A5A38") + '; background:' + (jePr ? "rgba(127,176,105,.18)" : "transparent") + '; color:' + (jePr ? "#9Fd089" : "#C2C29E") + ';">' + (jePr ? "✓ Zúčastním sa" : "Zúčastním sa") + '</button>'
+        + '<button data-akcia="ospravedlnit" data-misia="' + m.id + '" style="cursor:pointer; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; font-size:14px; padding:8px 18px; border-radius:5px; border:1px solid ' + (jeOs ? "#C9A227" : "#4A5A38") + '; background:' + (jeOs ? "rgba(201,162,39,.16)" : "transparent") + '; color:' + (jeOs ? "#D8B45A" : "#C2C29E") + ';">' + (jeOs ? "✓ Ospravedlnený" : "Ospravedlním sa") + '</button>'
+        + '</div>';
+    }
+    h += '</div></div>';
+    return h;
   }
-  async function nacitajMisieProZonu(archiv) {
+  async function prihlasNaMisiu(misiaId, akcia, btn) {
+    var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
+    if (!kk) return;
+    var sess = (await kk.auth.getSession()).data.session;
+    if (!sess) return;
+    if (btn) { btn.disabled = true; btn.style.opacity = "0.6"; }
+    try {
+      var r = await fetch(SUPA_URL + "/functions/v1/prihlas-na-misiu", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
+        body: JSON.stringify({ misiaId: misiaId, akcia: akcia })
+      });
+      var v = await r.json();
+      if (!r.ok || v.error) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } return; }
+    } catch (e) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } return; }
+    // prekresli kalendár (aby sa aktualizoval stav aj počty)
+    naplnKalendar();
+  }
+  function naviazPrihlasky(box) {
+    box.querySelectorAll("button[data-akcia]").forEach(function(b){
+      b.onclick = function(){
+        var misiaId = b.getAttribute("data-misia");
+        var akcia = b.getAttribute("data-akcia");
+        // druhý klik na aktívne = odhlásiť
+        var akt = b.textContent.indexOf("✓") > -1;
+        prihlasNaMisiu(misiaId, akt ? "odhlasit" : akcia, b);
+      };
+    });
+  }
+    async function nacitajMisieProZonu(archiv) {
     var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
     if (!kk) return null;
     var sess = (await kk.auth.getSession()).data.session;
@@ -855,7 +908,8 @@ class Component extends DCLogic {
     var misie = await nacitajMisieProZonu(false);
     if (misie === null) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Misie sa nepodarilo načítať.</div>'; return; }
     if (!misie.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Žiadne naplánované misie. Nová pribudne z admin rozhrania.</div>'; return; }
-    box.innerHTML = misie.map(misiaKarta).join("");
+    box.innerHTML = misie.map(function(m){ return misiaKarta(m, false); }).join("");
+    naviazPrihlasky(box);
   }
   async function naplnArchiv(pokus) {
     pokus = pokus || 0;
@@ -864,7 +918,7 @@ class Component extends DCLogic {
     var misie = await nacitajMisieProZonu(true);
     if (misie === null) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Archív sa nepodarilo načítať.</div>'; return; }
     if (!misie.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Archív je zatiaľ prázdny.</div>'; return; }
-    box.innerHTML = misie.map(misiaKarta).join("");
+    box.innerHTML = misie.map(function(m){ return misiaKarta(m, true); }).join("");
   }
   async function naplnProfil() {
     try {
