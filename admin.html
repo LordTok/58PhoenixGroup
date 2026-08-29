@@ -683,7 +683,7 @@
         vykresliXp();
   vykresliDoch();
   vykresliVyc();
-  if (typeof nacitajMisieDB === "function") nacitajMisieDB(); toast();
+  toast();
       };
       ha.appendChild(el);
     });
@@ -869,12 +869,13 @@
   }
 
   // ===== NAČÍTANIE MISIÍ Z DB =====
-  async function nacitajMisieDB() {
+  async function nacitajMisieDB(pokus) {
+    pokus = pokus || 0;
     try {
       var klient = window.pgSupaKlient ? window.pgSupaKlient() : null;
-      if (!klient) return;
+      if (!klient) { if (pokus < 20) setTimeout(function(){ nacitajMisieDB(pokus+1); }, 300); return; }
       var sess = (await klient.auth.getSession()).data.session;
-      if (!sess) return;
+      if (!sess) { if (pokus < 20) setTimeout(function(){ nacitajMisieDB(pokus+1); }, 300); return; }
       var r = await fetch("https://hrfvenycjsenjlbpztsd.supabase.co/functions/v1/nacitaj-misie", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq" },
@@ -975,6 +976,7 @@
   vykresliVsetko();
   vykresliLog();
   vykresliXp();
+  if (typeof nacitajMisieDB === "function") nacitajMisieDB();
 </script>
 
 
