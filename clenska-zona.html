@@ -207,22 +207,7 @@ a:hover { color: #E8E8CC; }
         <span></span><span>Člen</span><span>Roly s výcvikom</span><span style="justify-self: end;">Stav</span><span></span>
       </div>
       <div style="display: {{ emRoster }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">ORBAT sa naplní po pridaní členov cez Discord.</div></div>
-<div style="display: {{ dataDisplay }};"><sc-for list="{{ roster }}" as="m" hint-placeholder-count="12">
-<div style="display: grid; grid-template-columns: 44px minmax(140px, 1fr) minmax(180px, 1.6fr) 118px 30px; gap: 14px; align-items: center; padding: 10px 20px; border-bottom: 1px solid #35402A; font-size: 14.5px; transition: background .2s;" style-hover="background: #313A26;">
-  <img src="{{ m.insig }}" alt="" style="width: 38px; height: 38px; object-fit: contain; justify-self: center;">
-  <span style="min-width: 0;">
-    <span style="display: block; color: #E8E8CC; font-weight: 600; line-height: 1.25;">{{ m.nick }}</span>
-    <span style="display: block; font-size: 12px; color: #9C9C74; font-family: 'Staatliches', sans-serif; letter-spacing: 1.5px;">{{ m.rankFull }}</span>
-  </span>
-  <span style="display: flex; gap: 6px; flex-wrap: wrap;">
-    <sc-for list="{{ m.roles }}" as="r" hint-placeholder-count="3">
-      <span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border: 1px solid #4A5A38; border-radius: 3px; color: #C2C29E;">{{ r }}</span>
-    </sc-for>
-  </span>
-  <span style="justify-self: end; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; letter-spacing: 1px; padding: 3px 11px; border-radius: 999px; background: {{ m.stBg }}; border: 1px solid {{ m.stBorder }}; color: {{ m.stColor }}; white-space: nowrap;"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ m.stDot }};"></span>{{ m.status }}</span>
-  <button onClick="{{ ulozAtrapa }}" title="Upraviť" style="display: {{ editShow }}; align-items: center; justify-content: center; width: 26px; height: 26px; background: #35402A; border: 1px solid #8A5F44; border-radius: 5px; color: #C2A57B; cursor: pointer; font-size: 13px;">✎</button>
-</div>
-</sc-for>
+<div style="display: block;"><div id="pg-roster-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam členov…</div></div>
     </div>
   </div>
 
@@ -234,45 +219,7 @@ a:hover { color: #E8E8CC; }
     </div>
     <div style="display: grid; gap: 22px;">
       <div style="display: {{ emEvents }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Kalendár misií je pripravený — prvá misia pribudne z admin rozhrania.</div></div>
-<div style="display: {{ dataDisplayGrid }}; gap: 26px;"><sc-for list="{{ events }}" as="e" hint-placeholder-count="6">
-        <div style="display: {{ e.disp }};">
-          <div style="display: inline-flex; align-items: center; gap: 10px; background: #35402A; border: 1px solid #4A5A38; border-bottom: none; border-radius: 6px 6px 0 0; padding: 5px 16px; margin-left: 16px; position: relative; top: 1px;">
-            <span style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; color: #C2C29E;">{{ e.day }}</span>
-            <span style="font-size: 12.5px; color: #A8A890; font-feature-settings: 'tnum' 1;">{{ e.time }}</span>
-            <span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border-radius: 3px; border: 1px solid {{ e.tagBorder }}; color: {{ e.tagColor }}; background: {{ e.tagBg }};">{{ e.type }}</span>
-          </div>
-          <div style="background: #2C3522; border: 1px solid {{ e.cardBorder }}; border-left: 4px solid {{ e.stripe }}; border-radius: 0 6px 6px 6px; overflow: hidden; transition: border-color .25s;">
-            <button onClick="{{ e.expand }}" style="display: grid; grid-template-columns: minmax(0, 1.4fr) 100px auto 20px; gap: 16px; align-items: center; width: 100%; text-align: left; background: none; border: none; cursor: pointer; padding: 14px 20px; color: inherit; font-family: inherit;">
-              <div>
-                <div style="font-size: 16px; color: #E8E8CC; font-weight: 600;">{{ e.title }}</div>
-                <div style="font-size: 13.5px; color: #A8A890;">{{ e.note }}</div>
-              </div>
-              <span style="font-size: 13.5px; color: #A8A890;">{{ e.modpack }}</span>
-              <span style="display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;"><span onClick="{{ e.toggle }}" style="padding: 7px 12px; font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1px; border-radius: 4px; cursor: pointer; text-align: center; white-space: nowrap; color: {{ e.btnColor }}; background: {{ e.btnBg }}; border: 2px solid {{ e.btnBorder }}; transition: background .2s;">{{ e.btnLabel }}</span><span onClick="{{ e.excuse }}" style="padding: 7px 12px; font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1px; border-radius: 4px; cursor: pointer; text-align: center; white-space: nowrap; color: {{ e.excColor }}; background: {{ e.excBg }}; border: 2px solid {{ e.excBorder }}; transition: background .2s;">{{ e.excuseLabel }}</span><button onClick="{{ ulozAtrapa }}" title="Upraviť misiu" style="display: {{ editShow }}; align-items:center; justify-content:center; width:34px; height:34px; background:#35402A; border:1px solid #8A5F44; border-radius:4px; color:#C2A57B; cursor:pointer; font-size:14px;">✎</button><button onClick="{{ e.zmaz }}" title="Zmazať misiu" style="display: {{ editShow }}; align-items:center; justify-content:center; width:34px; height:34px; background:#35402A; border:1px solid #7A3B2E; border-radius:4px; color:#C98B7A; cursor:pointer; font-size:14px;">🗑</button></span>
-              <span style="color: #9C9C74; font-size: 15px; transition: transform .3s; transform: {{ e.chevRot }};">▾</span>
-            </button>
-            <div style="display: grid; grid-template-rows: {{ e.rows }}; transition: grid-template-rows .45s ease;">
-              <div style="overflow: hidden; min-height: 0;">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 4px 20px 20px; border-top: 1px solid #35402A;">
-                  <div>
-                    <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin: 14px 0 6px;">Brífing</div>
-                    <p style="font-size: 14.5px; margin: 0; line-height: 1.6;">{{ e.brief }}</p>
-                    <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin: 14px 0 6px;">Prílohy</div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                      <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #9C9C74; border-radius: 3px; color: #C2C29E;">📄 {{ e.attach }}</span>
-                      <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #4A5A38; border-radius: 3px; color: #A8A890;">Zraz TS 15:00</span>
-                    </div>
-                  </div>
-                  <figure style="margin: 14px 0 0;">
-                    <img src="{{ e.img }}" alt="" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; border: 1px solid #4A5A38; display: block;">
-                    <figcaption style="font-size: 12.5px; color: #A8A890; margin-top: 6px;">{{ e.imgCap }}</figcaption>
-                  </figure>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </sc-for></div>
+<div style="display: grid; gap: 26px;"><div id="pg-kalendar-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam misie…</div></div></div>
     </div>
   </div>
 
@@ -283,35 +230,7 @@ a:hover { color: #E8E8CC; }
     </div>
     <div style="display: grid; gap: 12px;">
       <div style="display: {{ emAars }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Archív po-akčných hlásení sa začne plniť po prvej misii.</div></div>
-<div style="display: {{ dataDisplayGrid }}; gap: 26px;"><sc-for list="{{ aars }}" as="a" hint-placeholder-count="5">
-<div style="display: {{ a.disp }};">
-  <div style="display: inline-flex; align-items: center; gap: 10px; background: #35402A; border: 1px solid #4A5A38; border-bottom: none; border-radius: 6px 6px 0 0; padding: 5px 16px; margin-left: 16px; position: relative; top: 1px;">
-    <span style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; color: #C2C29E;">{{ a.date }}</span>
-    <span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border-radius: 3px; border: 1px solid {{ a.resBorder }}; color: {{ a.resColor }};">{{ a.result }}</span>
-  </div>
-  <div style="background: #2C3522; border: 1px solid {{ a.cardBorder }}; border-left: 4px solid {{ a.resBorder }}; border-radius: 0 6px 6px 6px; overflow: hidden; transition: border-color .25s;">
-    <div style="display: flex; align-items: center; gap: 8px; padding-right: 14px;">
-      <button onClick="{{ a.toggle }}" style="display: flex; align-items: baseline; gap: 14px; flex: 1; min-width: 0; text-align: left; background: none; border: none; cursor: pointer; padding: 14px 20px; color: inherit; font-family: inherit; flex-wrap: wrap;">
-        <span style="font-size: 16px; color: #E8E8CC; font-weight: 600;">{{ a.name }}</span>
-        <span style="margin-left: auto; color: #9C9C74; font-size: 15px; transition: transform .3s; transform: {{ a.chevRot }};">▾</span>
-      </button>
-      <button onClick="{{ ulozAtrapa }}" title="Upraviť" style="display: {{ editShow }}; align-items:center; justify-content:center; width:30px; height:30px; background:#35402A; border:1px solid #8A5F44; border-radius:4px; color:#C2A57B; cursor:pointer; font-size:13px; flex-shrink:0;">✎</button>
-      <button onClick="{{ a.zmaz }}" title="Zmazať z archívu" style="display: {{ editShow }}; align-items:center; justify-content:center; width:30px; height:30px; background:#35402A; border:1px solid #7A3B2E; border-radius:4px; color:#C98B7A; cursor:pointer; font-size:13px; flex-shrink:0;">🗑</button>
-    </div>
-    <div style="display: grid; grid-template-rows: {{ a.rows }}; transition: grid-template-rows .45s ease;">
-      <div style="overflow: hidden; min-height: 0;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 0 20px 20px; border-top: 1px solid #35402A;">
-          <p style="font-size: 14.5px; margin: 14px 0 0; line-height: 1.6;">{{ a.report }}</p>
-          <figure style="margin: 14px 0 0;">
-            <img src="{{ a.img }}" alt="" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; border: 1px solid #4A5A38; display: block;">
-            <figcaption style="font-size: 12.5px; color: #A8A890; margin-top: 6px;">{{ a.imgCap }}</figcaption>
-          </figure>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</sc-for></div>
+<div style="display: grid; gap: 26px;"><div id="pg-archiv-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam archív…</div></div></div>
     </div>
   </div>
 
@@ -371,15 +290,15 @@ a:hover { color: #E8E8CC; }
   <div style="display: grid; grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr); gap: 0;">
     <div style="padding: 28px;">
         <div style="display: flex; gap: 18px; align-items: center;">
-          <div style="width: 88px; height: 88px; border-radius: 50%; background: #35402A; border: 2px solid #9C9C74; display: grid; place-items: center; font-family: 'Staatliches', sans-serif; font-size: 34px; color: #C2C29E; flex-shrink: 0;">S</div>
+          <div style="width: 88px; height: 88px; border-radius: 50%; background: #35402A; border: 2px solid #9C9C74; display: grid; place-items: center; font-family: 'Staatliches', sans-serif; font-size: 34px; color: #C2C29E; flex-shrink: 0; overflow: hidden;" id="pg-profil-avatar">S</div>
           <div>
-            <div style="font-family: 'Staatliches', sans-serif; font-size: 26px; letter-spacing: 2px; color: #C2C29E;">„Straka"</div>
+            <div style="font-family: 'Staatliches', sans-serif; font-size: 26px; letter-spacing: 2px; color: #C2C29E;" id="pg-profil-nick">„Straka"</div>
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px;">
-      <img src="assets/hodnosti/04-desiatnik.png" alt="desiatnik" style="width: 34px; height: 34px; object-fit: contain;">
-      <span style="font-size: 14.5px; color: #D8D8C0;">desiatnik</span>
+      <img src="assets/hodnosti/04-desiatnik.png" alt="desiatnik" style="width: 34px; height: 34px; object-fit: contain;" id="pg-profil-insig">
+      <span style="font-size: 14.5px; color: #D8D8C0;" id="pg-profil-hodnost">desiatnik</span>
       
       <span style="color: #4A5A38;">·</span>
-      <span style="font-size: 14px; color: #A8A890;">v jednotke od 03/2022</span>
+      <span style="font-size: 14px; color: #A8A890;" id="pg-profil-vstup">v jednotke od 03/2022</span>
     </div>
           </div>
         </div>
@@ -884,7 +803,188 @@ class Component extends DCLogic {
     document.getElementById("pg-auth-stav").textContent = text || "";
     ov.style.display = "flex";
   }
-  function dnu() { ov.style.display = "none"; if (window.pgNavChip) window.pgNavChip(); }
+  function dnu() { ov.style.display = "none"; if (window.pgNavChip) window.pgNavChip(); naplnProfil(); naplnKalendar(); naplnArchiv(); naplnRoster(); }
+  function tagFarby(typ) {
+    if (typ === "vycvik") return ["#4A5A38", "#9C9C74", "rgba(156,156,116,.12)", "#8A5F44"];
+    if (typ === "event")  return ["#4A5A38", "#A8A890", "rgba(168,168,144,.12)", "#5A6B44"];
+    return ["#8A5F44", "#C2A57A", "rgba(138,95,68,.15)", "#8A5F44"]; // misia
+  }
+  function misiaKarta(m, archiv) {
+    var d = m.datum ? new Date(m.datum) : null;
+    var den = d ? d.toLocaleDateString("sk-SK", { weekday:"short", day:"numeric", month:"numeric" }) : "";
+    var cas = d ? d.toLocaleTimeString("sk-SK", { hour:"2-digit", minute:"2-digit" }) : "";
+    var typLabel = m.typ === "vycvik" ? "Výcvik" : (m.typ === "event" ? "Event" : "Misia");
+    var f = tagFarby(m.typ);
+    var tagBorder = f[0], tagColor = f[1], tagBg = f[2], stripe = f[3];
+    var h = '<div style="margin-bottom: 22px;">';
+    // ZÁLOŽKA hore (zložkový vzhľad)
+    h += '<div style="display: inline-flex; align-items: center; gap: 10px; background: #35402A; border: 1px solid #4A5A38; border-bottom: none; border-radius: 6px 6px 0 0; padding: 5px 16px; margin-left: 16px; position: relative; top: 1px;">'
+      + '<span style="font-family: \'Staatliches\', sans-serif; font-size: 15px; letter-spacing: 2px; color: #C2C29E;">' + den + '</span>'
+      + '<span style="font-size: 12.5px; color: #A8A890;">' + cas + '</span>'
+      + '<span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border-radius: 3px; border: 1px solid ' + tagBorder + '; color: ' + tagColor + '; background: ' + tagBg + ';">' + typLabel + '</span>'
+      + '</div>';
+    // TELO karty s ľavým prúžkom
+    h += '<div style="background: #2C3522; border: 1px solid #4A5A38; border-left: 4px solid ' + stripe + '; border-radius: 0 6px 6px 6px; padding: 18px 20px;">';
+    h += '<div style="font-family: \'Staatliches\', sans-serif; font-size: 21px; letter-spacing: 1px; color: #C2C29E; margin-bottom: 6px;">' + (m.nazov || "") + '</div>';
+    if (m.brief) h += '<div style="font-size: 14px; color: #D8D8C0; line-height: 1.65; margin-bottom: 10px;">' + m.brief + '</div>';
+    var meta = [];
+    if (m.modpack) meta.push("Modpack: " + m.modpack);
+    if (typeof m.pocet_prihlasenych === "number") meta.push("Prihlásených: " + m.pocet_prihlasenych);
+    if (meta.length) h += '<div style="font-size: 12.5px; color: #8A8A6E; margin-bottom: ' + (archiv ? "0" : "14") + 'px;">' + meta.join("  ·  ") + '</div>';
+    // PRIHLASOVACIE TLAČIDLÁ (len kalendár, nie archív)
+    if (!archiv) {
+      var jePr = m.moj_stav === "prihlaseny";
+      var jeOs = m.moj_stav === "ospravedlneny";
+      h += '<div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">'
+        + '<button data-akcia="prihlasit" data-misia="' + m.id + '" style="cursor:pointer; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; font-size:14px; padding:8px 18px; border-radius:5px; border:1px solid ' + (jePr ? "#7FB069" : "#4A5A38") + '; background:' + (jePr ? "rgba(127,176,105,.18)" : "transparent") + '; color:' + (jePr ? "#9Fd089" : "#C2C29E") + ';">' + (jePr ? "✓ Zúčastním sa" : "Zúčastním sa") + '</button>'
+        + '<button data-akcia="ospravedlnit" data-misia="' + m.id + '" style="cursor:pointer; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; font-size:14px; padding:8px 18px; border-radius:5px; border:1px solid ' + (jeOs ? "#C9A227" : "#4A5A38") + '; background:' + (jeOs ? "rgba(201,162,39,.16)" : "transparent") + '; color:' + (jeOs ? "#D8B45A" : "#C2C29E") + ';">' + (jeOs ? "✓ Ospravedlnený" : "Ospravedlním sa") + '</button>'
+        + '</div>';
+    }
+    h += '</div></div>';
+    return h;
+  }
+  async function prihlasNaMisiu(misiaId, akcia, btn) {
+    var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
+    if (!kk) return;
+    var sess = (await kk.auth.getSession()).data.session;
+    if (!sess) return;
+    if (btn) { btn.disabled = true; btn.style.opacity = "0.6"; }
+    try {
+      var r = await fetch(SUPA_URL + "/functions/v1/prihlas-na-misiu", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
+        body: JSON.stringify({ misiaId: misiaId, akcia: akcia })
+      });
+      var v = await r.json();
+      if (!r.ok || v.error) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } return; }
+    } catch (e) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } return; }
+    // prekresli kalendár (aby sa aktualizoval stav aj počty)
+    naplnKalendar();
+  }
+  function naviazPrihlasky(box) {
+    box.querySelectorAll("button[data-akcia]").forEach(function(b){
+      b.onclick = function(){
+        var misiaId = b.getAttribute("data-misia");
+        var akcia = b.getAttribute("data-akcia");
+        // druhý klik na aktívne = odhlásiť
+        var akt = b.textContent.indexOf("✓") > -1;
+        prihlasNaMisiu(misiaId, akt ? "odhlasit" : akcia, b);
+      };
+    });
+  }
+    async function nacitajMisieProZonu(archiv) {
+    var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
+    if (!kk) return null;
+    var sess = (await kk.auth.getSession()).data.session;
+    if (!sess) return null;
+    var r = await fetch(SUPA_URL + "/functions/v1/nacitaj-kalendar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
+      body: JSON.stringify({ archiv: !!archiv })
+    });
+    var v = await r.json();
+    if (!r.ok || v.error) return null;
+    return v.misie || [];
+  }
+  async function naplnKalendar(pokus) {
+    pokus = pokus || 0;
+    var box = document.getElementById("pg-kalendar-db");
+    if (!box) { if (pokus < 30) setTimeout(function(){ naplnKalendar(pokus+1); }, 250); return; }
+    var misie = await nacitajMisieProZonu(false);
+    if (misie === null) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Misie sa nepodarilo načítať.</div>'; return; }
+    if (!misie.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Žiadne naplánované misie. Nová pribudne z admin rozhrania.</div>'; return; }
+    box.innerHTML = misie.map(function(m){ return misiaKarta(m, false); }).join("");
+    naviazPrihlasky(box);
+  }
+  function clenRiadok(m) {
+    var d = m.vstup ? new Date(m.vstup) : null;
+    var vstupTxt = d ? d.toLocaleDateString("sk-SK", { day:"numeric", month:"numeric", year:"numeric" }) : "—";
+    var avatar = m.avatar_url
+      ? '<img src="' + m.avatar_url + '" alt="" style="width:38px; height:38px; border-radius:50%; object-fit:cover; background:#35402A; justify-self:center;">'
+      : '<div style="width:38px; height:38px; border-radius:50%; background:#35402A; display:grid; place-items:center; font-family:\'Staatliches\',sans-serif; color:#C2C29E; justify-self:center;">' + (m.nick||"?").charAt(0).toUpperCase() + '</div>';
+    var velitelOdznak = m.je_velitel
+      ? '<span style="font-size:10.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; background:rgba(156,156,116,.2); border:1px solid #9C9C74; color:#C2C29E;">VELITEĽ</span>'
+      : '';
+    var h = '<div style="display:grid; grid-template-columns:44px minmax(140px,1fr) minmax(180px,1.6fr) 118px; gap:14px; align-items:center; padding:10px 20px; border-bottom:1px solid #35402A; font-size:14.5px;">';
+    h += avatar;
+    h += '<span style="min-width:0;"><span style="display:block; color:#E8E8CC; font-weight:600; line-height:1.25;">' + (m.nick||"") + '</span>'
+      + '<span style="display:block; font-size:12px; color:#9C9C74; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; margin-top:2px;">' + (m.hodnost || "—") + '</span></span>';
+    // špecializácie — zatiaľ prázdne miesto (doplníme keď budú Discord roly výcvikov)
+    h += '<span style="font-size:12.5px; color:#6b6b56; font-style:italic;">' + velitelOdznak + '</span>';
+    h += '<span style="font-size:13px; color:#A8A890; justify-self:end;">' + vstupTxt + '</span>';
+    h += '</div>';
+    return h;
+  }
+  async function naplnRoster(pokus) {
+    pokus = pokus || 0;
+    var box = document.getElementById("pg-roster-db");
+    if (!box) { if (pokus < 30) setTimeout(function(){ naplnRoster(pokus+1); }, 250); return; }
+    var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
+    if (!kk) return;
+    var sess = (await kk.auth.getSession()).data.session;
+    if (!sess) return;
+    try {
+      var r = await fetch(SUPA_URL + "/functions/v1/nacitaj-clenov", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
+        body: "{}"
+      });
+      var v = await r.json();
+      if (!r.ok || v.error) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Členov sa nepodarilo načítať.</div>'; return; }
+      if (!v.clenovia || !v.clenovia.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Zatiaľ žiadni členovia v databáze.</div>'; return; }
+      // hlavička
+      var head = '<div style="display:grid; grid-template-columns:44px minmax(140px,1fr) minmax(180px,1.6fr) 118px; gap:14px; padding:8px 20px; font-family:\'Staatliches\',sans-serif; letter-spacing:2px; font-size:12px; color:#8A5F44; border-bottom:1px solid #4A5A38;"><span></span><span>ČLEN</span><span>ŠPECIALIZÁCIE</span><span style="justify-self:end;">NA DISCORDE OD</span></div>';
+      box.innerHTML = head + v.clenovia.map(clenRiadok).join("");
+    } catch (e) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Chyba: ' + e.message + '</div>'; }
+  }
+  async function naplnArchiv(pokus) {
+    pokus = pokus || 0;
+    var box = document.getElementById("pg-archiv-db");
+    if (!box) { if (pokus < 30) setTimeout(function(){ naplnArchiv(pokus+1); }, 250); return; }
+    var misie = await nacitajMisieProZonu(true);
+    if (misie === null) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Archív sa nepodarilo načítať.</div>'; return; }
+    if (!misie.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Archív je zatiaľ prázdny.</div>'; return; }
+    box.innerHTML = misie.map(function(m){ return misiaKarta(m, true); }).join("");
+  }
+  async function naplnProfil() {
+    try {
+      var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
+      if (!kk) return;
+      var sess = (await kk.auth.getSession()).data.session;
+      if (!sess) return;
+      var r = await fetch(SUPA_URL + "/functions/v1/nacitaj-profil", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
+        body: "{}"
+      });
+      var v = await r.json();
+      if (!r.ok || v.error || !v.profil) return;
+      var p = v.profil;
+      var elN = document.getElementById("pg-profil-nick");
+      if (elN) elN.textContent = "„" + (p.nick || "") + "\u201c";
+      var elA = document.getElementById("pg-profil-avatar");
+      if (elA) {
+        if (p.avatar_url) { elA.innerHTML = '<img src="' + p.avatar_url + '" alt="" style="width:100%;height:100%;object-fit:cover;">'; }
+        else { elA.textContent = (p.nick || "?").charAt(0).toUpperCase(); }
+      }
+      var elV = document.getElementById("pg-profil-vstup");
+      if (elV && p.vstup) {
+        var dt = new Date(p.vstup);
+        var mes = String(dt.getMonth() + 1).padStart(2, "0");
+        elV.textContent = "v jednotke od " + mes + "/" + dt.getFullYear();
+      }
+      // hodnosť + insígnia
+      var HODM = ["Vojak 1. stupňa","Vojak 2. stupňa","Slobodník","Desiatnik","Čatár","Rotný","Rotmajster","Nadrotmajster","Štábny nadrotmajster","Podpráporčík","Práporčík","Nadpráporčík","Poručík","Nadporučík","Kapitán","Major","Podplukovník","Plukovník"];
+      var HODIMG = ["01-vojak-1-stupna","02-vojak-2-stupna","03-slobodnik","04-desiatnik","05-catar","06-rotny","07-rotmajster","08-nadrotmajster","09-stabny-nadrotmajster","10-podpraporcik","11-praporcik","12-nadpraporcik","13-porucik","14-nadporucik","15-kapitan","16-major","17-podplukovnik","18-plukovnik"];
+      var elH = document.getElementById("pg-profil-hodnost");
+      var elI = document.getElementById("pg-profil-insig");
+      if (p.hodnost) {
+        if (elH) elH.textContent = p.hodnost.toLowerCase();
+        var idx = HODM.indexOf(p.hodnost);
+        if (elI && idx > -1) { elI.src = "assets/hodnosti/" + HODIMG[idx] + ".png"; elI.alt = p.hodnost; }
+      }
+    } catch (e) {}
+  }
   async function overNaServeri(sess) {
     var ident = (sess.user.identities || []).filter(function(x){ return x.provider === "discord"; })[0];
     var discordId = ident ? ident.id : (sess.user.user_metadata || {}).provider_id;
@@ -932,6 +1032,16 @@ class Component extends DCLogic {
     try { localStorage.removeItem("pg_ucet"); localStorage.removeItem("pg_rola"); sessionStorage.removeItem("pg_auth_ok"); } catch (e) {}
     location.href = "index.html";
   };
+  // samostatný spúšťač napĺňania sekcií (nezávisle od gate) — dc môže kontajnery vložiť neskôr
+  function spustSekcie() {
+    if (!kesUcet()) return;
+    if (typeof naplnKalendar === "function") naplnKalendar();
+    if (typeof naplnArchiv === "function") naplnArchiv();
+    if (typeof naplnProfil === "function") naplnProfil();
+    if (typeof naplnRoster === "function") naplnRoster();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ setTimeout(spustSekcie, 400); });
+  else setTimeout(spustSekcie, 400);
   start();
 })();
 </script>
