@@ -380,6 +380,21 @@
     </div>
 
     <div id="panel-doch" class="panel">
+      <div class="sekcia-editor" style="margin-top: 0; margin-bottom: 20px;">
+        <div class="nadpis">Vytvoriť udalosť</div>
+        <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 14px;">Uloží sa a hneď odošle na Discord s prihlasovacími tlačidlami ✅ / ❌.</p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; max-width:680px;">
+          <label class="pole" style="margin:0;"><span>Názov</span><input class="vstup" id="nu-nazov" placeholder="Operácia Tichý hrebeň"></label>
+          <label class="pole" style="margin:0;"><span>Typ</span><select class="vstup" id="nu-typ"><option value="misia">Misia</option><option value="vycvik">Výcvik</option><option value="event">Event</option></select></label>
+          <label class="pole" style="margin:0;"><span>Dátum a čas</span><input class="vstup" id="nu-datum" type="datetime-local"></label>
+          <label class="pole" style="margin:0;"><span>Modpack</span><input class="vstup" id="nu-modpack" placeholder="Moderna 4.2"></label>
+          <label class="pole" style="margin:0; grid-column:1/3;"><span>Briefing</span><textarea class="vstup" id="nu-brief" rows="3" placeholder="Stručný popis operácie…"></textarea></label>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; margin-top:14px;">
+          <button class="btn" onclick="vytvorUdalost()" id="nu-btn">Vytvoriť a poslať na Discord</button>
+          <span id="nu-stav" style="font-size:13px; color:var(--text-tlm);"></span>
+        </div>
+      </div>
       <div class="sekcia-editor" style="margin-top: 0;">
         <div class="nadpis">Vypísané udalosti</div>
         <div id="doch-udalosti" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;"></div>
@@ -755,6 +770,18 @@
     var ud = UDALOSTI.filter(function(u){ return u.id === dochAktivna; })[0];
     document.getElementById("doch-nazov").textContent = ud.nazov + " — " + ud.datum;
     document.getElementById("doch-sadzby").textContent = "Dorazil +" + sadzbaUcast(ud.typ) + " XP · Nedorazil " + sadzbaNeucast() + " XP · Ospravedlnený 0 XP (podľa sadzobníka a pravidiel automatizácie)";
+    // panel prihlásených z Discordu (pre DB udalosti)
+    var stareP = document.getElementById("doch-prihlaseni-box");
+    if (stareP) stareP.remove();
+    if (ud && ud.id && String(ud.id).indexOf("-") > -1) {
+      var pbox = document.createElement("div");
+      pbox.id = "doch-prihlaseni-box";
+      pbox.style.cssText = "margin:6px 0 18px; padding:14px; background:var(--oliva); border:1px solid var(--linka); border-radius:6px;";
+      pbox.innerHTML = '<div class="ulozene-info">Načítavam…</div>';
+      var sadzby = document.getElementById("doch-sadzby");
+      sadzby.parentNode.insertBefore(pbox, sadzby.nextSibling);
+      if (typeof nacitajPrihlasenych === "function") nacitajPrihlasenych(ud.id, pbox);
+    }
     var hc = document.getElementById("doch-clenovia"); hc.innerHTML = "";
     Object.keys(DATA).forEach(function(id){
       var stav = (DOCH[ud.id] || {})[id] || null;
@@ -838,6 +865,83 @@
       el.innerHTML = '<span class="kodv">' + cast[1] + '</span><span class="info"><span class="kto">' + menoClena(cast[0]) + '</span> · ' + (VYC_NAZVY[cast[1]] || cast[1]) + '</span><span style="font-size:12.5px; color:var(--khaki-svetla);">Splnené ✓ ' + d.uroven + '</span>';
       hh.appendChild(el);
     });
+  }
+
+  // ===== VYTVORENIE UDALOSTI (DB + Discord) =====
+  var SUPA_URL_ADMIN = "https://hrfvenycjsenjlbpztsd.supabase.co";
+  var SUPA_ANON_ADMIN = "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq";
+  async function vytvorUdalost() {
+    var nazov = document.getElementById("nu-nazov").value.trim();
+    var typ = document.getElementById("nu-typ").value;
+    var datumRaw = document.getElementById("nu-datum").value;
+    var modpack = document.getElementById("nu-modpack").value.trim();
+    var brief = document.getElementById("nu-brief").value.trim();
+    var stav = document.getElementById("nu-stav");
+    var btn = document.getElementById("nu-btn");
+    if (!nazov || !datumRaw) { stav.textContent = "Vyplň aspoň názov a dátum."; stav.style.color = "#C98B7A"; return; }
+    btn.disabled = true; stav.style.color = "var(--text-tlm)"; stav.textContent = "Ukladám a posielam…";
+    try {
+      var klient = window.pgSupaKlient ? window.pgSupaKlient() : null;
+      if (!klient) { stav.textContent = "Nie si prihlásený."; stav.style.color = "#C98B7A"; btn.disabled = false; return; }
+      var sess = (await klient.auth.getSession()).data.session;
+      if (!sess) { stav.textContent = "Vypršalo prihlásenie, obnov stránku."; stav.style.color = "#C98B7A"; btn.disabled = false; return; }
+
+      // 1) ulož misiu do DB (cez REST s tokenom)
+      var dbRes = await fetch(SUPA_URL_ADMIN + "/rest/v1/misie", {
+        method: "POST",
+        headers: {
+          "apikey": SUPA_ANON_ADMIN,
+          "Authorization": "Bearer " + sess.access_token,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify({ nazov: nazov, typ: typ, datum: new Date(datumRaw).toISOString(), brief: brief, modpack: modpack })
+      });
+      if (!dbRes.ok) { var t = await dbRes.text(); stav.textContent = "Uloženie zlyhalo (možno RLS): " + t.slice(0,80); stav.style.color = "#C98B7A"; btn.disabled = false; return; }
+      var misia = (await dbRes.json())[0];
+
+      // 2) pošli na Discord cez chránenú funkciu
+      var datumZobraz = new Date(datumRaw).toLocaleString("sk-SK", { weekday:"long", day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" });
+      var fnRes = await fetch(SUPA_URL_ADMIN + "/functions/v1/posli-misiu-tlacidla", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
+        body: JSON.stringify({ misiaId: misia.id, nazov: nazov, datum: datumZobraz, brief: brief, modpack: modpack })
+      });
+      var fn = await fnRes.json();
+      if (!fnRes.ok || fn.error) { stav.textContent = "Uložené, ale Discord zlyhal: " + (fn.error || fnRes.status); stav.style.color = "#C98B7A"; btn.disabled = false; return; }
+
+      stav.textContent = "✓ Vytvorené a odoslané na Discord!"; stav.style.color = "#7FB069";
+      zapisLog('vytvoril udalosť <strong>' + nazov + '</strong> (' + typ + ') a odoslal na Discord');
+      document.getElementById("nu-nazov").value = ""; document.getElementById("nu-brief").value = "";
+      document.getElementById("nu-modpack").value = ""; document.getElementById("nu-datum").value = "";
+      // pridaj do lokálneho zoznamu udalostí (aby ju rovno videl v dochádzke)
+      UDALOSTI.unshift({ id: misia.id, typ: typ, nazov: nazov, datum: datumZobraz, _db: true });
+      dochAktivna = misia.id; vykresliDoch();
+    } catch (e) {
+      stav.textContent = "Chyba: " + e.message; stav.style.color = "#C98B7A"; btn.disabled = false; return;
+    }
+    btn.disabled = false;
+  }
+
+  // ===== ZOBRAZENIE PRIHLÁSENÝCH Z DB =====
+  async function nacitajPrihlasenych(misiaId, kam) {
+    kam.innerHTML = '<div class="ulozene-info">Načítavam prihlásených z Discordu…</div>';
+    try {
+      var klient = window.pgSupaKlient(); var sess = (await klient.auth.getSession()).data.session;
+      var r = await fetch(SUPA_URL_ADMIN + "/functions/v1/nacitaj-prihlasenia", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
+        body: JSON.stringify({ misiaId: misiaId })
+      });
+      var v = await r.json();
+      if (!r.ok || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + (v.error||r.status) + ').</div>'; return; }
+      if (!v.prihlaseni || !v.prihlaseni.length) { kam.innerHTML = '<div class="ulozene-info">Zatiaľ sa nikto neprihlásil cez Discord.</div>'; return; }
+      var html = '<div style="font-family:\'Staatliches\',sans-serif; letter-spacing:1px; color:var(--khaki-svetla); margin-bottom:8px;">Prihlásení cez Discord (' + v.pocet + ')</div>';
+      v.prihlaseni.forEach(function(p){
+        html += '<div style="display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px solid #35402A;"><span style="font-family:\'Staatliches\',sans-serif; letter-spacing:1px; color:#C2C29E;">' + p.nick + '</span>' + (p.hodnost ? '<span style="font-size:12px; color:var(--text-tlm);">' + p.hodnost + '</span>' : '') + '</div>';
+      });
+      kam.innerHTML = html;
+    } catch (e) { kam.innerHTML = '<div class="ulozene-info">Chyba: ' + e.message + '</div>'; }
   }
 
   function prepni(panel, btn) {
