@@ -781,7 +781,7 @@
       pbox.innerHTML = '<div class="ulozene-info">Načítavam…</div>';
       var sadzby = document.getElementById("doch-sadzby");
       sadzby.parentNode.insertBefore(pbox, sadzby.nextSibling);
-      if (typeof nacitajPrihlasenych === "function") nacitajPrihlasenych(ud.id, pbox);
+      if (typeof nacitajDochadzkuDB === "function") nacitajDochadzkuDB(ud.id, pbox);
     }
     var hc = document.getElementById("doch-clenovia"); hc.innerHTML = "";
     Object.keys(DATA).forEach(function(id){
@@ -936,25 +936,59 @@
     btn.disabled = false;
   }
 
-  // ===== ZOBRAZENIE PRIHLÁSENÝCH Z DB =====
-  async function nacitajPrihlasenych(misiaId, kam) {
-    kam.innerHTML = '<div class="ulozene-info">Načítavam prihlásených z Discordu…</div>';
+  // ===== DOCHÁDZKA REÁLNYCH ČLENOV Z DB =====
+  var DOCH_MISIA = null; // aktuálne načítaná DB misia
+  async function nacitajDochadzkuDB(misiaId, kam) {
+    DOCH_MISIA = misiaId;
+    kam.innerHTML = '<div class="ulozene-info">Načítavam členov a dochádzku…</div>';
     try {
       var klient = window.pgSupaKlient(); var sess = (await klient.auth.getSession()).data.session;
-      var r = await fetch(SUPA_URL_ADMIN + "/functions/v1/nacitaj-prihlasenia", {
+      var r = await fetch(SUPA_URL_ADMIN + "/functions/v1/nacitaj-dochadzku", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
         body: JSON.stringify({ misiaId: misiaId })
       });
       var v = await r.json();
       if (!r.ok || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + (v.error||r.status) + ').</div>'; return; }
-      if (!v.prihlaseni || !v.prihlaseni.length) { kam.innerHTML = '<div class="ulozene-info">Zatiaľ sa nikto neprihlásil cez Discord.</div>'; return; }
-      var html = '<div style="font-family:\'Staatliches\',sans-serif; letter-spacing:1px; color:var(--khaki-svetla); margin-bottom:8px;">Prihlásení cez Discord (' + v.pocet + ')</div>';
-      v.prihlaseni.forEach(function(p){
-        html += '<div style="display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px solid #35402A;"><span style="font-family:\'Staatliches\',sans-serif; letter-spacing:1px; color:#C2C29E;">' + p.nick + '</span>' + (p.hodnost ? '<span style="font-size:12px; color:var(--text-tlm);">' + p.hodnost + '</span>' : '') + '</div>';
+      if (!v.clenovia || !v.clenovia.length) { kam.innerHTML = '<div class="ulozene-info">Zatiaľ nie sú v databáze žiadni členovia. Pribudnú po prihlásení alebo synchronizácii rostra.</div>'; return; }
+      var pocetPrih = v.clenovia.filter(function(c){ return c.prihlaseny === "prihlaseny"; }).length;
+      var html = '<div style="font-family:\'Staatliches\',sans-serif; letter-spacing:1px; color:var(--khaki-svetla); margin-bottom:10px;">Dochádzka · prihlásených cez Discord: ' + pocetPrih + '</div>';
+      v.clenovia.forEach(function(c){
+        var odznak = c.prihlaseny === "prihlaseny" ? '<span title="Prihlásený na Discorde" style="color:#7FB069;">✅</span>' : (c.prihlaseny === "ospravedlneny" ? '<span title="Ospravedlnený na Discorde" style="color:#C9A227;">🟡</span>' : '<span style="color:#4A5A38;">·</span>');
+        html += '<div class="doch-riadok" data-clen="' + c.clen_id + '">'
+          + '<span class="meno">' + odznak + ' ' + c.nick + (c.hodnost ? ' <span style="font-size:11px;color:var(--text-tlm);">' + c.hodnost + '</span>' : '') + '</span>'
+          + '<div class="doch-stavy">'
+          + '<button data-s="dorazil" class="' + (c.dochadzka === "dorazil" ? "dorazil-akt" : "") + '">Dorazil</button>'
+          + '<button data-s="osprav" class="' + (c.dochadzka === "osprav" ? "osprav-akt" : "") + '">Ospravedlnený</button>'
+          + '<button data-s="nedorazil" class="' + (c.dochadzka === "nedorazil" ? "nedorazil-akt" : "") + '">Nedorazil</button>'
+          + '</div></div>';
       });
       kam.innerHTML = html;
+      // naviaz tlačidlá
+      kam.querySelectorAll(".doch-riadok").forEach(function(riadok){
+        var clenId = riadok.getAttribute("data-clen");
+        riadok.querySelectorAll("button").forEach(function(b){
+          b.onclick = function(){ ulozDochadzkuDB(misiaId, clenId, b.getAttribute("data-s"), riadok, b); };
+        });
+      });
     } catch (e) { kam.innerHTML = '<div class="ulozene-info">Chyba: ' + e.message + '</div>'; }
+  }
+  async function ulozDochadzkuDB(misiaId, clenId, stav, riadok, btn) {
+    var uzAkt = btn.className.indexOf("-akt") > -1;
+    var novyStav = uzAkt ? null : stav; // druhý klik = zrušiť
+    // vizuálne hneď
+    riadok.querySelectorAll("button").forEach(function(b){ b.className = ""; });
+    if (novyStav) btn.className = novyStav + "-akt";
+    try {
+      var klient = window.pgSupaKlient(); var sess = (await klient.auth.getSession()).data.session;
+      var r = await fetch(SUPA_URL_ADMIN + "/functions/v1/uloz-dochadzku", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
+        body: JSON.stringify({ misiaId: misiaId, clenId: clenId, stav: novyStav })
+      });
+      var v = await r.json();
+      if (!r.ok || v.error) { toast(); }
+    } catch (e) { /* ostane vizuál */ }
   }
 
   function prepni(panel, btn) {
