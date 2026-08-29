@@ -316,8 +316,9 @@
     var dd = document.createElement("div");
     dd.style.cssText = "position:absolute;right:0;top:calc(100% + 6px);min-width:190px;background:#2C3522;border:1px solid #4A5A38;border-radius:8px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.45);display:none;z-index:200;";
     var polozky = "";
+    var naClenskej = location.pathname.indexOf("clenska-zona") > -1;
     MENU.forEach(function (m) {
-      polozky += '<a href="' + m[1] + '" style="display:block;padding:8px 12px;border-radius:5px;text-decoration:none;color:#D8D8C0;font-size:13.5px;font-family:\'Barlow\',sans-serif;" onmouseover="this.style.background=\'#35402A\'" onmouseout="this.style.background=\'transparent\'">' + m[0] + '</a>';
+      polozky += '<a href="' + m[1] + '" data-hash="' + (m[1].split("#")[1] || "") + '" style="display:block;padding:8px 12px;border-radius:5px;text-decoration:none;color:#D8D8C0;font-size:13.5px;font-family:\'Barlow\',sans-serif;" onmouseover="this.style.background=\'#35402A\'" onmouseout="this.style.background=\'transparent\'">' + m[0] + '</a>';
     });
     polozky += '<div style="height:1px;background:#4A5A38;margin:6px 4px;"></div>';
     polozky += '<button id="pg-odhlasit" style="width:100%;text-align:left;padding:8px 12px;border:none;border-radius:5px;background:transparent;color:#C98B7A;font-size:13.5px;font-family:\'Barlow\',sans-serif;cursor:pointer;" onmouseover="this.style.background=\'#3a2a26\'" onmouseout="this.style.background=\'transparent\'">Odhlásiť sa</button>';
@@ -332,6 +333,17 @@
     function close(){ t = setTimeout(function(){ dd.style.display = "none"; }, 220); }
     wrap.addEventListener("mouseenter", open);
     wrap.addEventListener("mouseleave", close);
+    if (naClenskej) {
+      Array.prototype.forEach.call(dd.querySelectorAll("a[data-hash]"), function (el) {
+        el.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          var hh = el.getAttribute("data-hash");
+          if (location.hash.replace("#","") === hh) { dd.style.display = "none"; return; }
+          location.hash = hh ? ("#" + hh) : "";
+          location.reload();
+        });
+      });
+    }
     dd.querySelector("#pg-odhlasit").onclick = function () {
       var hotovo = function () {
         try { localStorage.removeItem("pg_ucet"); localStorage.removeItem("pg_rola"); } catch (e) {}
@@ -350,6 +362,8 @@
     }).observe(nav, { childList: true, subtree: true });
   }
   function start() {
+    // anti-blik: ak mame cache, hned skry pôvodné "Prihlásiť" než vykreslíme banner
+    if (kes()) { var a0 = odkaz(); if (a0 && !document.getElementById("pg-nav-wrap")) a0.style.visibility = "hidden"; }
     strazca();
     if (kes()) window.pgNavChip();
     [300, 900, 2000].forEach(function (t) { setTimeout(function(){ strazca(); if (kes() && !document.getElementById("pg-nav-wrap")) window.pgNavChip(); }, t); });

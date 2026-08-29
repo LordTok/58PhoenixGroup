@@ -156,6 +156,41 @@
 </style>
 </head>
 <body>
+<div id="pg-admin-guard" style="position: fixed; inset: 0; z-index: 100; background: #242B1C; display: flex; align-items: center; justify-content: center; padding: 24px;">
+  <div style="max-width: 440px; width: 100%; background: #2C3522; border: 1px solid #4A5A38; border-radius: 8px; padding: 36px 32px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,.5);">
+    <img src="assets/phoenix58.png" alt="58. Phoenix Group" style="width: 84px; height: 84px; object-fit: contain; margin: 0 auto 14px; display: block;">
+    <div style="font-family: 'Staatliches', sans-serif; font-size: 24px; letter-spacing: 3px; color: #E8E8CC;">Administrácia</div>
+    <div id="pg-admin-stav" style="margin-top: 10px; font-size: 14px; color: #A8A890;">Overujem oprávnenie…</div>
+    <div id="pg-admin-akcia" style="display:none; margin-top: 20px;">
+      <p id="pg-admin-text" style="font-size: 14px; color: #D8D8C0; margin: 0 0 18px;"></p>
+      <a id="pg-admin-btn" href="clenska-zona.html" style="display:inline-block; cursor: pointer; border: 1px solid #9C9C74; border-radius: 6px; background: transparent; color: #C2C29E; font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; padding: 10px 22px; text-decoration:none;">Prihlásiť sa</a>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  function kes(){ try { return JSON.parse(localStorage.getItem("pg_ucet")||"null"); } catch(e){ return null; } }
+  var g = document.getElementById("pg-admin-guard");
+  function odmietni(text, btnText, btnHref){
+    document.getElementById("pg-admin-stav").style.display = "none";
+    document.getElementById("pg-admin-text").textContent = text;
+    var b = document.getElementById("pg-admin-btn");
+    b.textContent = btnText; b.href = btnHref;
+    document.getElementById("pg-admin-akcia").style.display = "block";
+    g.style.display = "flex";
+  }
+  var u = kes();
+  if (u && u.rola === "velitel") {
+    g.style.display = "none";           // veliteľ → pustiť
+  } else if (u) {
+    odmietni("Táto sekcia je len pre veliteľov. Tvoj účet má rolu člen.", "Späť do členskej zóny", "clenska-zona.html");
+  } else {
+    odmietni("Administrácia je prístupná len prihláseným veliteľom.", "Prihlásiť sa", "clenska-zona.html");
+  }
+})();
+</script>
+
 
 <nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(36,43,28,.94); backdrop-filter: blur(6px); border-bottom: 1px solid #35402A;">
   <div style="box-sizing: content-box; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1120px; margin: 0 auto;">
@@ -800,7 +835,7 @@
   vykresliXp();
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 (function(){
   var SUPA_URL = "https://hrfvenycjsenjlbpztsd.supabase.co";
@@ -853,8 +888,9 @@
     var dd = document.createElement("div");
     dd.style.cssText = "position:absolute;right:0;top:calc(100% + 6px);min-width:190px;background:#2C3522;border:1px solid #4A5A38;border-radius:8px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.45);display:none;z-index:200;";
     var polozky = "";
+    var naClenskej = location.pathname.indexOf("clenska-zona") > -1;
     MENU.forEach(function (m) {
-      polozky += '<a href="' + m[1] + '" style="display:block;padding:8px 12px;border-radius:5px;text-decoration:none;color:#D8D8C0;font-size:13.5px;font-family:\'Barlow\',sans-serif;" onmouseover="this.style.background=\'#35402A\'" onmouseout="this.style.background=\'transparent\'">' + m[0] + '</a>';
+      polozky += '<a href="' + m[1] + '" data-hash="' + (m[1].split("#")[1] || "") + '" style="display:block;padding:8px 12px;border-radius:5px;text-decoration:none;color:#D8D8C0;font-size:13.5px;font-family:\'Barlow\',sans-serif;" onmouseover="this.style.background=\'#35402A\'" onmouseout="this.style.background=\'transparent\'">' + m[0] + '</a>';
     });
     polozky += '<div style="height:1px;background:#4A5A38;margin:6px 4px;"></div>';
     polozky += '<button id="pg-odhlasit" style="width:100%;text-align:left;padding:8px 12px;border:none;border-radius:5px;background:transparent;color:#C98B7A;font-size:13.5px;font-family:\'Barlow\',sans-serif;cursor:pointer;" onmouseover="this.style.background=\'#3a2a26\'" onmouseout="this.style.background=\'transparent\'">Odhlásiť sa</button>';
@@ -869,6 +905,17 @@
     function close(){ t = setTimeout(function(){ dd.style.display = "none"; }, 220); }
     wrap.addEventListener("mouseenter", open);
     wrap.addEventListener("mouseleave", close);
+    if (naClenskej) {
+      Array.prototype.forEach.call(dd.querySelectorAll("a[data-hash]"), function (el) {
+        el.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          var hh = el.getAttribute("data-hash");
+          if (location.hash.replace("#","") === hh) { dd.style.display = "none"; return; }
+          location.hash = hh ? ("#" + hh) : "";
+          location.reload();
+        });
+      });
+    }
     dd.querySelector("#pg-odhlasit").onclick = function () {
       var hotovo = function () {
         try { localStorage.removeItem("pg_ucet"); localStorage.removeItem("pg_rola"); } catch (e) {}
@@ -887,6 +934,8 @@
     }).observe(nav, { childList: true, subtree: true });
   }
   function start() {
+    // anti-blik: ak mame cache, hned skry pôvodné "Prihlásiť" než vykreslíme banner
+    if (kes()) { var a0 = odkaz(); if (a0 && !document.getElementById("pg-nav-wrap")) a0.style.visibility = "hidden"; }
     strazca();
     if (kes()) window.pgNavChip();
     [300, 900, 2000].forEach(function (t) { setTimeout(function(){ strazca(); if (kes() && !document.getElementById("pg-nav-wrap")) window.pgNavChip(); }, t); });
