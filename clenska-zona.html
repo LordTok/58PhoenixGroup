@@ -234,45 +234,7 @@ a:hover { color: #E8E8CC; }
     </div>
     <div style="display: grid; gap: 22px;">
       <div style="display: {{ emEvents }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Kalendár misií je pripravený — prvá misia pribudne z admin rozhrania.</div></div>
-<div style="display: {{ dataDisplayGrid }}; gap: 26px;"><sc-for list="{{ events }}" as="e" hint-placeholder-count="6">
-        <div style="display: {{ e.disp }};">
-          <div style="display: inline-flex; align-items: center; gap: 10px; background: #35402A; border: 1px solid #4A5A38; border-bottom: none; border-radius: 6px 6px 0 0; padding: 5px 16px; margin-left: 16px; position: relative; top: 1px;">
-            <span style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; color: #C2C29E;">{{ e.day }}</span>
-            <span style="font-size: 12.5px; color: #A8A890; font-feature-settings: 'tnum' 1;">{{ e.time }}</span>
-            <span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border-radius: 3px; border: 1px solid {{ e.tagBorder }}; color: {{ e.tagColor }}; background: {{ e.tagBg }};">{{ e.type }}</span>
-          </div>
-          <div style="background: #2C3522; border: 1px solid {{ e.cardBorder }}; border-left: 4px solid {{ e.stripe }}; border-radius: 0 6px 6px 6px; overflow: hidden; transition: border-color .25s;">
-            <button onClick="{{ e.expand }}" style="display: grid; grid-template-columns: minmax(0, 1.4fr) 100px auto 20px; gap: 16px; align-items: center; width: 100%; text-align: left; background: none; border: none; cursor: pointer; padding: 14px 20px; color: inherit; font-family: inherit;">
-              <div>
-                <div style="font-size: 16px; color: #E8E8CC; font-weight: 600;">{{ e.title }}</div>
-                <div style="font-size: 13.5px; color: #A8A890;">{{ e.note }}</div>
-              </div>
-              <span style="font-size: 13.5px; color: #A8A890;">{{ e.modpack }}</span>
-              <span style="display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;"><span onClick="{{ e.toggle }}" style="padding: 7px 12px; font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1px; border-radius: 4px; cursor: pointer; text-align: center; white-space: nowrap; color: {{ e.btnColor }}; background: {{ e.btnBg }}; border: 2px solid {{ e.btnBorder }}; transition: background .2s;">{{ e.btnLabel }}</span><span onClick="{{ e.excuse }}" style="padding: 7px 12px; font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1px; border-radius: 4px; cursor: pointer; text-align: center; white-space: nowrap; color: {{ e.excColor }}; background: {{ e.excBg }}; border: 2px solid {{ e.excBorder }}; transition: background .2s;">{{ e.excuseLabel }}</span><button onClick="{{ ulozAtrapa }}" title="Upraviť misiu" style="display: {{ editShow }}; align-items:center; justify-content:center; width:34px; height:34px; background:#35402A; border:1px solid #8A5F44; border-radius:4px; color:#C2A57B; cursor:pointer; font-size:14px;">✎</button><button onClick="{{ e.zmaz }}" title="Zmazať misiu" style="display: {{ editShow }}; align-items:center; justify-content:center; width:34px; height:34px; background:#35402A; border:1px solid #7A3B2E; border-radius:4px; color:#C98B7A; cursor:pointer; font-size:14px;">🗑</button></span>
-              <span style="color: #9C9C74; font-size: 15px; transition: transform .3s; transform: {{ e.chevRot }};">▾</span>
-            </button>
-            <div style="display: grid; grid-template-rows: {{ e.rows }}; transition: grid-template-rows .45s ease;">
-              <div style="overflow: hidden; min-height: 0;">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 4px 20px 20px; border-top: 1px solid #35402A;">
-                  <div>
-                    <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin: 14px 0 6px;">Brífing</div>
-                    <p style="font-size: 14.5px; margin: 0; line-height: 1.6;">{{ e.brief }}</p>
-                    <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin: 14px 0 6px;">Prílohy</div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                      <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #9C9C74; border-radius: 3px; color: #C2C29E;">📄 {{ e.attach }}</span>
-                      <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #4A5A38; border-radius: 3px; color: #A8A890;">Zraz TS 15:00</span>
-                    </div>
-                  </div>
-                  <figure style="margin: 14px 0 0;">
-                    <img src="{{ e.img }}" alt="" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; border: 1px solid #4A5A38; display: block;">
-                    <figcaption style="font-size: 12.5px; color: #A8A890; margin-top: 6px;">{{ e.imgCap }}</figcaption>
-                  </figure>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </sc-for></div>
+<div style="display: {{ dataDisplayGrid }}; gap: 26px;"><div id="pg-kalendar-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam misie…</div></div></div>
     </div>
   </div>
 
@@ -283,35 +245,7 @@ a:hover { color: #E8E8CC; }
     </div>
     <div style="display: grid; gap: 12px;">
       <div style="display: {{ emAars }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Archív po-akčných hlásení sa začne plniť po prvej misii.</div></div>
-<div style="display: {{ dataDisplayGrid }}; gap: 26px;"><sc-for list="{{ aars }}" as="a" hint-placeholder-count="5">
-<div style="display: {{ a.disp }};">
-  <div style="display: inline-flex; align-items: center; gap: 10px; background: #35402A; border: 1px solid #4A5A38; border-bottom: none; border-radius: 6px 6px 0 0; padding: 5px 16px; margin-left: 16px; position: relative; top: 1px;">
-    <span style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; color: #C2C29E;">{{ a.date }}</span>
-    <span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border-radius: 3px; border: 1px solid {{ a.resBorder }}; color: {{ a.resColor }};">{{ a.result }}</span>
-  </div>
-  <div style="background: #2C3522; border: 1px solid {{ a.cardBorder }}; border-left: 4px solid {{ a.resBorder }}; border-radius: 0 6px 6px 6px; overflow: hidden; transition: border-color .25s;">
-    <div style="display: flex; align-items: center; gap: 8px; padding-right: 14px;">
-      <button onClick="{{ a.toggle }}" style="display: flex; align-items: baseline; gap: 14px; flex: 1; min-width: 0; text-align: left; background: none; border: none; cursor: pointer; padding: 14px 20px; color: inherit; font-family: inherit; flex-wrap: wrap;">
-        <span style="font-size: 16px; color: #E8E8CC; font-weight: 600;">{{ a.name }}</span>
-        <span style="margin-left: auto; color: #9C9C74; font-size: 15px; transition: transform .3s; transform: {{ a.chevRot }};">▾</span>
-      </button>
-      <button onClick="{{ ulozAtrapa }}" title="Upraviť" style="display: {{ editShow }}; align-items:center; justify-content:center; width:30px; height:30px; background:#35402A; border:1px solid #8A5F44; border-radius:4px; color:#C2A57B; cursor:pointer; font-size:13px; flex-shrink:0;">✎</button>
-      <button onClick="{{ a.zmaz }}" title="Zmazať z archívu" style="display: {{ editShow }}; align-items:center; justify-content:center; width:30px; height:30px; background:#35402A; border:1px solid #7A3B2E; border-radius:4px; color:#C98B7A; cursor:pointer; font-size:13px; flex-shrink:0;">🗑</button>
-    </div>
-    <div style="display: grid; grid-template-rows: {{ a.rows }}; transition: grid-template-rows .45s ease;">
-      <div style="overflow: hidden; min-height: 0;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 0 20px 20px; border-top: 1px solid #35402A;">
-          <p style="font-size: 14.5px; margin: 14px 0 0; line-height: 1.6;">{{ a.report }}</p>
-          <figure style="margin: 14px 0 0;">
-            <img src="{{ a.img }}" alt="" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; border: 1px solid #4A5A38; display: block;">
-            <figcaption style="font-size: 12.5px; color: #A8A890; margin-top: 6px;">{{ a.imgCap }}</figcaption>
-          </figure>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</sc-for></div>
+<div style="display: {{ dataDisplayGrid }}; gap: 26px;"><div id="pg-archiv-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam archív…</div></div></div>
     </div>
   </div>
 
@@ -884,7 +818,52 @@ class Component extends DCLogic {
     document.getElementById("pg-auth-stav").textContent = text || "";
     ov.style.display = "flex";
   }
-  function dnu() { ov.style.display = "none"; if (window.pgNavChip) window.pgNavChip(); naplnProfil(); }
+  function dnu() { ov.style.display = "none"; if (window.pgNavChip) window.pgNavChip(); naplnProfil(); naplnKalendar(); naplnArchiv(); }
+  function misiaKarta(m) {
+    var d = m.datum ? new Date(m.datum) : null;
+    var den = d ? d.toLocaleDateString("sk-SK", { weekday:"short", day:"numeric", month:"numeric" }) : "";
+    var cas = d ? d.toLocaleTimeString("sk-SK", { hour:"2-digit", minute:"2-digit" }) : "";
+    var typLabel = m.typ === "vycvik" ? "VÝCVIK" : (m.typ === "event" ? "EVENT" : "MISIA");
+    var html = '<div style="background:#2C3522; border:1px solid #4A5A38; border-radius:8px; padding:18px 20px; margin-bottom:16px;">';
+    html += '<div style="display:inline-flex; align-items:center; gap:8px; background:#35402A; border:1px solid #4A5A38; border-radius:4px; padding:3px 12px; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; font-size:12px; color:#9C9C74; margin-bottom:10px;">' + typLabel + '</div>';
+    html += '<div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:baseline;">';
+    html += '<div style="font-family:\'Staatliches\',sans-serif; font-size:20px; letter-spacing:1px; color:#C2C29E;">' + (m.nazov||"") + '</div>';
+    html += '<div style="font-size:14px; color:#A8A890;">' + den + (cas ? " · " + cas : "") + '</div></div>';
+    if (m.brief) html += '<div style="margin-top:10px; font-size:14px; color:#D8D8C0; line-height:1.6;">' + m.brief + '</div>';
+    if (m.modpack) html += '<div style="margin-top:8px; font-size:12.5px; color:#8A8A6E;">Modpack: ' + m.modpack + '</div>';
+    html += '</div>';
+    return html;
+  }
+  async function nacitajMisieProZonu(archiv) {
+    var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
+    if (!kk) return null;
+    var sess = (await kk.auth.getSession()).data.session;
+    if (!sess) return null;
+    var r = await fetch(SUPA_URL + "/functions/v1/nacitaj-kalendar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
+      body: JSON.stringify({ archiv: !!archiv })
+    });
+    var v = await r.json();
+    if (!r.ok || v.error) return null;
+    return v.misie || [];
+  }
+  async function naplnKalendar() {
+    var box = document.getElementById("pg-kalendar-db");
+    if (!box) return;
+    var misie = await nacitajMisieProZonu(false);
+    if (misie === null) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Misie sa nepodarilo načítať.</div>'; return; }
+    if (!misie.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Žiadne naplánované misie. Nová pribudne z admin rozhrania.</div>'; return; }
+    box.innerHTML = misie.map(misiaKarta).join("");
+  }
+  async function naplnArchiv() {
+    var box = document.getElementById("pg-archiv-db");
+    if (!box) return;
+    var misie = await nacitajMisieProZonu(true);
+    if (misie === null) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Archív sa nepodarilo načítať.</div>'; return; }
+    if (!misie.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Archív je zatiaľ prázdny.</div>'; return; }
+    box.innerHTML = misie.map(misiaKarta).join("");
+  }
   async function naplnProfil() {
     try {
       var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;

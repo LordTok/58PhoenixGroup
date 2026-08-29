@@ -237,7 +237,7 @@
 <div style="border-bottom: 1px solid #35402A; background: #1C2216; position: fixed; top: 59px; left: 0; right: 0; z-index: 40;">
   <div style="box-sizing: content-box; display: flex; gap: 4px; max-width: 1120px; margin: 0 auto; padding: 0 24px; overflow-x: auto;">
     <button id="tab-clenovia" onclick="prepni('clenovia', this)" style="border: none; border-bottom: 3px solid #9C9C74; background: none; color: #C2C29E; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Karty členov</button>
-    <button id="tab-doch" onclick="prepni('doch', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Dochádzky</button>
+    <button id="tab-doch" onclick="prepni('doch', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Dochádzky</button><button id="tab-archiv" onclick="prepni('archiv', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Archív</button>
     <button id="tab-vyc" onclick="prepni('vyc', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Výcviky</button>
     <button id="tab-log" onclick="prepni('log', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Záznam aktivity</button>
     <button id="tab-xp" onclick="prepni('xp', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">XP systém</button>
@@ -395,6 +395,13 @@
           <span id="nu-stav" style="font-size:13px; color:var(--text-tlm);"></span>
         </div>
       </div>
+    <div id="panel-archiv" class="panel">
+      <div class="sekcia-editor" style="margin-top: 0;">
+        <div class="nadpis">Archív misií</div>
+        <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 16px;">Archivované misie. Môžeš ich upraviť, vrátiť do kalendára alebo natrvalo zmazať.</p>
+        <div id="archiv-zoznam"><div class="ulozene-info">Načítavam archív…</div></div>
+      </div>
+    </div>
       <div class="sekcia-editor" style="margin-top: 0;">
         <div class="nadpis">Vypísané udalosti</div>
         <div id="doch-udalosti" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;"></div>
@@ -952,7 +959,11 @@
       if (!r.ok || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + (v.error||r.status) + ').</div>'; return; }
       if (!v.clenovia || !v.clenovia.length) { kam.innerHTML = '<div class="ulozene-info">Zatiaľ nie sú v databáze žiadni členovia. Pribudnú po prihlásení alebo synchronizácii rostra.</div>'; return; }
       var pocetPrih = v.clenovia.filter(function(c){ return c.prihlaseny === "prihlaseny"; }).length;
-      var html = '<div style="font-family:\'Staatliches\',sans-serif; letter-spacing:1px; color:var(--khaki-svetla); margin-bottom:10px;">Dochádzka · prihlásených cez Discord: ' + pocetPrih + '</div>';
+      var html = '<div style="display:flex; gap:8px; margin-bottom:14px;">'
+        + '<button class="btn2" onclick="archivujMisiu(\'' + misiaId + '\')">Archivovať misiu</button>'
+        + '<button class="btn2" style="border-color:#8A5F44; color:#C98B7A;" onclick="zmazMisiu(\'' + misiaId + '\')">Zmazať misiu</button>'
+        + '</div>';
+      html += '<div style="font-family:\'Staatliches\',sans-serif; letter-spacing:1px; color:var(--khaki-svetla); margin-bottom:10px;">Dochádzka · prihlásených cez Discord: ' + pocetPrih + '</div>';
       v.clenovia.forEach(function(c){
         var odznak = c.prihlaseny === "prihlaseny" ? '<span title="Prihlásený na Discorde" style="color:#7FB069;">✅</span>' : (c.prihlaseny === "ospravedlneny" ? '<span title="Ospravedlnený na Discorde" style="color:#C9A227;">🟡</span>' : '<span style="color:#4A5A38;">·</span>');
         html += '<div class="doch-riadok" data-clen="' + c.clen_id + '">'
@@ -991,10 +1002,110 @@
     } catch (e) { /* ostane vizuál */ }
   }
 
+  // ===== ARCHÍV MISIÍ (admin záložka) =====
+  async function nacitajArchivDB() {
+    var kam = document.getElementById("archiv-zoznam");
+    if (!kam) return;
+    kam.innerHTML = '<div class="ulozene-info">Načítavam archív…</div>';
+    try {
+      var klient = window.pgSupaKlient ? window.pgSupaKlient() : null;
+      if (!klient) return;
+      var sess = (await klient.auth.getSession()).data.session;
+      if (!sess) return;
+      var r = await fetch(SUPA_URL_ADMIN + "/functions/v1/nacitaj-misie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
+        body: JSON.stringify({ archiv: true })
+      });
+      var v = await r.json();
+      if (!r.ok || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + (v.error||r.status) + ').</div>'; return; }
+      if (!v.misie || !v.misie.length) { kam.innerHTML = '<div class="ulozene-info">Archív je zatiaľ prázdny.</div>'; return; }
+      kam.innerHTML = "";
+      v.misie.forEach(function(m){
+        var dz = m.datum ? new Date(m.datum).toLocaleString("sk-SK", { weekday:"short", day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" }) : "";
+        var karta = document.createElement("div");
+        karta.style.cssText = "background:var(--oliva); border:1px solid var(--linka); border-radius:6px; padding:16px; margin-bottom:12px;";
+        karta.innerHTML =
+          '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">'
+          + '<div style="font-family:\'Staatliches\',sans-serif; font-size:18px; letter-spacing:1px; color:#C2C29E;">' + (m.typ==="vycvik"?"VÝCVIK":(m.typ==="event"?"EVENT":"MISIA")) + ' · ' + m.nazov + '</div>'
+          + '<span style="font-size:13px; color:var(--text-tlm);">' + dz + '</span></div>'
+          + '<div style="margin-top:6px; font-size:13.5px; color:#D8D8C0;">' + (m.brief || "") + '</div>'
+          + (m.modpack ? '<div style="margin-top:4px; font-size:12px; color:var(--text-tlm);">Modpack: ' + m.modpack + '</div>' : '')
+          + '<div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">'
+          + '<button class="btn2" data-a="upravit">Upraviť</button>'
+          + '<button class="btn2" data-a="vratit">Vrátiť do kalendára</button>'
+          + '<button class="btn2" style="border-color:#8A5F44; color:#C98B7A;" data-a="zmazat">Zmazať</button>'
+          + '</div>'
+          + '<div class="archiv-edit" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid #35402A;"></div>';
+        var btns = karta.querySelectorAll("button[data-a]");
+        btns[0].onclick = function(){ archivUprav(karta, m); };
+        btns[1].onclick = async function(){ if(!confirm("Vrátiť misiu do kalendára?"))return; var x=await spravaMisie(m.id,"odarchivovat"); if(x.error){alert(x.error);return;} zapisLog('vrátil misiu z archívu'); nacitajArchivDB(); if(typeof nacitajMisieDB==="function")nacitajMisieDB(); toast(); };
+        btns[2].onclick = async function(){ if(!confirm("Natrvalo zmazať túto misiu z archívu?"))return; var x=await spravaMisie(m.id,"zmazat"); if(x.error){alert(x.error);return;} zapisLog('zmazal misiu z archívu'); nacitajArchivDB(); toast(); };
+        kam.appendChild(karta);
+      });
+    } catch (e) { kam.innerHTML = '<div class="ulozene-info">Chyba: ' + e.message + '</div>'; }
+  }
+  function archivUprav(karta, m) {
+    var box = karta.querySelector(".archiv-edit");
+    if (box.style.display === "block") { box.style.display = "none"; return; }
+    var dtLocal = "";
+    try { var d = new Date(m.datum); dtLocal = new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,16); } catch(e){}
+    box.innerHTML =
+      '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">'
+      + '<label class="pole" style="margin:0;"><span>Názov</span><input class="vstup" data-f="nazov" value="' + (m.nazov||"").replace(/"/g,"&quot;") + '"></label>'
+      + '<label class="pole" style="margin:0;"><span>Dátum a čas</span><input class="vstup" data-f="datum" type="datetime-local" value="' + dtLocal + '"></label>'
+      + '<label class="pole" style="margin:0;"><span>Modpack</span><input class="vstup" data-f="modpack" value="' + (m.modpack||"").replace(/"/g,"&quot;") + '"></label>'
+      + '<label class="pole" style="margin:0; grid-column:1/3;"><span>Briefing</span><textarea class="vstup" data-f="brief" rows="2">' + (m.brief||"") + '</textarea></label>'
+      + '</div>'
+      + '<div style="margin-top:10px;"><button class="btn" data-u="save">Uložiť zmeny</button></div>';
+    box.querySelector('button[data-u="save"]').onclick = async function(){
+      var get = function(f){ var el = box.querySelector('[data-f="'+f+'"]'); return el ? el.value : ""; };
+      var datumRaw = get("datum");
+      var extra = { nazov: get("nazov"), modpack: get("modpack"), brief: get("brief") };
+      if (datumRaw) extra.datum = new Date(datumRaw).toISOString();
+      var x = await spravaMisie(m.id, "upravit", extra);
+      if (x.error) { alert("Nepodarilo sa: " + x.error); return; }
+      zapisLog('upravil archivovanú misiu <strong>' + get("nazov") + '</strong>');
+      nacitajArchivDB(); toast();
+    };
+    box.style.display = "block";
+  }
+
+  // ===== SPRÁVA MISIE (archivovať / zmazať) =====
+  async function spravaMisie(misiaId, akcia, extra) {
+    var klient = window.pgSupaKlient(); var sess = (await klient.auth.getSession()).data.session;
+    var body = Object.assign({ misiaId: misiaId, akcia: akcia }, extra || {});
+    var r = await fetch(SUPA_URL_ADMIN + "/functions/v1/sprava-misie", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
+      body: JSON.stringify(body)
+    });
+    return await r.json();
+  }
+  async function archivujMisiu(misiaId) {
+    if (!confirm("Archivovať túto misiu? Presunie sa z kalendára do archívu.")) return;
+    var v = await spravaMisie(misiaId, "archivovat");
+    if (v.error) { alert("Nepodarilo sa: " + v.error); return; }
+    zapisLog('archivoval misiu');
+    await nacitajMisieDB();
+    if (typeof nacitajArchivDB === "function") nacitajArchivDB();
+    toast();
+  }
+  async function zmazMisiu(misiaId) {
+    if (!confirm("Naozaj ZMAZAŤ túto misiu? Nenávratne sa odstráni aj s dochádzkou a prihláseniami.")) return;
+    var v = await spravaMisie(misiaId, "zmazat");
+    if (v.error) { alert("Nepodarilo sa: " + v.error); return; }
+    zapisLog('zmazal misiu');
+    dochAktivna = null;
+    await nacitajMisieDB();
+    toast();
+  }
+
   function prepni(panel, btn) {
+    if (panel === "archiv" && typeof nacitajArchivDB === "function") nacitajArchivDB();
     document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("aktivny"); });
     document.getElementById("panel-" + panel).classList.add("aktivny");
-    ["tab-clenovia","tab-doch","tab-vyc","tab-log","tab-xp"].forEach(function(id){ var b=document.getElementById(id); b.style.color="#9C9C74"; b.style.borderBottomColor="transparent"; });
+    ["tab-clenovia","tab-doch","tab-archiv","tab-vyc","tab-log","tab-xp"].forEach(function(id){ var b=document.getElementById(id); b.style.color="#9C9C74"; b.style.borderBottomColor="transparent"; });
     btn.style.color = "#C2C29E"; btn.style.borderBottomColor = "#9C9C74";
   }
 
