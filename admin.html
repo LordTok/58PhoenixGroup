@@ -886,37 +886,24 @@
       var sess = (await klient.auth.getSession()).data.session;
       if (!sess) { stav.textContent = "Vypršalo prihlásenie, obnov stránku."; stav.style.color = "#C98B7A"; btn.disabled = false; return; }
 
-      // 1) ulož misiu do DB (cez REST s tokenom)
-      var dbRes = await fetch(SUPA_URL_ADMIN + "/rest/v1/misie", {
-        method: "POST",
-        headers: {
-          "apikey": SUPA_ANON_ADMIN,
-          "Authorization": "Bearer " + sess.access_token,
-          "Content-Type": "application/json",
-          "Prefer": "return=representation"
-        },
-        body: JSON.stringify({ nazov: nazov, typ: typ, datum: new Date(datumRaw).toISOString(), brief: brief, modpack: modpack })
-      });
-      if (!dbRes.ok) { var t = await dbRes.text(); stav.textContent = "Uloženie zlyhalo (možno RLS): " + t.slice(0,80); stav.style.color = "#C98B7A"; btn.disabled = false; return; }
-      var misia = (await dbRes.json())[0];
-
-      // 2) pošli na Discord cez chránenú funkciu
-      var datumZobraz = new Date(datumRaw).toLocaleString("sk-SK", { weekday:"long", day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" });
+      // jedno volanie: funkcia uloží misiu do DB (service_role) aj pošle na Discord
+      var datumISO = new Date(datumRaw).toISOString();
       var fnRes = await fetch(SUPA_URL_ADMIN + "/functions/v1/posli-misiu-tlacidla", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
-        body: JSON.stringify({ misiaId: misia.id, nazov: nazov, datum: datumZobraz, brief: brief, modpack: modpack })
+        body: JSON.stringify({ nazov: nazov, typ: typ, datum: datumISO, brief: brief, modpack: modpack })
       });
       var fn = await fnRes.json();
-      if (!fnRes.ok || fn.error) { stav.textContent = "Uložené, ale Discord zlyhal: " + (fn.error || fnRes.status); stav.style.color = "#C98B7A"; btn.disabled = false; return; }
+      if (!fnRes.ok || fn.error) { stav.textContent = "Zlyhalo: " + (fn.error || fnRes.status) + (fn.detail ? " — " + String(fn.detail).slice(0,80) : ""); stav.style.color = "#C98B7A"; btn.disabled = false; return; }
+      var datumZobraz = new Date(datumRaw).toLocaleString("sk-SK", { weekday:"long", day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" });
 
       stav.textContent = "✓ Vytvorené a odoslané na Discord!"; stav.style.color = "#7FB069";
       zapisLog('vytvoril udalosť <strong>' + nazov + '</strong> (' + typ + ') a odoslal na Discord');
       document.getElementById("nu-nazov").value = ""; document.getElementById("nu-brief").value = "";
       document.getElementById("nu-modpack").value = ""; document.getElementById("nu-datum").value = "";
       // pridaj do lokálneho zoznamu udalostí (aby ju rovno videl v dochádzke)
-      UDALOSTI.unshift({ id: misia.id, typ: typ, nazov: nazov, datum: datumZobraz, _db: true });
-      dochAktivna = misia.id; vykresliDoch();
+      UDALOSTI.unshift({ id: fn.misiaId, typ: typ, nazov: nazov, datum: datumZobraz, _db: true });
+      dochAktivna = fn.misiaId; vykresliDoch();
     } catch (e) {
       stav.textContent = "Chyba: " + e.message; stav.style.color = "#C98B7A"; btn.disabled = false; return;
     }
