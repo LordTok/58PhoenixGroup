@@ -234,7 +234,7 @@ a:hover { color: #E8E8CC; }
     </div>
     <div style="display: grid; gap: 22px;">
       <div style="display: {{ emEvents }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Kalendár misií je pripravený — prvá misia pribudne z admin rozhrania.</div></div>
-<div style="display: {{ dataDisplayGrid }}; gap: 26px;"><div id="pg-kalendar-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam misie…</div></div></div>
+<div style="display: grid; gap: 26px;"><div id="pg-kalendar-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam misie…</div></div></div>
     </div>
   </div>
 
@@ -245,7 +245,7 @@ a:hover { color: #E8E8CC; }
     </div>
     <div style="display: grid; gap: 12px;">
       <div style="display: {{ emAars }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Archív po-akčných hlásení sa začne plniť po prvej misii.</div></div>
-<div style="display: {{ dataDisplayGrid }}; gap: 26px;"><div id="pg-archiv-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam archív…</div></div></div>
+<div style="display: grid; gap: 26px;"><div id="pg-archiv-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam archív…</div></div></div>
     </div>
   </div>
 
@@ -848,17 +848,19 @@ class Component extends DCLogic {
     if (!r.ok || v.error) return null;
     return v.misie || [];
   }
-  async function naplnKalendar() {
+  async function naplnKalendar(pokus) {
+    pokus = pokus || 0;
     var box = document.getElementById("pg-kalendar-db");
-    if (!box) return;
+    if (!box) { if (pokus < 30) setTimeout(function(){ naplnKalendar(pokus+1); }, 250); return; }
     var misie = await nacitajMisieProZonu(false);
     if (misie === null) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Misie sa nepodarilo načítať.</div>'; return; }
     if (!misie.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Žiadne naplánované misie. Nová pribudne z admin rozhrania.</div>'; return; }
     box.innerHTML = misie.map(misiaKarta).join("");
   }
-  async function naplnArchiv() {
+  async function naplnArchiv(pokus) {
+    pokus = pokus || 0;
     var box = document.getElementById("pg-archiv-db");
-    if (!box) return;
+    if (!box) { if (pokus < 30) setTimeout(function(){ naplnArchiv(pokus+1); }, 250); return; }
     var misie = await nacitajMisieProZonu(true);
     if (misie === null) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Archív sa nepodarilo načítať.</div>'; return; }
     if (!misie.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Archív je zatiaľ prázdny.</div>'; return; }
@@ -940,6 +942,15 @@ class Component extends DCLogic {
     try { localStorage.removeItem("pg_ucet"); localStorage.removeItem("pg_rola"); sessionStorage.removeItem("pg_auth_ok"); } catch (e) {}
     location.href = "index.html";
   };
+  // samostatný spúšťač napĺňania sekcií (nezávisle od gate) — dc môže kontajnery vložiť neskôr
+  function spustSekcie() {
+    if (!kesUcet()) return;
+    if (typeof naplnKalendar === "function") naplnKalendar();
+    if (typeof naplnArchiv === "function") naplnArchiv();
+    if (typeof naplnProfil === "function") naplnProfil();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ setTimeout(spustSekcie, 400); });
+  else setTimeout(spustSekcie, 400);
   start();
 })();
 </script>
