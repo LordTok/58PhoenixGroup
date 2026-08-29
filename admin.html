@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-<script>try{if(JSON.parse(localStorage.getItem("pg_ucet")||"null"))document.documentElement.className+=" pg-auth";}catch(e){}</script>
-<style>html.pg-auth nav a[href="clenska-zona.html"]:not(#pg-nav-chip){display:none !important;}html.pg-auth #pg-nav-wrap{display:inline-block !important;}#pg-nav-chip{visibility:visible !important;}</style>
+<script>
+(function(){
+  function maCache(){ try { return !!JSON.parse(localStorage.getItem("pg_ucet")||"null"); } catch(e){ return false; } }
+  function nastav(){ if(maCache()){ if(document.documentElement.className.indexOf("pg-auth")<0) document.documentElement.className+=" pg-auth"; } else { document.documentElement.classList.remove("pg-auth"); } }
+  nastav();
+  // pred zobrazením view-transition snímky (pri príchode na stránku) nastav správny stav
+  if (window.addEventListener) window.addEventListener("pagereveal", nastav);
+  window.addEventListener("pageshow", nastav);
+})();
+</script>
+<style>html.pg-auth nav a[href="clenska-zona.html"]:not(#pg-nav-chip){display:none !important;}html.pg-auth #pg-nav-wrap{display:inline-block !important;}#pg-nav-chip{visibility:visible !important;}nav{view-transition-name:pg-nav;}::view-transition-group(pg-nav){animation:none !important;}::view-transition-old(pg-nav),::view-transition-new(pg-nav){animation:none !important;mix-blend-mode:normal;}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Veliteľské rozhranie — 58. Phoenix Group</title>
