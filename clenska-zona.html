@@ -371,15 +371,15 @@ a:hover { color: #E8E8CC; }
   <div style="display: grid; grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr); gap: 0;">
     <div style="padding: 28px;">
         <div style="display: flex; gap: 18px; align-items: center;">
-          <div style="width: 88px; height: 88px; border-radius: 50%; background: #35402A; border: 2px solid #9C9C74; display: grid; place-items: center; font-family: 'Staatliches', sans-serif; font-size: 34px; color: #C2C29E; flex-shrink: 0;">S</div>
+          <div style="width: 88px; height: 88px; border-radius: 50%; background: #35402A; border: 2px solid #9C9C74; display: grid; place-items: center; font-family: 'Staatliches', sans-serif; font-size: 34px; color: #C2C29E; flex-shrink: 0; overflow: hidden;" id="pg-profil-avatar">S</div>
           <div>
-            <div style="font-family: 'Staatliches', sans-serif; font-size: 26px; letter-spacing: 2px; color: #C2C29E;">„Straka"</div>
+            <div style="font-family: 'Staatliches', sans-serif; font-size: 26px; letter-spacing: 2px; color: #C2C29E;" id="pg-profil-nick">„Straka"</div>
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px;">
       <img src="assets/hodnosti/04-desiatnik.png" alt="desiatnik" style="width: 34px; height: 34px; object-fit: contain;">
       <span style="font-size: 14.5px; color: #D8D8C0;">desiatnik</span>
       
       <span style="color: #4A5A38;">·</span>
-      <span style="font-size: 14px; color: #A8A890;">v jednotke od 03/2022</span>
+      <span style="font-size: 14px; color: #A8A890;" id="pg-profil-vstup">v jednotke od 03/2022</span>
     </div>
           </div>
         </div>
@@ -884,7 +884,36 @@ class Component extends DCLogic {
     document.getElementById("pg-auth-stav").textContent = text || "";
     ov.style.display = "flex";
   }
-  function dnu() { ov.style.display = "none"; if (window.pgNavChip) window.pgNavChip(); }
+  function dnu() { ov.style.display = "none"; if (window.pgNavChip) window.pgNavChip(); naplnProfil(); }
+  async function naplnProfil() {
+    try {
+      var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
+      if (!kk) return;
+      var sess = (await kk.auth.getSession()).data.session;
+      if (!sess) return;
+      var r = await fetch(SUPA_URL + "/functions/v1/nacitaj-profil", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
+        body: "{}"
+      });
+      var v = await r.json();
+      if (!r.ok || v.error || !v.profil) return;
+      var p = v.profil;
+      var elN = document.getElementById("pg-profil-nick");
+      if (elN) elN.textContent = "„" + (p.nick || "") + "\u201c";
+      var elA = document.getElementById("pg-profil-avatar");
+      if (elA) {
+        if (p.avatar_url) { elA.innerHTML = '<img src="' + p.avatar_url + '" alt="" style="width:100%;height:100%;object-fit:cover;">'; }
+        else { elA.textContent = (p.nick || "?").charAt(0).toUpperCase(); }
+      }
+      var elV = document.getElementById("pg-profil-vstup");
+      if (elV && p.vstup) {
+        var dt = new Date(p.vstup);
+        var mes = String(dt.getMonth() + 1).padStart(2, "0");
+        elV.textContent = "v jednotke od " + mes + "/" + dt.getFullYear();
+      }
+    } catch (e) {}
+  }
   async function overNaServeri(sess) {
     var ident = (sess.user.identities || []).filter(function(x){ return x.provider === "discord"; })[0];
     var discordId = ident ? ident.id : (sess.user.user_metadata || {}).provider_id;

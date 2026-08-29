@@ -682,7 +682,8 @@
         zapisLog((XPCFG.auto[kluc] ? 'zapol' : 'vypol') + ' pravidlo XP: <strong>' + t[1] + '</strong>');
         vykresliXp();
   vykresliDoch();
-  vykresliVyc(); toast();
+  vykresliVyc();
+  if (typeof nacitajMisieDB === "function") nacitajMisieDB(); toast();
       };
       ha.appendChild(el);
     });
@@ -867,6 +868,30 @@
     });
   }
 
+  // ===== NAČÍTANIE MISIÍ Z DB =====
+  async function nacitajMisieDB() {
+    try {
+      var klient = window.pgSupaKlient ? window.pgSupaKlient() : null;
+      if (!klient) return;
+      var sess = (await klient.auth.getSession()).data.session;
+      if (!sess) return;
+      var r = await fetch("https://hrfvenycjsenjlbpztsd.supabase.co/functions/v1/nacitaj-misie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq" },
+        body: JSON.stringify({ archiv: false })
+      });
+      var v = await r.json();
+      if (!r.ok || v.error || !v.misie) return;
+      // premapuj DB misie na formát UDALOSTI
+      UDALOSTI = v.misie.map(function(m){
+        var dz = m.datum ? new Date(m.datum).toLocaleString("sk-SK", { weekday:"short", day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" }) : "";
+        return { id: m.id, typ: m.typ, nazov: m.nazov, datum: dz, _db: true };
+      });
+      if (UDALOSTI.length && (!dochAktivna || !UDALOSTI.some(function(u){return u.id===dochAktivna;}))) dochAktivna = UDALOSTI[0].id;
+      vykresliDoch();
+    } catch (e) { /* ostane demo zoznam */ }
+  }
+
   // ===== VYTVORENIE UDALOSTI (DB + Discord) =====
   var SUPA_URL_ADMIN = "https://hrfvenycjsenjlbpztsd.supabase.co";
   var SUPA_ANON_ADMIN = "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq";
@@ -901,9 +926,9 @@
       zapisLog('vytvoril udalosť <strong>' + nazov + '</strong> (' + typ + ') a odoslal na Discord');
       document.getElementById("nu-nazov").value = ""; document.getElementById("nu-brief").value = "";
       document.getElementById("nu-modpack").value = ""; document.getElementById("nu-datum").value = "";
-      // pridaj do lokálneho zoznamu udalostí (aby ju rovno videl v dochádzke)
-      UDALOSTI.unshift({ id: fn.misiaId, typ: typ, nazov: nazov, datum: datumZobraz, _db: true });
-      dochAktivna = fn.misiaId; vykresliDoch();
+      // znovu načítaj misie z DB (aby ostali aj po F5)
+      dochAktivna = fn.misiaId;
+      await nacitajMisieDB();
     } catch (e) {
       stav.textContent = "Chyba: " + e.message; stav.style.color = "#C98B7A"; btn.disabled = false; return;
     }
