@@ -2,7 +2,7 @@
 <html lang="sk">
 <head>
 <script>try{if(JSON.parse(localStorage.getItem("pg_ucet")||"null"))document.documentElement.className+=" pg-auth";}catch(e){}</script>
-<style>html.pg-auth a[href="clenska-zona.html"]:not(#pg-nav-chip){visibility:hidden !important;}#pg-nav-chip{visibility:visible !important;}</style>
+<style>html.pg-auth nav a[href="clenska-zona.html"]:not(#pg-nav-chip){display:none !important;}html.pg-auth #pg-nav-wrap{display:inline-block !important;}#pg-nav-chip{visibility:visible !important;}</style>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
@@ -974,7 +974,6 @@ class Component extends DCLogic {
     wrap.appendChild(dd);
     a.parentNode.insertBefore(wrap, a.nextSibling);
     a.style.display = "none";
-    document.documentElement.classList.remove("pg-auth");
     // hover otvára/zatvára
     var t;
     function open(){ clearTimeout(t); dd.style.display = "block"; }
@@ -1010,11 +1009,10 @@ class Component extends DCLogic {
     }).observe(nav, { childList: true, subtree: true });
   }
   function start() {
-    // anti-blik: ak mame cache, hned skry pôvodné "Prihlásiť" než vykreslíme banner
+    if (!kes()) document.documentElement.classList.remove("pg-auth");
     strazca();
     if (kes()) window.pgNavChip();
     [300, 900, 2000].forEach(function (t) { setTimeout(function(){ strazca(); if (kes() && !document.getElementById("pg-nav-wrap")) window.pgNavChip(); }, t); });
-    setTimeout(function(){ /* pg-auth-fallback */ document.documentElement.classList.remove("pg-auth"); }, 1500);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
