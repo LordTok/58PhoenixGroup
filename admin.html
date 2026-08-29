@@ -514,7 +514,7 @@
       var el = document.createElement("div");
       el.className = "clen-polozka" + (id === aktivny ? " vybrany" : "");
       el.innerHTML = '<img src="assets/hodnosti/'+hi+'.png" alt=""><div><div class="meno">'+menoClena(id)+'</div><div class="pod">'+c.hod+" · "+c.tim.replace(" (záloha)","")+'</div></div>';
-      el.onclick = function(){ aktivny = id; vykresliVsetko(); };
+      el.onclick = function(){ aktivny = id; vykresliVsetko(); if (typeof nacitajKartuZDB === "function" && CLEN_DB_ID[id]) nacitajKartuZDB(id); };
       host.appendChild(el);
     });
   }
@@ -631,13 +631,17 @@
     if (noveHod !== c.hod) { zmeny.push("hodnosť "+c.hod+" → "+noveHod); c.hod = noveHod; }
     if (noveStatus !== c.status) { zmeny.push("status → "+noveStatus); c.status = noveStatus; }
     uložData();
+    if (CLEN_DB_ID[aktivny]) {
+      supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[aktivny], akcia: "hodnost", hodnost: c.hod });
+      supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[aktivny], akcia: "status", status: c.status });
+    }
     if (zmeny.length) zapisLog('upravil <strong>'+menoClena(aktivny)+'</strong> — '+zmeny.join(", "));
     vykresliZoznam(""); vykresliKartu(); toast();
   }
   function ulozXp() {
     var c = DATA[aktivny], nove = parseInt(document.getElementById("e-xp").value||"0",10);
     var dovod = document.getElementById("e-xp-dovod").value;
-    if (nove !== c.xp) { zapisLog('upravil <strong>'+menoClena(aktivny)+'</strong> XP '+c.xp+' → '+nove+(dovod?" ("+dovod+")":"")); c.xp = nove; uložData(); }
+    if (nove !== c.xp) { zapisLog('upravil <strong>'+menoClena(aktivny)+'</strong> XP '+c.xp+' → '+nove+(dovod?" ("+dovod+")":"")); c.xp = nove; uložData(); if (CLEN_DB_ID[aktivny]) supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[aktivny], akcia: "xp", xp: nove }); }
     document.getElementById("e-xp-dovod").value = "";
     toast();
   }
@@ -649,6 +653,69 @@
       el.innerHTML = '<span class="cas">'+l.cas+'</span><span class="kto">'+l.kto+'</span><span class="akcia">'+l.akcia+'</span>';
       host.appendChild(el);
     });
+  }
+
+  // ===== NAPOJENIE NA DB (write-through) =====
+  var SUPA_URL_A = "https://hrfvenycjsenjlbpztsd.supabase.co";
+  var SUPA_ANON_A = "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq";
+  var CLEN_DB_ID = {}; // slug/kľúč -> DB uuid
+  async function supaVolaj(fn, body) {
+    var klient = window.pgSupaKlient ? window.pgSupaKlient() : null;
+    if (!klient) return { error: "no client" };
+    var sess = (await klient.auth.getSession()).data.session;
+    if (!sess) return { error: "no session" };
+    var r = await fetch(SUPA_URL_A + "/functions/v1/" + fn, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_A },
+      body: JSON.stringify(body || {})
+    });
+    return await r.json();
+  }
+  async function nacitajClenovDoDATA(pokus) {
+    pokus = pokus || 0;
+    var klient = window.pgSupaKlient ? window.pgSupaKlient() : null;
+    if (!klient) { if (pokus < 20) setTimeout(function(){ nacitajClenovDoDATA(pokus+1); }, 300); return; }
+    var sess = (await klient.auth.getSession()).data.session;
+    if (!sess) { if (pokus < 20) setTimeout(function(){ nacitajClenovDoDATA(pokus+1); }, 300); return; }
+    var v = await supaVolaj("nacitaj-clenov", {});
+    if (v.error || !v.clenovia) return;
+    // vyprázdni DATA a naplň reálnymi
+    Object.keys(DATA).forEach(function(k){ delete DATA[k]; });
+    CLEN_DB_ID = {};
+    v.clenovia.forEach(function(c){
+      var kluc = c.id; // použijeme priamo uuid ako kľúč
+      CLEN_DB_ID[kluc] = c.id;
+      var od = c.vstup ? new Date(c.vstup).toLocaleDateString("sk-SK",{month:"2-digit",year:"numeric"}) : "";
+      DATA[kluc] = {
+        i: (c.nick||"?").charAt(0).toUpperCase(),
+        meno: c.nick || "",
+        hod: c.hodnost || "Vojak 1. stupňa",
+        tim: "",
+        od: od,
+        status: c.status || "Aktívny",
+        odznaky: {},           // doplní sa pri otvorení karty
+        stuzky: [],
+        xp: c.xp || 0,
+        _avatar: c.avatar_url || null,
+        _velitel: !!c.je_velitel
+      };
+    });
+    var prvy = Object.keys(DATA)[0];
+    if (prvy) aktivny = prvy;
+    vykresliVsetko();
+    if (aktivny) nacitajKartuZDB(aktivny);
+  }
+  // doplní výcviky/odznaky konkrétneho člena z DB pri otvorení karty
+  async function nacitajKartuZDB(kluc) {
+    var id = CLEN_DB_ID[kluc]; if (!id) return;
+    var v = await supaVolaj("nacitaj-clena-admin", { clenId: id });
+    if (v.error || !v.clen) return;
+    var c = DATA[kluc]; if (!c) return;
+    c.hod = v.clen.hodnost || c.hod;
+    c.xp = (typeof v.clen.xp === "number") ? v.clen.xp : c.xp;
+    c.status = v.clen.status || c.status;
+    c.odznaky = v.clen.vycviky || {};
+    vykresliKartu(); vykresliOdznaky();
   }
 
   function vykresliVsetko() { vykresliZoznam(document.getElementById("hladaj-vstup") ? document.getElementById("hladaj-vstup").value : ""); vykresliKartu(); vykresliOdznaky(); vykresliStuzky(); vykresliVyzn(); }
@@ -833,6 +900,7 @@
     if (kod) { c.odznaky[kod] = uroven; }
     c.xp = Math.max(0, c.xp + xp);
     uložData();
+    if (CLEN_DB_ID[member] && kod) { supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[member], akcia: "vycvik", vycvik: kod, uroven: uroven }); supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[member], akcia: "xp", xp: c.xp }); }
     VYC_DONE.unshift({ kluc: member + "|" + skr, uroven: uroven });
     if (member === "straka") {
       try { var s = localStorage.getItem("pg_vycvik_prihlasky"); var p = s ? JSON.parse(s) : {}; delete p[skr]; localStorage.setItem("pg_vycvik_prihlasky", JSON.stringify(p)); } catch(e){}
@@ -1123,6 +1191,7 @@
   vykresliLog();
   vykresliXp();
   if (typeof nacitajMisieDB === "function") nacitajMisieDB();
+  if (typeof nacitajClenovDoDATA === "function") nacitajClenovDoDATA();
 </script>
 
 
