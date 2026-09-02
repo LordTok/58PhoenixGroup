@@ -1001,7 +1001,7 @@
       stav.textContent = "✓ Vytvorené a odoslané na Discord!"; stav.style.color = "#7FB069";
       zapisLog('vytvoril udalosť <strong>' + nazov + '</strong> (' + typ + ') a odoslal na Discord');
       document.getElementById("nu-nazov").value = ""; document.getElementById("nu-brief").value = "";
-      document.getElementById("nu-modpack").value = ""; document.getElementById("nu-datum").value = "";
+      document.querySelectorAll(".nu-modpack-cb").forEach(function(cb){ cb.checked = true; }); document.getElementById("nu-datum").value = "";
       // znovu načítaj misie z DB (aby ostali aj po F5)
       dochAktivna = fn.misiaId;
       await nacitajMisieDB();
