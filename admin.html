@@ -667,8 +667,9 @@
     if (!klient) { if (pokus < 20) setTimeout(function(){ nacitajClenovDoDATA(pokus+1); }, 300); return; }
     var sess = (await klient.auth.getSession()).data.session;
     if (!sess) { if (pokus < 20) setTimeout(function(){ nacitajClenovDoDATA(pokus+1); }, 300); return; }
-    var v = await supaVolaj("nacitaj-clenov", {});
-    if (v.error || !v.clenovia) return;
+    var v = null;
+    try { v = await supaVolaj("nacitaj-clenov", {}); } catch (e) { v = { error: String(e) }; }
+    if (v.error || !v.clenovia) { if (pokus < 25) setTimeout(function(){ nacitajClenovDoDATA(pokus+1); }, 400); return; }
     // vyprázdni DATA a naplň reálnymi
     Object.keys(DATA).forEach(function(k){ delete DATA[k]; });
     CLEN_DB_ID = {};
@@ -946,18 +947,23 @@
   // ===== NAČÍTANIE MISIÍ Z DB =====
   async function nacitajMisieDB(pokus) {
     pokus = pokus || 0;
+    function znova() {
+      if (pokus < 25) { setTimeout(function(){ nacitajMisieDB(pokus+1); }, 400); }
+      else { var el = document.getElementById("doch-udalosti"); if (el && !el.children.length) el.innerHTML = '<div class="ulozene-info">Misie sa nepodarilo načítať — obnov stránku (F5).</div>'; }
+    }
     try {
-      var klient = window.pgSupaKlient ? window.pgSupaKlient() : null;
-      if (!klient) { if (pokus < 20) setTimeout(function(){ nacitajMisieDB(pokus+1); }, 300); return; }
+      var klient = null;
+      try { klient = window.pgSupaKlient ? window.pgSupaKlient() : null; } catch (e) { klient = null; }
+      if (!klient) { znova(); return; }
       var sess = (await klient.auth.getSession()).data.session;
-      if (!sess) { if (pokus < 20) setTimeout(function(){ nacitajMisieDB(pokus+1); }, 300); return; }
+      if (!sess) { znova(); return; }
       var r = await fetch("https://hrfvenycjsenjlbpztsd.supabase.co/functions/v1/nacitaj-misie", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq" },
         body: JSON.stringify({ archiv: false })
       });
       var v = await r.json();
-      if (!r.ok || v.error || !v.misie) return;
+      if (!r.ok || v.error || !v.misie) { znova(); return; }
       // premapuj DB misie na formát UDALOSTI
       UDALOSTI = v.misie.map(function(m){
         var dz = m.datum ? new Date(m.datum).toLocaleString("sk-SK", { weekday:"short", day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" }) : "";
