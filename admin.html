@@ -468,6 +468,7 @@
 
   var KLUC = "pg_admin_data_v1", LOGKLUC = "pg_admin_log_v1";
   var DATA = nacitaj(), LOG = nacitajLog(), aktivny = "straka";
+  if (!DATA[aktivny]) { var _prvyKluc = Object.keys(DATA)[0]; if (_prvyKluc) aktivny = _prvyKluc; }
 
   function nacitaj() {
     try { var s = localStorage.getItem(KLUC); if (s) return JSON.parse(s); } catch(e){}
@@ -509,7 +510,7 @@
 
   // ---- Karta + editor ----
   function vykresliKartu() {
-    var c = DATA[aktivny];
+    var c = DATA[aktivny]; if (!c) return;
     var hodIdx = HODNOSTI.indexOf(c.hod);
     var hi = HOD_IMG[hodIdx] || "01-vojak-1-stupna";
     var timPatch = (TIMY.filter(function(t){return t[0]===c.tim;})[0]||["","team-fox"])[1];
@@ -529,7 +530,8 @@
   }
 
   function vykresliOdznaky() {
-    var c = DATA[aktivny], host = document.getElementById("odznaky"); host.innerHTML = "";
+    var c = DATA[aktivny]; if (!c) return;
+    var host = document.getElementById("odznaky"); host.innerHTML = "";
     VYCVIKY.forEach(function(v){
       var kod=v[0], nazov=v[1], ma = c.odznaky[kod], uroven = ma || "zlato";
       var el = document.createElement("div");
