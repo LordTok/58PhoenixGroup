@@ -237,8 +237,8 @@
 <div style="border-bottom: 1px solid #35402A; background: #1C2216; position: fixed; top: 59px; left: 0; right: 0; z-index: 40;">
   <div style="box-sizing: content-box; display: flex; gap: 4px; max-width: 1120px; margin: 0 auto; padding: 0 24px; overflow-x: auto;">
     <button id="tab-clenovia" onclick="prepni('clenovia', this)" style="border: none; border-bottom: 3px solid #9C9C74; background: none; color: #C2C29E; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Karty členov</button>
-    <button id="tab-doch" onclick="prepni('doch', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Dochádzky</button><button id="tab-archiv" onclick="prepni('archiv', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Archív</button>
-    <button id="tab-vyc" onclick="prepni('vyc', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Výcviky</button>
+    <button id="tab-doch" onclick="prepni('doch', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Tvorba misií a dochádzka</button><button id="tab-archiv" onclick="prepni('archiv', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Archív</button>
+    
     <button id="tab-log" onclick="prepni('log', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">Záznam aktivity</button>
     <button id="tab-xp" onclick="prepni('xp', this)" style="border: none; border-bottom: 3px solid transparent; background: none; color: #9C9C74; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">XP systém</button>
   </div>
@@ -304,17 +304,9 @@
             <div class="odznaky-mriezka" id="odznaky"></div>
           </div>
 
-          <div class="sekcia-editor">
-            <div class="nadpis">Stužky a pochvaly</div>
-            <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 14px;">Prepni, ktoré stužky má člen udelené.</p>
-            <div id="stuzky"></div>
-          </div>
+          
 
-          <div class="sekcia-editor">
-            <div class="nadpis">Vyznamenania</div>
-            <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 14px;">Prepni, ktoré vyznamenania má člen udelené.</p>
-            <div id="vyznamenania"></div>
-          </div>
+          
 
           <div class="sekcia-editor">
             <div class="nadpis">Veterancia (XP)</div>
@@ -387,7 +379,10 @@
           <label class="pole" style="margin:0;"><span>Názov</span><input class="vstup" id="nu-nazov" placeholder="Operácia Tichý hrebeň"></label>
           <label class="pole" style="margin:0;"><span>Typ</span><select class="vstup" id="nu-typ"><option value="misia">Misia</option><option value="vycvik">Výcvik</option><option value="event">Event</option></select></label>
           <label class="pole" style="margin:0;"><span>Dátum a čas</span><input class="vstup" id="nu-datum" type="datetime-local"></label>
-          <label class="pole" style="margin:0;"><span>Modpack</span><input class="vstup" id="nu-modpack" placeholder="Moderna 4.2"></label>
+          <div class="pole" style="margin:0;"><span>Modpack</span><div id="nu-modpack-box" style="display:flex; gap:14px; flex-wrap:wrap; padding:8px 0;">
+  <label style="display:flex; align-items:center; gap:6px; font-size:14px; color:var(--text); cursor:pointer;"><input type="checkbox" class="nu-modpack-cb" value="Engine" checked> Engine <span style="font-size:11px; color:var(--text-tlm);">(povinný)</span></label>
+  <label style="display:flex; align-items:center; gap:6px; font-size:14px; color:var(--text); cursor:pointer;"><input type="checkbox" class="nu-modpack-cb" value="Moderna" checked> Moderna</label>
+</div></div>
           <label class="pole" style="margin:0; grid-column:1/3;"><span>Briefing</span><textarea class="vstup" id="nu-brief" rows="3" placeholder="Stručný popis operácie…"></textarea></label>
         </div>
         <div style="display:flex; align-items:center; gap:14px; margin-top:14px;">
@@ -412,15 +407,7 @@
       </div>
     </div>
 
-    <div id="panel-vyc" class="panel">
-      <div class="sekcia-editor" style="margin-top: 0;">
-        <div class="nadpis">Prihlásení na výcviky</div>
-        <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 14px;">Odškrtnutím vyberieš dosiahnutú úroveň — systém pripíše XP podľa sadzobníka a udelí odznak do karty člena.</p>
-        <div id="vyc-cakajuce"></div>
-        <div class="nadpis" style="margin-top: 22px;">Splnené</div>
-        <div id="vyc-hotove"></div>
-      </div>
-    </div>
+    
 
   </div>
 </section>
@@ -596,7 +583,7 @@
     var k = c.vyzn.indexOf(nazov);
     if (k > -1) { if (!confirm('Naozaj odobrať toto vyznamenanie?')) return; c.vyzn.splice(k, 1); zapisLog('odobral <strong>' + menoClena(aktivny) + '</strong> vyznamenanie <strong>' + nazov + '</strong>'); }
     else { c.vyzn.push(nazov); zapisLog('udelil <strong>' + menoClena(aktivny) + '</strong> vyznamenanie <strong>' + nazov + '</strong>'); }
-    uložData(); vykresliVyzn(); toast();
+    uložData();  toast();
   }
   function vykresliStuzky() {
     var c = DATA[aktivny], host = document.getElementById("stuzky"); host.innerHTML = "";
@@ -613,7 +600,7 @@
     var c = DATA[aktivny], k = c.stuzky.indexOf(nazov);
     if (k > -1) { if (!confirm('Naozaj odobrať túto stužku?')) return; c.stuzky.splice(k,1); zapisLog('odobral <strong>'+menoClena(aktivny)+'</strong> stužku <strong>'+nazov+'</strong>'); }
     else { c.stuzky.push(nazov); zapisLog('udelil <strong>'+menoClena(aktivny)+'</strong> stužku <strong>'+nazov+'</strong>'); }
-    uložData(); vykresliStuzky(); toast();
+    uložData();  toast();
   }
 
   function stupenPreXp(xp) {
@@ -711,17 +698,26 @@
   // doplní výcviky/odznaky konkrétneho člena z DB pri otvorení karty
   async function nacitajKartuZDB(kluc) {
     var id = CLEN_DB_ID[kluc]; if (!id) return;
-    var v = await supaVolaj("nacitaj-clena-admin", { clenId: id });
-    if (v.error || !v.clen) return;
+    var v;
+    try { v = await supaVolaj("nacitaj-clena-admin", { clenId: id }); }
+    catch (e) { zobrazChybuKarty("Nepodarilo sa spojiť s DB: " + e.message); return; }
+    if (v.error || !v.clen) { zobrazChybuKarty("Karta z DB: " + (v.error || "prázdna odpoveď")); return; }
     var c = DATA[kluc]; if (!c) return;
+    if (aktivny !== kluc) return; // medzitým klikol na iného člena
     c.hod = v.clen.hodnost || c.hod;
     c.xp = (typeof v.clen.xp === "number") ? v.clen.xp : c.xp;
     c.status = v.clen.status || c.status;
     c.odznaky = v.clen.vycviky || {};
+    zobrazChybuKarty("");
     vykresliKartu(); vykresliOdznaky();
   }
+  function zobrazChybuKarty(txt) {
+    var el = document.getElementById("karta-chyba");
+    if (!el) { el = document.createElement("div"); el.id = "karta-chyba"; el.style.cssText = "margin:8px 0; padding:8px 12px; border:1px solid #8A5F44; border-radius:6px; color:#C98B7A; font-size:13px;"; var k = document.getElementById("k-meno"); if (k && k.parentNode) k.parentNode.insertBefore(el, k.nextSibling); }
+    el.textContent = txt; el.style.display = txt ? "block" : "none";
+  }
 
-  function vykresliVsetko() { vykresliZoznam(document.getElementById("hladaj-vstup") ? document.getElementById("hladaj-vstup").value : ""); vykresliKartu(); vykresliOdznaky(); vykresliStuzky(); vykresliVyzn(); }
+  function vykresliVsetko() { vykresliZoznam(document.getElementById("hladaj-vstup") ? document.getElementById("hladaj-vstup").value : ""); vykresliKartu(); vykresliOdznaky(); }
 
   function riadokXp(hodnoty, idx, pole, minJeden) {
     var r = document.createElement("div"); r.className = "xp-edit-riadok";
@@ -760,7 +756,7 @@
         zapisLog((XPCFG.auto[kluc] ? 'zapol' : 'vypol') + ' pravidlo XP: <strong>' + t[1] + '</strong>');
         vykresliXp();
   vykresliDoch();
-  vykresliVyc();
+  
   toast();
       };
       ha.appendChild(el);
@@ -910,7 +906,7 @@
     } else if (VYC_EXTRA[member]) { VYC_EXTRA[member] = VYC_EXTRA[member].filter(function(x){ return x !== skr; }); }
     ulozVyc();
     zapisLog('označil výcvik <strong>' + skr + '</strong> (' + menoClena(member) + ') ako splnený — ' + uroven + ' (+' + xp + ' XP' + (kod ? ', odznak udelený' : '') + ')');
-    vycVyber = null; vykresliVyc(); vykresliOdznaky(); if (member === aktivny) vykresliKartu(); toast();
+    vycVyber = null;  vykresliOdznaky(); if (member === aktivny) vykresliKartu(); toast();
   }
   function vykresliVyc() {
     var hc = document.getElementById("vyc-cakajuce"); hc.innerHTML = "";
@@ -931,9 +927,9 @@
         ub[0].onclick = function(){ splnVyc(v.member, v.skr, "bronz"); };
         ub[1].onclick = function(){ splnVyc(v.member, v.skr, "striebro"); };
         ub[2].onclick = function(){ splnVyc(v.member, v.skr, "zlato"); };
-        ub[3].onclick = function(){ vycVyber = null; vykresliVyc(); };
+        ub[3].onclick = function(){ vycVyber = null;  };
       } else {
-        el.querySelector(".btn2").onclick = function(){ vycVyber = kluc; vykresliVyc(); };
+        el.querySelector(".btn2").onclick = function(){ vycVyber = kluc;  };
       }
       hc.appendChild(el);
     });
@@ -979,7 +975,7 @@
     var nazov = document.getElementById("nu-nazov").value.trim();
     var typ = document.getElementById("nu-typ").value;
     var datumRaw = document.getElementById("nu-datum").value;
-    var modpack = document.getElementById("nu-modpack").value.trim();
+    var modpack = Array.prototype.slice.call(document.querySelectorAll(".nu-modpack-cb:checked")).map(function(cb){ return cb.value; }).join(" + ");
     var brief = document.getElementById("nu-brief").value.trim();
     var stav = document.getElementById("nu-stav");
     var btn = document.getElementById("nu-btn");
@@ -1074,6 +1070,19 @@
     } catch (e) { /* ostane vizuál */ }
   }
 
+  // účastníci archivovanej misie (z dochádzky)
+  function ucastniciHtml(u) {
+    if (!u || !u.length) return '<div style="margin-top:8px; font-size:12.5px; color:var(--text-tlm); font-style:italic;">Dochádzka nezaznamenaná.</div>';
+    var dor = u.filter(function(x){ return x.stav === "dorazil"; }).map(function(x){ return x.nick; });
+    var osp = u.filter(function(x){ return x.stav === "osprav"; }).map(function(x){ return x.nick; });
+    var ned = u.filter(function(x){ return x.stav === "nedorazil"; }).map(function(x){ return x.nick; });
+    var h = '<div style="margin-top:10px; font-size:12.5px; line-height:1.7;">';
+    h += '<div><span style="color:#7FB069;">✔ Dorazili (' + dor.length + '):</span> <span style="color:#D8D8C0;">' + (dor.join(", ") || "—") + '</span></div>';
+    if (osp.length) h += '<div><span style="color:#C9A227;">● Ospravedlnení (' + osp.length + '):</span> <span style="color:#D8D8C0;">' + osp.join(", ") + '</span></div>';
+    if (ned.length) h += '<div><span style="color:#C98B7A;">✖ Nedorazili (' + ned.length + '):</span> <span style="color:#D8D8C0;">' + ned.join(", ") + '</span></div>';
+    return h + '</div>';
+  }
+
   // ===== ARCHÍV MISIÍ (admin záložka) =====
   async function nacitajArchivDB() {
     var kam = document.getElementById("archiv-zoznam");
@@ -1103,6 +1112,7 @@
           + '<span style="font-size:13px; color:var(--text-tlm);">' + dz + '</span></div>'
           + '<div style="margin-top:6px; font-size:13.5px; color:#D8D8C0;">' + (m.brief || "") + '</div>'
           + (m.modpack ? '<div style="margin-top:4px; font-size:12px; color:var(--text-tlm);">Modpack: ' + m.modpack + '</div>' : '')
+          + ucastniciHtml(m.ucastnici)
           + '<div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">'
           + '<button class="btn2" data-a="upravit">Upraviť</button>'
           + '<button class="btn2" data-a="vratit">Vrátiť do kalendára</button>'
@@ -1177,7 +1187,7 @@
     if (panel === "archiv" && typeof nacitajArchivDB === "function") nacitajArchivDB();
     document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("aktivny"); });
     document.getElementById("panel-" + panel).classList.add("aktivny");
-    ["tab-clenovia","tab-doch","tab-archiv","tab-vyc","tab-log","tab-xp"].forEach(function(id){ var b=document.getElementById(id); b.style.color="#9C9C74"; b.style.borderBottomColor="transparent"; });
+    ["tab-clenovia","tab-doch","tab-archiv","tab-log","tab-xp"].forEach(function(id){ var b=document.getElementById(id); b.style.color="#9C9C74"; b.style.borderBottomColor="transparent"; });
     btn.style.color = "#C2C29E"; btn.style.borderBottomColor = "#9C9C74";
   }
 
