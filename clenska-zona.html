@@ -255,7 +255,7 @@ a:hover { color: #E8E8CC; }
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 22px; border-top: 1px solid #4A5A38; padding-top: 18px;">
           <div><div style="font-family: 'Staatliches', sans-serif; font-size: 26px; color: #C2C29E; line-height: 1;" id="pg-stat-misie">—</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">odohraných misií</div></div>
           <div><div style="font-family: 'Staatliches', sans-serif; font-size: 26px; color: #C2C29E; line-height: 1;" id="pg-stat-doch">—</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">dochádzka</div></div>
-          <div><div style="font-family: 'Staatliches', sans-serif; font-size: 26px; color: #C2C29E; line-height: 1;">3</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">zamerania</div></div>
+          <div><div style="font-family: 'Staatliches', sans-serif; font-size: 26px; color: #C2C29E; line-height: 1;" id="pg-stat-zamerania">—</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">zamerania</div></div>
         </div>
         <div style="margin-top: 20px;">
           <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 8px;">Zamerania</div>
@@ -918,6 +918,7 @@ class Component extends DCLogic {
     // ŠTATISTIKY hlavičky
     var sm = document.getElementById("pg-stat-misie"); if (sm) sm.textContent = v.pocet_misii;
     var sd = document.getElementById("pg-stat-doch"); if (sd) sd.textContent = v.dochadzka12.percento + " %";
+    var sz = document.getElementById("pg-stat-zamerania"); if (sz) sz.textContent = (v.vycviky || []).length;
     // PRIHLÁSENIA
     var np = document.getElementById("pg-nastenka-prihlasenia"); if (np) np.innerHTML = pgPrihlaseniaHtml(v.moje_prihlasenia);
     var pp = document.getElementById("pg-profil-prihlasenia"); if (pp) pp.innerHTML = pgPrihlaseniaHtml(v.moje_prihlasenia);
@@ -1010,7 +1011,7 @@ class Component extends DCLogic {
         var vv = await pgNeaktivita({ akcia: "nastavit", "do": doD, dovod: dovod });
         ulozBtn.disabled = false; ulozBtn.textContent = "Nahlásiť neaktivitu";
         if (vv && vv.error) { alert("Chyba: " + vv.error); return; }
-        naplnPrehlad(); naplnKalendar();
+        naplnPrehlad(); naplnKalendar(); naplnRoster();
       };
       document.querySelectorAll("[data-pg-neak-zrus]").forEach(function(b){
         b.onclick = async function(){
@@ -1019,7 +1020,7 @@ class Component extends DCLogic {
           var vv = await pgNeaktivita({ akcia: "zrusit" });
           b.disabled = false;
           if (vv && vv.error) { alert("Chyba: " + vv.error); return; }
-          naplnPrehlad();
+          naplnPrehlad(); naplnRoster();
         };
       });
     }

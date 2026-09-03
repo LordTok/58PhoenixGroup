@@ -1187,7 +1187,7 @@
   }
 
   function prepni(panel, btn) {
-    if (panel === "archiv" && typeof nacitajArchivDB === "function") nacitajArchivDB();
+    if (panel === "archiv" && typeof nacitajArchivDB === "function") nacitajArchivDB(); if (panel === "xp" && typeof vykresliXp === "function") vykresliXp();
     document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("aktivny"); });
     document.getElementById("panel-" + panel).classList.add("aktivny");
     ["tab-clenovia","tab-doch","tab-archiv","tab-log","tab-xp"].forEach(function(id){ var b=document.getElementById(id); b.style.color="#9C9C74"; b.style.borderBottomColor="transparent"; });
