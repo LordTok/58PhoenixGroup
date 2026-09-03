@@ -105,12 +105,12 @@ img { max-width: 100%; }
   </div>
 </header>
 
-<div style="background: #1C2216; border-bottom: 1px solid #35402A;">
+<div id="pg-domov2-lista" style="background: #1C2216; border-bottom: 1px solid #35402A;">
   <div style="display: flex; align-items: center; gap: 20px 32px; flex-wrap: wrap; max-width: 1120px; margin: 0 auto; padding: 16px 24px;">
     <span style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 3px; color: #8A5F44;">Najbližšia misia</span>
-    <span style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: #C2C29E;">{{ nextDate }}</span>
-    <span style="font-size: 15px; color: #D8D8C0;">Operácia Tichý hrebeň, časť III</span>
-    <span style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: #E8E8CC; background: #35402A; border: 1px solid #9C9C74; border-radius: 4px; padding: 3px 14px; font-feature-settings: 'tnum' 1;">o {{ countdown }}</span>
+    <span id="pg-domov2-datum" style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: #C2C29E;">—</span>
+    <span id="pg-domov2-nazov" style="font-size: 15px; color: #D8D8C0;">—</span>
+    <span id="pg-domov2-odpocet" style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: #E8E8CC; background: #35402A; border: 1px solid #9C9C74; border-radius: 4px; padding: 3px 14px; font-feature-settings: 'tnum' 1;">—</span>
     
   </div>
 </div>
@@ -517,18 +517,28 @@ class Component extends DCLogic {
 (function () {
   var el = document.getElementById('odpocet-cas');
   var info = document.getElementById('pg-domov-misia-info');
-  if (!el) return;
+  var l2 = document.getElementById('pg-domov2-lista');
+  var l2datum = document.getElementById('pg-domov2-datum');
+  var l2nazov = document.getElementById('pg-domov2-nazov');
+  var l2odp = document.getElementById('pg-domov2-odpocet');
   var ciel = null;
-  function tik() {
-    if (!ciel) return;
-    var diff = ciel - Date.now();
-    if (diff <= -5 * 3600000) { el.textContent = '—'; return; }
-    if (diff <= 0) { el.textContent = 'Kapitola sa práve píše'; return; }
+  function odpocetText(diff) {
+    if (diff <= 0) return 'prebieha';
     var d = Math.floor(diff / 86400000);
     var hod = Math.floor(diff % 86400000 / 3600000);
     var min = Math.floor(diff % 3600000 / 60000);
     var sek = Math.floor(diff % 60000 / 1000);
-    el.textContent = (d > 0 ? d + 'd ' : '') + hod + 'h ' + min + 'm' + (d > 0 ? '' : ' ' + sek + 's');
+    return (d > 0 ? d + 'd ' : '') + hod + 'h ' + min + 'm' + (d > 0 ? '' : ' ' + sek + 's');
+  }
+  function tik() {
+    if (!ciel) return;
+    var diff = ciel - Date.now();
+    if (el) {
+      if (diff <= -5 * 3600000) el.textContent = '—';
+      else if (diff <= 0) el.textContent = 'Kapitola sa práve píše';
+      else el.textContent = odpocetText(diff);
+    }
+    if (l2odp) l2odp.textContent = (diff <= 0 ? 'prebieha' : 'o ' + odpocetText(diff));
   }
   fetch("https://hrfvenycjsenjlbpztsd.supabase.co/functions/v1/verejna-misia", {
     method: "POST",
@@ -536,18 +546,21 @@ class Component extends DCLogic {
     body: "{}"
   }).then(function(r){ return r.json(); }).then(function(v){
     if (!v || !v.misia) {
-      el.textContent = '—';
+      if (el) el.textContent = '—';
       if (info) info.textContent = 'Žiadna misia nie je vypísaná';
+      if (l2) l2.style.display = 'none';
       return;
     }
     var d = new Date(v.misia.datum);
     ciel = d.getTime();
-    if (info) info.textContent = (v.misia.nazov || '') + ' · '
-      + d.toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'numeric' })
-      + ' · ' + d.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+    var datumTxt = d.toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'numeric' })
+      + ' — ' + d.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+    if (info) info.textContent = (v.misia.nazov || '') + ' · ' + datumTxt;
+    if (l2datum) l2datum.textContent = datumTxt;
+    if (l2nazov) l2nazov.textContent = v.misia.nazov || '';
     tik();
     setInterval(tik, 1000);
-  }).catch(function(){ el.textContent = '—'; });
+  }).catch(function(){ if (el) el.textContent = '—'; });
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
