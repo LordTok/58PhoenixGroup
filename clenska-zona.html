@@ -93,31 +93,17 @@ a:hover { color: #E8E8CC; }
       <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 22px 24px;">
   <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px;">
     <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #8A5F44;">Oznamy</div>
-    <button onClick="{{ pridajOznam }}" style="display: {{ editShow }}; align-items:center; background:#8A5F44; color:#F0E6D8; border:none; border-radius:5px; padding:6px 13px; font-family:'Staatliches',sans-serif; letter-spacing:1px; font-size:12.5px; cursor:pointer;">+ Nový oznam</button>
+    <button id="pg-oznam-novy" style="display: none; align-items:center; background:#8A5F44; color:#F0E6D8; border:none; border-radius:5px; padding:6px 13px; font-family:'Staatliches',sans-serif; letter-spacing:1px; font-size:12.5px; cursor:pointer;">+ Nový oznam</button>
   </div>
-  <div style="display: {{ novyOznamShow }}; margin-bottom:14px; padding:14px; border:1px dashed #8A5F44; border-radius:6px;">
+  <div id="pg-oznam-form" style="display: none; margin-bottom:14px; padding:14px; border:1px dashed #8A5F44; border-radius:6px;">
     <input id="oznam-nadpis" placeholder="Nadpis oznamu" style="width:100%; box-sizing:border-box; background:#242B1C; border:1px solid #4A5A38; border-radius:5px; color:#D8D8C0; padding:8px 12px; font-family:inherit; font-size:14px; margin-bottom:8px;">
     <textarea id="oznam-text" rows="2" placeholder="Text oznamu" style="width:100%; box-sizing:border-box; background:#242B1C; border:1px solid #4A5A38; border-radius:5px; color:#D8D8C0; padding:8px 12px; font-family:inherit; font-size:14px;"></textarea>
     <div style="display:flex; gap:8px; margin-top:8px;">
-      <button onClick="{{ ulozOznam }}" style="background:#8A5F44; color:#F0E6D8; border:none; border-radius:5px; padding:7px 15px; font-family:'Staatliches',sans-serif; letter-spacing:1px; font-size:13px; cursor:pointer;">Pridať</button>
-      <button onClick="{{ zrusOznam }}" style="background:transparent; color:#C2C29E; border:1px solid #9C9C74; border-radius:5px; padding:7px 13px; font-family:'Staatliches',sans-serif; letter-spacing:1px; font-size:13px; cursor:pointer;">Zrušiť</button>
+      <button id="pg-oznam-uloz" style="background:#8A5F44; color:#F0E6D8; border:none; border-radius:5px; padding:7px 15px; font-family:'Staatliches',sans-serif; letter-spacing:1px; font-size:13px; cursor:pointer;">Pridať</button>
+      <button id="pg-oznam-zrus" style="background:transparent; color:#C2C29E; border:1px solid #9C9C74; border-radius:5px; padding:7px 13px; font-family:'Staatliches',sans-serif; letter-spacing:1px; font-size:13px; cursor:pointer;">Zrušiť</button>
     </div>
   </div>
-  <div style="display: {{ oznamyEmpty }}; color:#A8A890; font-size:14px; padding:6px 0;">Zatiaľ žiadne oznamy.</div>
-  <div style="display: grid;">
-    <sc-for list="{{ oznamy }}" as="o" hint-placeholder-count="8">
-      <div style="display: {{ o.disp }}; border-bottom: 1px solid #35402A; padding: 10px 0;">
-        <div style="display:flex; gap:12px; align-items:flex-start;">
-          <div style="flex:1; min-width:0;">
-            <div style="font-size: 15px; color: #C2C29E; font-weight: 600;">{{ o.nadpis }}</div>
-            <div style="font-size: 13.5px; color: #A8A890; margin-top:2px;">{{ o.text }}</div>
-            <div style="font-size: 11.5px; color: #8A5F44; margin-top:4px;">{{ o.datum }}</div>
-          </div>
-          <button onClick="{{ o.zmaz }}" title="Zmazať oznam" style="display: {{ editShow }}; align-items:center; justify-content:center; width:28px; height:28px; background:#35402A; border:1px solid #7A3B2E; border-radius:4px; color:#C98B7A; cursor:pointer; font-size:12.5px; flex-shrink:0;">🗑</button>
-        </div>
-      </div>
-    </sc-for>
-  </div>
+  <div id="pg-nastenka-oznamy"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div>
 </div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 22px 24px;">
@@ -876,6 +862,18 @@ class Component extends DCLogic {
         + '<span style="font-size:11.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; border:1px solid ' + (os?"#C9A227":"#7FB069") + '; color:' + (os?"#D8B45A":"#9Fd089") + ';">' + (os?"Ospravedlnený":"Prihlásený") + '</span></div>';
     }).join("");
   }
+  async function pgOznam(telo) {
+    try {
+      var kk = window.pgSupaKlient ? window.pgSupaKlient() : null; if (!kk) return { error: "Bez pripojenia" };
+      var sess = (await kk.auth.getSession()).data.session; if (!sess) return { error: "Nie si prihlásený" };
+      var r = await fetch(SUPA_URL + "/functions/v1/sprava-oznamov", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
+        body: JSON.stringify(telo)
+      });
+      return await r.json();
+    } catch (e) { return { error: String(e) }; }
+  }
   async function pgNeaktivita(telo) {
     try {
       var kk = window.pgSupaKlient ? window.pgSupaKlient() : null; if (!kk) return { error: "Bez pripojenia" };
@@ -950,6 +948,59 @@ class Component extends DCLogic {
     // PRIHLÁSENIA
     var np = document.getElementById("pg-nastenka-prihlasenia"); if (np) np.innerHTML = pgPrihlaseniaHtml(v.moje_prihlasenia);
     var pp = document.getElementById("pg-profil-prihlasenia"); if (pp) pp.innerHTML = pgPrihlaseniaHtml(v.moje_prihlasenia);
+    // OZNAMY
+    var oz = document.getElementById("pg-nastenka-oznamy");
+    if (oz) {
+      var jeVel = false;
+      try { var uc = JSON.parse(localStorage.getItem("pg_ucet")||"null"); jeVel = !!(uc && uc.rola === "velitel"); } catch(e){}
+      var novyBtn = document.getElementById("pg-oznam-novy");
+      if (novyBtn) {
+        novyBtn.style.display = jeVel ? "inline-flex" : "none";
+        novyBtn.onclick = function(){
+          var f = document.getElementById("pg-oznam-form");
+          if (f) f.style.display = (f.style.display === "none" ? "block" : "none");
+        };
+      }
+      var zrusBtn = document.getElementById("pg-oznam-zrus");
+      if (zrusBtn) zrusBtn.onclick = function(){ var f = document.getElementById("pg-oznam-form"); if (f) f.style.display = "none"; };
+      var ulozBtn2 = document.getElementById("pg-oznam-uloz");
+      if (ulozBtn2) ulozBtn2.onclick = async function(){
+        var nad = (document.getElementById("oznam-nadpis")||{}).value || "";
+        var txt = (document.getElementById("oznam-text")||{}).value || "";
+        if (!nad.trim()) { alert("Napíš nadpis oznamu."); return; }
+        ulozBtn2.disabled = true; ulozBtn2.textContent = "Ukladám…";
+        var vv = await pgOznam({ akcia: "pridat", titulok: nad, text: txt });
+        ulozBtn2.disabled = false; ulozBtn2.textContent = "Pridať";
+        if (vv && vv.error) { alert("Chyba: " + vv.error); return; }
+        var ni = document.getElementById("oznam-nadpis"); if (ni) ni.value = "";
+        var ti = document.getElementById("oznam-text"); if (ti) ti.value = "";
+        var f = document.getElementById("pg-oznam-form"); if (f) f.style.display = "none";
+        naplnPrehlad();
+      };
+      var zoznamO = v.oznamy || [];
+      if (!zoznamO.length) oz.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:6px 0;">Zatiaľ žiadne oznamy.</div>';
+      else {
+        oz.innerHTML = '<div style="display:grid;">' + zoznamO.map(function(o){
+          var d = new Date(o.created_at);
+          var dz = d.toLocaleDateString("sk-SK",{day:"numeric",month:"numeric",year:"numeric"});
+          return '<div style="border-bottom:1px solid #35402A; padding:10px 0;"><div style="display:flex; gap:12px; align-items:flex-start;">'
+            + '<div style="flex:1; min-width:0;"><div style="font-size:15px; color:#C2C29E; font-weight:600;">' + (o.titulok||"") + '</div>'
+            + (o.text ? '<div style="font-size:13.5px; color:#A8A890; margin-top:2px;">' + o.text + '</div>' : '')
+            + '<div style="font-size:11.5px; color:#8A5F44; margin-top:4px;">' + dz + '</div></div>'
+            + (jeVel ? '<button data-pg-oznam-zmaz="' + o.id + '" title="Zmazať oznam" style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:#35402A; border:1px solid #7A3B2E; border-radius:4px; color:#C98B7A; cursor:pointer; font-size:12.5px; flex-shrink:0;">🗑</button>' : '')
+            + '</div></div>';
+        }).join("") + '</div>';
+        oz.querySelectorAll("[data-pg-oznam-zmaz]").forEach(function(b){
+          b.onclick = async function(){
+            if (!confirm("Zmazať tento oznam?")) return;
+            b.disabled = true;
+            var vv = await pgOznam({ akcia: "zmazat", id: b.getAttribute("data-pg-oznam-zmaz") });
+            if (vv && vv.error) { alert("Chyba: " + vv.error); b.disabled = false; return; }
+            naplnPrehlad();
+          };
+        });
+      }
+    }
     // ZAMERANIA (z výcvikov)
     var pz2 = document.getElementById("pg-profil-zamerania");
     if (pz2) {
