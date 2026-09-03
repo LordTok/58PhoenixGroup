@@ -315,7 +315,7 @@
               <button class="btn" onclick="rychloUdel()">Pripísať</button>
             </div>
             <div class="xp-riadok">
-              <label class="pole" style="margin:0;"><span>Aktuálne XP</span><input class="vstup" type="number" id="e-xp" oninput="nahladXp()"></label>
+              <label class="pole" style="margin:0;"><span>Bonus XP (ručná korekcia)</span><input class="vstup" type="number" id="e-xp" oninput="nahladXp()"></label>
               <label class="pole" style="margin:0; flex:1; min-width:180px;"><span>Dôvod zmeny (do záznamu)</span><input class="vstup" id="e-xp-dovod" placeholder="misia / oprava / bonus"></label>
             </div>
             <div class="ulozene-info" id="xp-nahlad">Stupeň: —</div>
@@ -334,42 +334,27 @@
     </div>
 
     <div id="panel-xp" class="panel">
-      <p style="font-size: 14px; color: var(--text-tlm); max-width: 760px; margin: 0 0 20px;">Ako to funguje: XP sa pripisuje <strong style="color:var(--khaki-svetla)">automaticky</strong> — z potvrdenej dochádzky (záložka Dochádzky) a zo splnených výcvikov (záložka Výcviky) podľa sadzobníka nižšie. <strong style="color:var(--khaki-svetla)">Ručne</strong> cez Rýchle udelenie v Karte člena. Stupne sa prepočítavajú okamžite, aj v profile člena.</p>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; align-items: start;">
-
-        <div class="sekcia-editor" style="margin-top: 0;">
-          <div class="nadpis">01 · Ako sa XP získava</div>
-          <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 12px;">Sadzobník odmien. Použije sa pri potvrdení „Dorazil" v Dochádzkach a pri splnení výcviku.</p>
-          <div id="xp-odmeny"></div>
-          <button class="xp-pridaj" onclick="pridajOdmenu()">+ Pridať odmenu</button>
-        </div>
-
-        <div class="sekcia-editor" style="margin-top: 0;">
-          <div class="nadpis">02 · Ako sa XP stráca</div>
-          <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 12px;">Penalizácie sa aplikujú pri označení „Nedorazil" bez ospravedlnenia. Zadávaj so znamienkom mínus.</p>
-          <div id="xp-penal"></div>
-          <button class="xp-pridaj" onclick="pridajPenal()">+ Pridať penalizáciu</button>
-          <div id="xp-decay" style="margin-top: 16px;"></div>
-        </div>
-
-        <div class="sekcia-editor" style="margin-top: 0;">
-          <div class="nadpis">03 · Stupne veterancie</div>
-          <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 12px;">Názov a hranica XP, od ktorej stupeň platí. Zoradí sa automaticky a hneď platí aj v profile člena.</p>
-          <div class="xp-edit-riadok" style="margin-bottom: 4px;"><span style="font-size:11.5px; color:var(--hneda); letter-spacing:2px; font-family:'Staatliches',sans-serif;">NÁZOV</span><span style="font-size:11.5px; color:var(--hneda); letter-spacing:2px; font-family:'Staatliches',sans-serif;">OD XP</span><span></span></div>
-          <div id="xp-stupne"></div>
-          <button class="xp-pridaj" onclick="pridajStupen()">+ Pridať stupeň</button>
-          <div class="ulozene-info" style="margin-top:14px;">Rebríček:</div>
-          <div class="rebricek" id="xp-rebricek"></div>
-        </div>
-
-        <div class="sekcia-editor" style="margin-top: 0;">
-          <div class="nadpis">04 · Automatizácia</div>
-          <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 12px;">Čo systém vykoná sám. V ostrej verzii to po každej misii vyhodnotí server z dochádzky.</p>
-          <div id="xp-auto"></div>
-        </div>
-
-      </div>
+  <p style="font-size: 14px; color: var(--text-tlm); max-width: 780px; margin: 0 0 20px;">XP sa počíta <strong style="color:var(--khaki-svetla)">automaticky</strong>: odohrané misie × sadzba účasti + splnené výcviky × sadzba výcviku + prípadný bonus z Karty člena. Keď XP člena dosiahne prah vyššej hodnosti, objaví sa nižšie <strong style="color:var(--khaki-svetla)">návrh na povýšenie</strong> — povyšuješ ty, cez Kartu člena (zapíše sa aj na Discord).</p>
+  <div id="xp-chyba" style="display:none; margin:0 0 16px; padding:10px 14px; border:1px solid #8A5F44; border-radius:6px; color:#C98B7A; font-size:13.5px;"></div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; align-items: start;">
+    <div class="sekcia-editor" style="margin-top: 0;">
+      <div class="nadpis">01 · Sadzby XP</div>
+      <label class="pole"><span>XP za účasť na misii (dorazil)</span><input class="vstup" type="number" min="0" id="xp-sadzba-ucast" value="10"></label>
+      <label class="pole"><span>XP za splnený výcvik</span><input class="vstup" type="number" min="0" id="xp-sadzba-vycvik" value="15"></label>
+      <div class="nadpis" style="margin-top:22px;">02 · Návrhy na povýšenie</div>
+      <div id="xp-navrhy"><div style="color:var(--text-tlm); font-size:13.5px;">Načítavam…</div></div>
+      <div class="nadpis" style="margin-top:22px;">03 · XP prehľad členov</div>
+      <div id="xp-prehlad" style="font-size:13.5px;"></div>
     </div>
+    <div class="sekcia-editor" style="margin-top: 0;">
+      <div class="nadpis">04 · Prahy hodností (koľko XP treba)</div>
+      <p style="font-size:13px; color:var(--text-tlm); margin:-4px 0 12px;">Kumulatívne XP potrebné na dosiahnutie hodnosti. Prvá hodnosť je vždy 0.</p>
+      <div id="xp-prahy"></div>
+      <button id="xp-uloz" class="btn" style="margin-top:16px;">Uložiť nastavenia XP</button>
+      <span id="xp-ulozene" style="display:none; margin-left:10px; color:#7FB069; font-size:13px;">✓ Uložené</span>
+    </div>
+  </div>
+</div>
 
     <div id="panel-doch" class="panel">
       <div class="sekcia-editor" style="margin-top: 0; margin-bottom: 20px;">
@@ -733,49 +718,59 @@
     r.appendChild(n); r.appendChild(x); r.appendChild(k);
     return r;
   }
-  function vykresliXp() {
-    var hs = document.getElementById("xp-stupne"); hs.innerHTML = "";
-    XPCFG.stupne.forEach(function(s, i){ hs.appendChild(riadokXp(s, i, "stupne", true)); });
-    var ho = document.getElementById("xp-odmeny"); ho.innerHTML = "";
-    XPCFG.odmeny.forEach(function(o, i){ ho.appendChild(riadokXp(o, i, "odmeny", false)); });
-    var hp = document.getElementById("xp-penal"); hp.innerHTML = "";
-    XPCFG.penalizacie.forEach(function(p, i){ hp.appendChild(riadokXp(p, i, "penalizacie", false)); });
-    var reb = document.getElementById("xp-rebricek"); reb.innerHTML = "";
-    XPCFG.stupne.forEach(function(s, i){
-      if (i > 0) { var sip = document.createElement("span"); sip.className = "sipka"; sip.textContent = "→"; reb.appendChild(sip); }
-      var el = document.createElement("span"); el.className = "stupienok";
-      el.innerHTML = "<strong>" + s[0] + "</strong> " + s[1] + "+";
-      reb.appendChild(el);
+  async function vykresliXp(pokus) {
+    pokus = pokus || 0;
+    var host = document.getElementById("xp-prahy");
+    if (!host) return;
+    var v = null;
+    try { v = await supaVolaj("sprava-xp", { akcia: "nacitaj" }); }
+    catch (e) { v = { error: String(e) }; }
+    if (!v || v.error) {
+      if (pokus < 15) { setTimeout(function(){ vykresliXp(pokus+1); }, 500); return; }
+      var ch = document.getElementById("xp-chyba");
+      if (ch) { ch.style.display = "block"; ch.textContent = "XP nastavenia sa nepodarilo načítať: " + (v && v.error || "?"); }
+      return;
+    }
+    document.getElementById("xp-sadzba-ucast").value = v.sadzba_ucast;
+    document.getElementById("xp-sadzba-vycvik").value = v.sadzba_vycvik;
+    host.innerHTML = "";
+    v.hodnosti.forEach(function(hd, idx){
+      var r = document.createElement("div");
+      r.style.cssText = "display:grid; grid-template-columns:minmax(0,1fr) 110px; gap:10px; align-items:center; padding:5px 0; border-bottom:1px solid var(--ciara);";
+      r.innerHTML = '<span style="font-size:13.5px;">' + (idx+1) + '. ' + hd + '</span>'
+        + '<input class="vstup xp-prah-vstup" type="number" min="0" data-idx="' + idx + '" value="' + (v.prahy[idx] || 0) + '"' + (idx === 0 ? ' disabled' : '') + ' style="padding:6px 10px;">';
+      host.appendChild(r);
     });
-    var ha = document.getElementById("xp-auto"); ha.innerHTML = "";
-    [["dochadzka","XP z dochádzky sa pripisuje automaticky po misii"],
-     ["ospravedlnenie","Ospravedlnená neúčasť je bez penalizácie"],
-     ["penalizacie","Penalizácie sa aplikujú automaticky"]].forEach(function(t){
-      var kluc = t[0], el = document.createElement("div");
-      el.className = "xp-toggle" + (XPCFG.auto[kluc] ? " zap" : "");
-      el.innerHTML = '<span class="nazov">' + t[1] + '</span><button class="prep">' + (XPCFG.auto[kluc] ? "Zapnuté" : "Vypnuté") + '</button>';
-      el.querySelector(".prep").onclick = function(){
-        XPCFG.auto[kluc] = !XPCFG.auto[kluc]; ulozXpCfg();
-        zapisLog((XPCFG.auto[kluc] ? 'zapol' : 'vypol') + ' pravidlo XP: <strong>' + t[1] + '</strong>');
-        vykresliXp();
-  vykresliDoch();
-  
-  toast();
-      };
-      ha.appendChild(el);
-    });
-    var hd = document.getElementById("xp-decay"); hd.innerHTML = "";
-    var dt = document.createElement("div");
-    dt.className = "xp-toggle" + (XPCFG.decay.aktivne ? " zap" : "");
-    dt.innerHTML = '<span class="nazov">Klesanie XP pri neaktivite</span><button class="prep">' + (XPCFG.decay.aktivne ? "Zapnuté" : "Vypnuté") + '</button>';
-    dt.querySelector(".prep").onclick = function(){ XPCFG.decay.aktivne = !XPCFG.decay.aktivne; ulozXpCfg(); zapisLog((XPCFG.decay.aktivne ? 'zapol' : 'vypol') + ' klesanie XP pri neaktivite'); vykresliXp(); toast(); };
-    hd.appendChild(dt);
-    var dr = document.createElement("div");
-    dr.style.cssText = "display:flex; align-items:center; gap:10px; margin-top:8px;" + (XPCFG.decay.aktivne ? "" : "opacity:.5;");
-    dr.innerHTML = '<input class="vstup" type="number" min="0" style="width:90px;" value="' + XPCFG.decay.tyzden + '"><span style="font-size:13px; color:var(--text-tlm);">XP za každý týždeň bez účasti · nahlásená neaktivita a ospravedlnenie chránia</span>';
-    dr.querySelector("input").onchange = function(){ XPCFG.decay.tyzden = Math.max(0, parseInt(this.value||"0",10)); ulozXpCfg(); };
-    hd.appendChild(dr);
-    naplnRychle();
+    var nav = document.getElementById("xp-navrhy");
+    if (nav) {
+      if (!v.navrhy.length) nav.innerHTML = '<div style="color:var(--text-tlm); font-size:13.5px;">Žiadne návrhy — nikto zatiaľ nedosiahol prah vyššej hodnosti.</div>';
+      else nav.innerHTML = v.navrhy.map(function(n){
+        return '<div style="padding:8px 12px; margin-bottom:8px; border:1px solid #9C9C74; border-radius:6px; background:rgba(156,156,116,.12); font-size:13.5px;">🎖️ <strong>' + n.nick + '</strong> — ' + (n.hodnost || "—") + ' → <strong>' + n.navrh + '</strong> <span style="color:var(--text-tlm);">(XP ' + n.xp + ')</span><br><span style="font-size:12px; color:var(--text-tlm);">Povýš v Kartách členov — zapíše sa aj na Discord.</span></div>';
+      }).join("");
+    }
+    var pre = document.getElementById("xp-prehlad");
+    if (pre) {
+      pre.innerHTML = v.clenovia.map(function(cx){
+        return '<div style="display:grid; grid-template-columns:minmax(0,1fr) 70px; gap:8px; padding:4px 0; border-bottom:1px solid var(--ciara);"><span>' + cx.nick + ' <span style="color:var(--text-tlm); font-size:12px;">(' + (cx.hodnost || "—") + ' · ' + cx.ucasti + ' misií · ' + cx.vycviky + ' výc.' + (cx.bonus ? ' · bonus ' + cx.bonus : '') + ')</span></span><strong style="justify-self:end;">' + cx.xp + ' XP</strong></div>';
+      }).join("");
+    }
+    var ub = document.getElementById("xp-uloz");
+    if (ub) ub.onclick = async function(){
+      var prahy = [];
+      document.querySelectorAll(".xp-prah-vstup").forEach(function(inp){ prahy[parseInt(inp.getAttribute("data-idx"),10)] = parseInt(inp.value,10) || 0; });
+      prahy[0] = 0;
+      ub.disabled = true; ub.textContent = "Ukladám…";
+      var vv = await supaVolaj("sprava-xp", { akcia: "uloz",
+        sadzba_ucast: parseInt(document.getElementById("xp-sadzba-ucast").value,10) || 0,
+        sadzba_vycvik: parseInt(document.getElementById("xp-sadzba-vycvik").value,10) || 0,
+        prahy: prahy });
+      ub.disabled = false; ub.textContent = "Uložiť nastavenia XP";
+      if (vv && vv.error) { alert("Chyba: " + vv.error); return; }
+      var ok = document.getElementById("xp-ulozene");
+      if (ok) { ok.style.display = "inline"; setTimeout(function(){ ok.style.display = "none"; }, 2500); }
+      zapisLog("XP nastavenia upravené (sadzby/prahy)");
+      vykresliXp();
+    };
   }
   function naplnRychle() {
     var sel = document.getElementById("rychle-sel"); if (!sel) return;

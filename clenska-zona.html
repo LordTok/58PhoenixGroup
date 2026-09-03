@@ -263,20 +263,7 @@ a:hover { color: #E8E8CC; }
         </div>
       </div>
     <div style="padding: 28px; border-left: 1px solid #4A5A38; background: rgba(28,34,22,.35);">
-            <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">Veterancia</div>
-            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-              <span style="font-family: 'Staatliches', sans-serif; font-size: 24px; letter-spacing: 2px; color: #C2C29E;">{{ vetMeno }}</span>
-              <span style="font-size: 14px; color: #A8A890;">{{ vetXpText }}</span>
-            </div>
-            <div style="margin-top: 12px; height: 12px; border-radius: 6px; background: #242B1C; border: 1px solid #4A5A38; overflow: hidden;">
-              <div style="width: {{ vetBarW }}%; height: 100%; background: linear-gradient(90deg, #8A5F44, #9C9C74);"></div>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12.5px; color: #A8A890;">
-              <span>{{ vetDalsi }}</span>
-              <span>{{ vetVrchol }}</span>
-            </div>
-            <p style="font-size: 12.5px; color: #A8A890; margin: 14px 0 0;">XP za účasť na misiách a výcvikoch · pri dlhšej neaktivite klesá · kvalifikácie a stužky ostávajú navždy</p>
-          </div>
+            <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">XP a postup</div><div id="pg-profil-xp"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div>
   </div>
 </div>
   </div>
@@ -285,21 +272,7 @@ a:hover { color: #E8E8CC; }
         <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">Kvalifikačné odznaky</div>
         <div id="pg-profil-odznaky"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div>
       </div><div style="border-top: 1px solid #4A5A38; padding: 26px;">
-        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">História povýšení</div>
-        <div style="position: relative;">
-          <div style="position: absolute; left: 7px; top: 10px; bottom: 10px; width: 2px; background: linear-gradient(to bottom, #4A5A38, #9C9C74);"></div>
-          <div style="display: grid; gap: 18px;">
-            <sc-for list="{{ ranks }}" as="rk" hint-placeholder-count="4">
-              <div style="display: grid; grid-template-columns: 16px 40px 84px minmax(0, 1fr); gap: 14px; align-items: center;">
-                <span style="width: 12px; height: 12px; border-radius: 50%; background: {{ rk.dotBg }}; border: 2px solid {{ rk.dotBorder }}; position: relative; z-index: 1; box-sizing: border-box;"></span>
-            <img src="{{ rk.img }}" alt="" style="width: 40px; height: 40px; object-fit: contain; opacity: {{ rk.imgOpacity }};">
-                <span style="font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: {{ rk.color }};">{{ rk.rank }}</span>
-                <span style="font-size: 13.5px; color: #A8A890;">{{ rk.note }}</span>
-              </div>
-            </sc-for>
-          </div>
-        </div>
-      </div><div style="border-top: 1px solid #4A5A38; padding: 26px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">História povýšení</div><div id="pg-profil-povysenia"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div><div style="border-top: 1px solid #4A5A38; padding: 26px;">
         <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">Služobný záznam</div><div id="pg-profil-zaznam"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div></div>
     <div style="display: grid; gap: 20px; align-content: start;">
 <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 18px 20px;">
@@ -1049,6 +1022,46 @@ class Component extends DCLogic {
           naplnPrehlad();
         };
       });
+    }
+    // XP A POSTUP
+    var px = document.getElementById("pg-profil-xp");
+    if (px && v.xp) {
+      var xph = '<div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;">'
+        + '<span style="font-family:\'Staatliches\',sans-serif; font-size:24px; letter-spacing:2px; color:#C2C29E;">' + v.xp.celkom + ' XP</span>';
+      if (v.xp.dalsi) xph += '<span style="font-size:14px; color:#A8A890;">do hodnosti ' + v.xp.dalsi.hodnost + ' chýba ' + v.xp.dalsi.chyba + ' XP</span>';
+      else xph += '<span style="font-size:14px; color:#A8A890;">najvyššia hodnosť</span>';
+      xph += '</div>';
+      if (v.xp.dalsi) {
+        var zaklad = v.xp.prahy[v.xp.akt_idx] || 0;
+        var rozsah = Math.max(1, v.xp.dalsi.prah - zaklad);
+        var pct = Math.max(0, Math.min(100, Math.round(((v.xp.celkom - zaklad) / rozsah) * 100)));
+        xph += '<div style="margin-top:12px; height:12px; border-radius:6px; background:#242B1C; border:1px solid #4A5A38; overflow:hidden;"><div style="width:' + pct + '%; height:100%; background:linear-gradient(to right, #4A6741, #9C9C74);"></div></div>';
+      }
+      xph += '<p style="font-size:12.5px; color:#A8A890; margin:10px 0 0;">Účasť na misii +' + v.xp.sadzba_ucast + ' XP · splnený výcvik +' + v.xp.sadzba_vycvik + ' XP' + (v.xp.bonus ? ' · bonus ' + v.xp.bonus + ' XP' : '') + '. Po dosiahnutí prahu ťa systém navrhne veliteľovi na povýšenie.</p>';
+      px.innerHTML = xph;
+    }
+    // HISTÓRIA POVÝŠENÍ
+    var pv = document.getElementById("pg-profil-povysenia");
+    if (pv) {
+      var HODN = ["Vojak 1. stupňa","Vojak 2. stupňa","Slobodník","Desiatnik","Čatár","Rotný","Rotmajster","Nadrotmajster","Štábny nadrotmajster","Podpráporčík","Práporčík","Nadpráporčík","Poručík","Nadporučík","Kapitán","Major","Podplukovník","Plukovník"];
+      var HODN_IMG = ["01-vojak-1-stupna","02-vojak-2-stupna","03-slobodnik","04-desiatnik","05-catar","06-rotny","07-rotmajster","08-nadrotmajster","09-stabny-nadrotmajster","10-podpraporcik","11-praporcik","12-nadpraporcik","13-porucik","14-nadporucik","15-kapitan","16-major","17-podplukovnik","18-plukovnik"];
+      var KATEG = [[0,2,"Mužstvo"],[3,8,"Poddôstojníci"],[9,11,"Práporčíci"],[12,17,"Dôstojníci"]];
+      var aktIdx = Math.max(0, HODN.indexOf(v.hodnost || ""));
+      var datumy = {};
+      (v.povysenia || []).forEach(function(p){ datumy[p.hodnost] = p.datum; });
+      var hh = "";
+      KATEG.forEach(function(k){
+        hh += '<div style="font-family:\'Staatliches\',sans-serif; font-size:12.5px; letter-spacing:3px; color:#8A5F44; margin:14px 0 8px;">' + k[2] + '</div>';
+        for (var ri = k[0]; ri <= k[1]; ri++) {
+          var dosiahnute = ri <= aktIdx;
+          var dt = datumy[HODN[ri]] ? new Date(datumy[HODN[ri]]).toLocaleDateString("sk-SK",{day:"numeric",month:"numeric",year:"numeric"}) : null;
+          hh += '<div style="display:grid; grid-template-columns:40px minmax(0,1fr) auto; gap:12px; align-items:center; padding:5px 0;' + (dosiahnute ? '' : ' opacity:.38; filter:grayscale(1);') + '">'
+            + '<img src="assets/hodnosti/' + HODN_IMG[ri] + '.png" alt="" style="width:34px; height:34px; object-fit:contain;">'
+            + '<span style="font-family:\'Staatliches\',sans-serif; font-size:17px; letter-spacing:1.5px; color:' + (ri === aktIdx ? '#E8E8CC' : '#C2C29E') + ';">' + HODN[ri] + (ri === aktIdx ? ' <span style="font-size:11px; letter-spacing:1px; color:#9C9C74;">— aktuálna</span>' : '') + '</span>'
+            + '<span style="font-size:12.5px; color:#A8A890;">' + (dosiahnute ? (dt || "dosiahnuté") : "") + '</span></div>';
+        }
+      });
+      pv.innerHTML = hh;
     }
     // KVALIFIKAČNÉ ODZNAKY
     var po = document.getElementById("pg-profil-odznaky");
