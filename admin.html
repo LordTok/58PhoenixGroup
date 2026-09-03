@@ -468,13 +468,7 @@
       { cas:"24.08. 18:30", kto:"kpt. Orol", akcia:'upravil náborový text na verejnej stránke' }
     ];
   }
-  function zapisLog(akcia) {
-    var d = new Date(), p = function(n){ return (n<10?"0":"")+n; };
-    var cas = p(d.getDate())+"."+p(d.getMonth()+1)+". "+p(d.getHours())+":"+p(d.getMinutes());
-    LOG.unshift({ cas: cas, kto: "veliteľ", akcia: akcia });
-    try { localStorage.setItem(LOGKLUC, JSON.stringify(LOG)); } catch(e){}
-    vykresliLog();
-  }
+  function zapisLog(akcia) { /* logy píše server do DB + Discord #log */ }
   function menoClena(id) { var c = DATA[id]; return (HOD_SKR[c.hod]||"") + " " + c.meno.replace(/[„"]/g,""); }
 
   // ---- Zoznam členov ----
@@ -623,11 +617,27 @@
     toast();
   }
 
-  function vykresliLog() {
-    var host = document.getElementById("log-riadky"); host.innerHTML = "";
-    LOG.forEach(function(l){
+  async function vykresliLog(pokus) {
+    pokus = pokus || 0;
+    var host = document.getElementById("log-riadky");
+    if (!host) return;
+    var v = null;
+    try { v = await supaVolaj("nacitaj-log", {}); } catch (e) { v = { error: String(e) }; }
+    if (!v || v.error) {
+      if (pokus < 15) { setTimeout(function(){ vykresliLog(pokus+1); }, 500); return; }
+      host.innerHTML = '<div style="color:var(--text-tlm); font-size:13.5px; padding:10px 0;">Záznam sa nepodarilo načítať — obnov stránku.</div>';
+      return;
+    }
+    host.innerHTML = "";
+    if (!v.zaznamy || !v.zaznamy.length) {
+      host.innerHTML = '<div style="color:var(--text-tlm); font-size:13.5px; padding:10px 0;">Zatiaľ žiadne záznamy — sem sa píšu akcie vedenia (rovnaké ako Discord #log).</div>';
+      return;
+    }
+    v.zaznamy.forEach(function(l){
+      var d = new Date(l.cas), p = function(n){ return (n<10?"0":"")+n; };
+      var cas = p(d.getDate())+"."+p(d.getMonth()+1)+". "+p(d.getHours())+":"+p(d.getMinutes());
       var el = document.createElement("div"); el.className = "riadok";
-      el.innerHTML = '<span class="cas">'+l.cas+'</span><span class="kto">'+l.kto+'</span><span class="akcia">'+l.akcia+'</span>';
+      el.innerHTML = '<span class="cas">'+cas+'</span><span class="kto">'+(l.kto||"—")+'</span><span class="akcia">'+(l.akcia||"")+'</span>';
       host.appendChild(el);
     });
   }
@@ -1187,7 +1197,7 @@
   }
 
   function prepni(panel, btn) {
-    if (panel === "archiv" && typeof nacitajArchivDB === "function") nacitajArchivDB(); if (panel === "xp" && typeof vykresliXp === "function") vykresliXp();
+    if (panel === "archiv" && typeof nacitajArchivDB === "function") nacitajArchivDB(); if (panel === "xp" && typeof vykresliXp === "function") vykresliXp(); if (panel === "log" && typeof vykresliLog === "function") vykresliLog();
     document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("aktivny"); });
     document.getElementById("panel-" + panel).classList.add("aktivny");
     ["tab-clenovia","tab-doch","tab-archiv","tab-log","tab-xp"].forEach(function(id){ var b=document.getElementById(id); b.style.color="#9C9C74"; b.style.borderBottomColor="transparent"; });
