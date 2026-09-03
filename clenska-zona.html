@@ -167,8 +167,8 @@ a:hover { color: #E8E8CC; }
       </div>
     </div>
     <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; overflow: hidden;">
-      <div style="display: grid; grid-template-columns: 44px minmax(140px, 1fr) minmax(180px, 1.6fr) 118px 30px; gap: 14px; align-items: center; padding: 10px 20px; background: #35402A; border-bottom: 1px solid #4A5A38; font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; color: #8A5F44;">
-        <span></span><span>Člen</span><span>Roly s výcvikom</span><span style="justify-self: end;">Stav</span><span></span>
+      <div style="display: grid; grid-template-columns: 44px minmax(120px,1fr) 96px minmax(150px,1.4fr) 92px 112px; gap: 14px; align-items: center; padding: 10px 20px; background: #35402A; border-bottom: 1px solid #4A5A38; font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; color: #8A5F44;">
+        <span></span><span>Člen</span><span>Oprávnenie</span><span>Špecializácie</span><span style="justify-self: end;">Vstup</span><span style="justify-self: end;">Naposledy hral</span>
       </div>
       <div style="display: {{ emRoster }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">ORBAT sa naplní po pridaní členov cez Discord.</div></div>
 <div style="display: block;"><div id="pg-roster-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam členov…</div></div>
@@ -301,15 +301,7 @@ a:hover { color: #E8E8CC; }
   <div style="display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 20px; margin-top: 20px;">
     <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 8px; overflow: hidden;"><div style="padding: 26px;">
         <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">Kvalifikačné odznaky</div>
-        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-          <sc-for list="{{ badges }}" as="b" hint-placeholder-count="5">
-            <div style="display: grid; justify-items: center; gap: 8px; width: 100px;">
-              <img src="{{ b.img }}" alt="{{ b.name }}" style="width: 84px; height: 84px; object-fit: contain; filter: {{ b.filter }}; opacity: {{ b.opacity }};">
-              <div style="font-size: 12px; color: {{ b.labelColor }}; text-align: center; line-height: 1.3;">{{ b.name }}</div>
-            </div>
-          </sc-for>
-        </div>
-        <p style="font-size: 12.5px; color: #A8A890; margin: 16px 0 0;">Farebný odznak = dokončený výcvik (bronz / striebro / zlato) · sivý = prebieha</p>
+        <div id="pg-profil-odznaky"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div>
       </div><div style="border-top: 1px solid #4A5A38; padding: 26px;">
         <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">História povýšení</div>
         <div style="position: relative;">
@@ -796,21 +788,24 @@ class Component extends DCLogic {
   function clenRiadok(m) {
     var d = m.vstup ? new Date(m.vstup) : null;
     var vstupTxt = d ? d.toLocaleDateString("sk-SK", { day:"numeric", month:"numeric", year:"numeric" }) : "—";
-    var avatar = m.avatar_url
-      ? '<img src="' + m.avatar_url + '" alt="" style="width:38px; height:38px; border-radius:50%; object-fit:cover; background:#35402A; justify-self:center;">'
-      : '<div style="width:38px; height:38px; border-radius:50%; background:#35402A; display:grid; place-items:center; font-family:\'Staatliches\',sans-serif; color:#C2C29E; justify-self:center;">' + (m.nick||"?").charAt(0).toUpperCase() + '</div>';
-    var velitelOdznak = m.je_velitel
+    var hd = m.naposledy_hral ? new Date(m.naposledy_hral) : null;
+    var hralTxt = hd ? hd.toLocaleDateString("sk-SK", { day:"numeric", month:"numeric", year:"numeric" }) : "—";
+    var avatar = m.avatar_url ? '<img src="' + m.avatar_url + '" alt="" style="width:38px; height:38px; border-radius:50%; object-fit:cover; background:#35402A; justify-self:center;">' : '<div style="width:38px; height:38px; border-radius:50%; background:#35402A; display:grid; place-items:center; font-family:\'Staatliches\',sans-serif; color:#C2C29E; justify-self:center;">' + (m.nick||"?").charAt(0).toUpperCase() + '</div>';
+    var opravnenie = m.je_velitel
       ? '<span style="font-size:10.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; background:rgba(156,156,116,.2); border:1px solid #9C9C74; color:#C2C29E;">VELITEĽ</span>'
-      : '';
-    var h = '<div style="display:grid; grid-template-columns:44px minmax(140px,1fr) minmax(180px,1.6fr) 118px; gap:14px; align-items:center; padding:10px 20px; border-bottom:1px solid #35402A; font-size:14.5px;">';
+      : '<span style="font-size:12px; color:#A8A890;">člen</span>';
+    var spec = (m.vycviky && m.vycviky.length)
+      ? '<span style="font-size:11.5px; letter-spacing:1px; color:#9C9C74; font-family:\'Staatliches\',sans-serif;">' + m.vycviky.map(function(k){ return k.toUpperCase(); }).join(" · ") + '</span>'
+      : '<span style="font-size:12px; color:#6b6b56;">—</span>';
+    var h = '<div style="display:grid; grid-template-columns:44px minmax(120px,1fr) 96px minmax(150px,1.4fr) 92px 112px; gap:14px; align-items:center; padding:10px 20px; border-bottom:1px solid #35402A; font-size:14.5px;">';
     h += avatar;
     h += '<span style="min-width:0;"><span style="display:block; color:#E8E8CC; font-weight:600; line-height:1.25;">' + (m.nick||"") + '</span>'
-      + '<span style="display:block; font-size:12px; color:#9C9C74; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; margin-top:2px;">' + (m.hodnost || "—") + '</span></span>';
-    // špecializácie — zatiaľ prázdne miesto (doplníme keď budú Discord roly výcvikov)
-    h += '<span style="font-size:12.5px; color:#6b6b56; font-style:italic;">' + velitelOdznak + '</span>';
+       + '<span style="display:block; font-size:12px; color:#9C9C74; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; margin-top:2px;">' + (m.hodnost || "—") + '</span></span>';
+    h += '<span>' + opravnenie + '</span>';
+    h += '<span style="min-width:0;">' + spec + '</span>';
     h += '<span style="font-size:13px; color:#A8A890; justify-self:end;">' + vstupTxt + '</span>';
-    h += '</div>';
-    return h;
+    h += '<span style="font-size:13px; color:#A8A890; justify-self:end;">' + hralTxt + '</span>';
+    h += '</div>'; return h;
   }
   async function naplnRoster(pokus) {
     pokus = pokus || 0;
@@ -945,6 +940,24 @@ class Component extends DCLogic {
     // PRIHLÁSENIA
     var np = document.getElementById("pg-nastenka-prihlasenia"); if (np) np.innerHTML = pgPrihlaseniaHtml(v.moje_prihlasenia);
     var pp = document.getElementById("pg-profil-prihlasenia"); if (pp) pp.innerHTML = pgPrihlaseniaHtml(v.moje_prihlasenia);
+    // KVALIFIKAČNÉ ODZNAKY
+    var po = document.getElementById("pg-profil-odznaky");
+    if (po) {
+      var PG_VYC = {zav:"Základný výcvik",cmd:"Command training",rto:"RTO training",med:"Medical training",sn:"Sharpshooter/Sniper",eng:"Sapper/Engineer",mo:"Mechanized operator",uav:"UAV operator",p:"Pilot training",tm:"Tactical movement",cqc:"CQC training",at:"Anti-tank course",aa:"Anti-air course",mg:"Machine gunner course",gl:"Grenade launcher course"};
+      var vyc = v.vycviky || [];
+      if (!vyc.length) po.innerHTML = '<div style="color:#A8A890; font-size:14px;">Zatiaľ žiadne kvalifikácie — absolvuj výcvik.</div>';
+      else {
+        po.innerHTML = '<div style="display:flex; gap:20px; flex-wrap:wrap;">' + vyc.map(function(x){
+          var kod = x.kod, ur = (x.uroven || "bronz");
+          var nazov = PG_VYC[kod] || kod.toUpperCase();
+          return '<div style="display:grid; justify-items:center; gap:8px; width:100px;">'
+            + '<img src="assets/odznaky/odznak-' + kod + '-' + ur + '.png" alt="' + nazov + '" style="width:84px; height:84px; object-fit:contain;" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'grid\';">'
+            + '<div style="display:none; width:84px; height:84px; place-items:center; border:1px solid #4A5A38; border-radius:8px; font-family:\'Staatliches\',sans-serif; font-size:20px; color:#C2C29E;">' + kod.toUpperCase() + '</div>'
+            + '<div style="font-size:12px; color:#C2C29E; text-align:center; line-height:1.3;">' + nazov + '<br><span style="color:#9C9C74; font-size:11px;">' + ur + '</span></div></div>';
+        }).join("") + '</div>'
+        + '<p style="font-size:12.5px; color:#A8A890; margin:16px 0 0;">Odznaky podľa absolvovaných výcvikov (bronz / striebro / zlato)</p>';
+      }
+    }
     // SLUŽOBNÝ ZÁZNAM
     var pz = document.getElementById("pg-profil-zaznam");
     if (pz) {
