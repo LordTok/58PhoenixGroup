@@ -244,10 +244,10 @@ a:hover { color: #E8E8CC; }
   </div>
 
   <div style="display: {{ showProfil }};">
-<div style="display: {{ neakBannerShow }}; align-items: center; gap: 12px; background: rgba(110,76,54,.28); border: 1px solid #C2A57B; border-radius: 6px; padding: 12px 18px; margin-bottom: 20px; flex-wrap: wrap;">
+<div id="pg-neak-banner" style="display: none; align-items: center; gap: 12px; background: rgba(110,76,54,.28); border: 1px solid #C2A57B; border-radius: 6px; padding: 12px 18px; margin-bottom: 20px; flex-wrap: wrap;">
   <span style="font-size: 17px;">🔕</span>
-  <span style="flex: 1; min-width: 220px; font-size: 14px; color: #F0E6D8;">Nahlásená neaktivita do <strong>{{ neakDo }}</strong>{{ neakDovodText }} — misie ťa v tomto období automaticky ospravedlňujú.</span>
-  <button onClick="{{ zrusNeak }}" style="background: transparent; color: #C2A57B; border: 1px solid #C2A57B; border-radius: 4px; padding: 6px 13px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 12.5px; cursor: pointer;">Zrušiť neaktivitu</button>
+  <span style="flex: 1; min-width: 220px; font-size: 14px; color: #F0E6D8;">Nahlásená neaktivita do <strong id="pg-neak-banner-do"></strong><span id="pg-neak-banner-dovod"></span> — misie ťa v tomto období automaticky ospravedlňujú.</span>
+  <button data-pg-neak-zrus style="background: transparent; color: #C2A57B; border: 1px solid #C2A57B; border-radius: 4px; padding: 6px 13px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 12.5px; cursor: pointer;">Zrušiť neaktivitu</button>
 </div><div style="display: {{ emRoster }}; border: 1px dashed #4A5A38; border-radius: 8px; padding: 44px 30px; text-align: center;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 14px; margin-bottom: 8px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #D8D8C0; font-size: 15px; margin-bottom: 4px;">Tvoj služobný záznam sa vytvorí po prihlásení cez Discord.</div><div style="color: #A8A890; font-size: 13.5px;">Hodnosť, odznaky, veterancia aj história povýšení sa naplnia z tvojej reálnej aktivity v klane.</div></div><div style="display: {{ dataDisplay }};">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
     <div style="grid-column: 1 / -1; background: linear-gradient(rgba(44,53,34,.94), rgba(36,43,28,.97)), url('assets/gal-prieskum.jpg') center 30% / cover no-repeat; border: 1px solid #9C9C74; border-radius: 8px; overflow: hidden;">
@@ -273,11 +273,7 @@ a:hover { color: #E8E8CC; }
         </div>
         <div style="margin-top: 20px;">
           <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 8px;">Zamerania</div>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #4A6741; border-radius: 3px; color: #A8C29E; background: rgba(74,103,65,.25);">Prieskumník</span>
-            <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #4A6741; border-radius: 3px; color: #A8C29E; background: rgba(74,103,65,.25);">RTO — spojár</span>
-            <span style="font-size: 13px; letter-spacing: 1px; padding: 4px 12px; border: 1px solid #9C9C74; border-radius: 3px; color: #C2C29E;">CLS — v príprave</span>
-          </div>
+          <div id="pg-profil-zamerania"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div>
         </div>
       </div>
     <div style="padding: 28px; border-left: 1px solid #4A5A38; background: rgba(28,34,22,.35);">
@@ -322,7 +318,7 @@ a:hover { color: #E8E8CC; }
     <div style="display: grid; gap: 20px; align-content: start;">
 <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 18px 20px;">
   <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 10px;">Neaktivita</div>
-  <div style="display: {{ neakFormShow }};">
+  <div id="pg-neak-form" style="display: block;">
     <p style="font-size: 13px; color: #A8A890; margin: 0 0 10px;">Nahlás obdobie, keď sa nebudeš môcť zúčastňovať — systém ťa na misiách automaticky ospravedlní.</p>
     <label style="display: block; margin-bottom: 10px;"><span style="display: block; font-size: 12px; color: #A8A890; margin-bottom: 4px;">Neaktívny do</span>
       <input type="date" id="neak-do" style="width: 100%; box-sizing: border-box; background: #242B1C; border: 1px solid #4A5A38; border-radius: 5px; color: #D8D8C0; padding: 8px 10px; font-family: inherit; font-size: 14px; color-scheme: dark;">
@@ -330,12 +326,12 @@ a:hover { color: #E8E8CC; }
     <label style="display: block; margin-bottom: 12px;"><span style="display: block; font-size: 12px; color: #A8A890; margin-bottom: 4px;">Dôvod (dobrovoľné)</span>
       <input id="neak-dovod" placeholder="napr. dovolenka, skúškové…" style="width: 100%; box-sizing: border-box; background: #242B1C; border: 1px solid #4A5A38; border-radius: 5px; color: #D8D8C0; padding: 8px 10px; font-family: inherit; font-size: 14px;">
     </label>
-    <button onClick="{{ nahlasNeak }}" style="background: #8A5F44; color: #F0E6D8; border: none; border-radius: 5px; padding: 8px 16px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 13px; cursor: pointer;">Nahlásiť neaktivitu</button>
+    <button id="pg-neak-uloz" style="background: #8A5F44; color: #F0E6D8; border: none; border-radius: 5px; padding: 8px 16px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 13px; cursor: pointer;">Nahlásiť neaktivitu</button>
   </div>
-  <div style="display: {{ neakAktivShow }};">
-    <p style="font-size: 13.5px; color: #F0E6D8; margin: 0 0 4px;">🔕 Neaktívny do <strong>{{ neakDo }}</strong></p>
-    <p style="font-size: 12.5px; color: #A8A890; margin: 0 0 12px;">{{ neakDovodText }}</p>
-    <button onClick="{{ zrusNeak }}" style="background: transparent; color: #C2A57B; border: 1px solid #C2A57B; border-radius: 4px; padding: 6px 13px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 12.5px; cursor: pointer;">Zrušiť neaktivitu</button>
+  <div id="pg-neak-aktiv" style="display: none;">
+    <p style="font-size: 13.5px; color: #F0E6D8; margin: 0 0 4px;">🔕 Neaktívny do <strong id="pg-neak-do-txt"></strong></p>
+    <p id="pg-neak-dovod-txt" style="font-size: 12.5px; color: #A8A890; margin: 0 0 12px;"></p>
+    <button data-pg-neak-zrus style="background: transparent; color: #C2A57B; border: 1px solid #C2A57B; border-radius: 4px; padding: 6px 13px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 12.5px; cursor: pointer;">Zrušiť neaktivitu</button>
   </div>
 </div><div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
         <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 14px;">Dochádzka</div><div id="pg-profil-doch"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div><div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
@@ -794,6 +790,10 @@ class Component extends DCLogic {
     var opravnenie = m.je_velitel
       ? '<span style="font-size:10.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; background:rgba(156,156,116,.2); border:1px solid #9C9C74; color:#C2C29E;">VELITEĽ</span>'
       : '<span style="font-size:12px; color:#A8A890;">člen</span>';
+    if (m.neaktivny_do && new Date(m.neaktivny_do).getTime() > Date.now()) {
+      var nDo = new Date(m.neaktivny_do).toLocaleDateString("sk-SK",{day:"numeric",month:"numeric"});
+      opravnenie += '<span title="Neaktívny do ' + nDo + '" style="display:inline-block; margin-top:3px; font-size:10.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; background:rgba(110,76,54,.28); border:1px solid #C2A57B; color:#E8D5B5;">🔕 do ' + nDo + '</span>';
+    }
     var spec = (m.vycviky && m.vycviky.length)
       ? '<span style="font-size:11.5px; letter-spacing:1px; color:#9C9C74; font-family:\'Staatliches\',sans-serif;">' + m.vycviky.map(function(k){ return k.toUpperCase(); }).join(" · ") + '</span>'
       : '<span style="font-size:12px; color:#6b6b56;">—</span>';
@@ -824,9 +824,7 @@ class Component extends DCLogic {
       var v = await r.json();
       if (!r.ok || v.error) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Členov sa nepodarilo načítať.</div>'; return; }
       if (!v.clenovia || !v.clenovia.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Zatiaľ žiadni členovia v databáze.</div>'; return; }
-      // hlavička
-      var head = '<div style="display:grid; grid-template-columns:44px minmax(140px,1fr) minmax(180px,1.6fr) 118px; gap:14px; padding:8px 20px; font-family:\'Staatliches\',sans-serif; letter-spacing:2px; font-size:12px; color:#8A5F44; border-bottom:1px solid #4A5A38;"><span></span><span>ČLEN</span><span>ŠPECIALIZÁCIE</span><span style="justify-self:end;">NA DISCORDE OD</span></div>';
-      box.innerHTML = head + v.clenovia.map(clenRiadok).join("");
+      box.innerHTML = v.clenovia.map(clenRiadok).join("");
     } catch (e) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Chyba: ' + e.message + '</div>'; }
   }
   var PG_ODPOCET = null;
@@ -877,6 +875,18 @@ class Component extends DCLogic {
         + '<span style="font-size:14px; color:#D8D8C0; flex:1; min-width:120px;">' + (p.nazov||"") + '</span>'
         + '<span style="font-size:11.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; border:1px solid ' + (os?"#C9A227":"#7FB069") + '; color:' + (os?"#D8B45A":"#9Fd089") + ';">' + (os?"Ospravedlnený":"Prihlásený") + '</span></div>';
     }).join("");
+  }
+  async function pgNeaktivita(telo) {
+    try {
+      var kk = window.pgSupaKlient ? window.pgSupaKlient() : null; if (!kk) return { error: "Bez pripojenia" };
+      var sess = (await kk.auth.getSession()).data.session; if (!sess) return { error: "Nie si prihlásený" };
+      var r = await fetch(SUPA_URL + "/functions/v1/nastav-neaktivitu", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
+        body: JSON.stringify(telo)
+      });
+      return await r.json();
+    } catch (e) { return { error: String(e) }; }
   }
   async function naplnPrehlad(pokus) {
     pokus = pokus || 0;
@@ -940,6 +950,55 @@ class Component extends DCLogic {
     // PRIHLÁSENIA
     var np = document.getElementById("pg-nastenka-prihlasenia"); if (np) np.innerHTML = pgPrihlaseniaHtml(v.moje_prihlasenia);
     var pp = document.getElementById("pg-profil-prihlasenia"); if (pp) pp.innerHTML = pgPrihlaseniaHtml(v.moje_prihlasenia);
+    // ZAMERANIA (z výcvikov)
+    var pz2 = document.getElementById("pg-profil-zamerania");
+    if (pz2) {
+      var PG_VYC_Z = {zav:"Základný výcvik",cmd:"Command training",rto:"RTO — spojár",med:"Medic",sn:"Sharpshooter/Sniper",eng:"Sapper/Engineer",mo:"Mechanized operator",uav:"UAV operátor",p:"Pilot",tm:"Tactical movement",cqc:"CQC",at:"Anti-tank",aa:"Anti-air",mg:"Machine gunner",gl:"Grenade launcher"};
+      var vycZ = v.vycviky || [];
+      if (!vycZ.length) pz2.innerHTML = '<div style="color:#A8A890; font-size:14px;">Zatiaľ žiadne zameranie — získaš ho absolvovaním výcviku.</div>';
+      else pz2.innerHTML = '<div style="display:flex; gap:8px; flex-wrap:wrap;">' + vycZ.map(function(x){
+        return '<span style="font-size:13px; letter-spacing:1px; padding:4px 12px; border:1px solid #4A6741; border-radius:3px; color:#A8C29E; background:rgba(74,103,65,.25);">' + (PG_VYC_Z[x.kod] || x.kod.toUpperCase()) + '</span>';
+      }).join("") + '</div>';
+    }
+    // NEAKTIVITA
+    var nb2 = document.getElementById("pg-neak-banner");
+    var nf = document.getElementById("pg-neak-form");
+    var na = document.getElementById("pg-neak-aktiv");
+    if (nb2 && nf && na) {
+      if (v.neaktivita) {
+        var nd2 = new Date(v.neaktivita.do);
+        var doTxt = nd2.toLocaleDateString("sk-SK",{day:"numeric",month:"numeric",year:"numeric"});
+        nb2.style.display = "flex";
+        document.getElementById("pg-neak-banner-do").textContent = doTxt;
+        document.getElementById("pg-neak-banner-dovod").textContent = v.neaktivita.dovod ? " (" + v.neaktivita.dovod + ")" : "";
+        nf.style.display = "none"; na.style.display = "block";
+        document.getElementById("pg-neak-do-txt").textContent = doTxt;
+        document.getElementById("pg-neak-dovod-txt").textContent = v.neaktivita.dovod ? "Dôvod: " + v.neaktivita.dovod : "";
+      } else {
+        nb2.style.display = "none"; nf.style.display = "block"; na.style.display = "none";
+      }
+      var ulozBtn = document.getElementById("pg-neak-uloz");
+      if (ulozBtn) ulozBtn.onclick = async function(){
+        var doD = (document.getElementById("neak-do")||{}).value;
+        if (!doD) { alert("Vyber dátum, do kedy budeš neaktívny."); return; }
+        var dovod = (document.getElementById("neak-dovod")||{}).value || "";
+        ulozBtn.disabled = true; ulozBtn.textContent = "Ukladám…";
+        var vv = await pgNeaktivita({ akcia: "nastavit", "do": doD, dovod: dovod });
+        ulozBtn.disabled = false; ulozBtn.textContent = "Nahlásiť neaktivitu";
+        if (vv && vv.error) { alert("Chyba: " + vv.error); return; }
+        naplnPrehlad(); naplnKalendar();
+      };
+      document.querySelectorAll("[data-pg-neak-zrus]").forEach(function(b){
+        b.onclick = async function(){
+          if (!confirm("Zrušiť vypísanú neaktivitu?")) return;
+          b.disabled = true;
+          var vv = await pgNeaktivita({ akcia: "zrusit" });
+          b.disabled = false;
+          if (vv && vv.error) { alert("Chyba: " + vv.error); return; }
+          naplnPrehlad();
+        };
+      });
+    }
     // KVALIFIKAČNÉ ODZNAKY
     var po = document.getElementById("pg-profil-odznaky");
     if (po) {
