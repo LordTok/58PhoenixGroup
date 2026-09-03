@@ -230,7 +230,7 @@ img { max-width: 100%; }
       <div id="odpocet-misie" style="margin: 26px 0 6px; font-family: 'Staatliches', sans-serif; letter-spacing: 2px;">
   <div style="font-size: 14px; letter-spacing: 4px; color: #8A5F44;">Najbližšia kapitola</div>
   <div id="odpocet-cas" style="font-size: clamp(30px, 5vw, 44px); color: #C2C29E; line-height: 1.2;">—</div>
-  <div style="font-size: 14px; letter-spacing: 2px; color: #A8A890;">sobota · 15:30</div>
+  <div id="pg-domov-misia-info" style="font-size: 14px; letter-spacing: 2px; color: #A8A890;">—</div>
 </div>
 <a href="kronika.html" style="display: inline-block; padding: 13px 30px; font-family: 'Staatliches', sans-serif; font-size: 19px; letter-spacing: 3px; text-decoration: none; border-radius: 4px; color: #242B1C; background: #9C9C74; border: 2px solid #C2C29E; transition: transform .2s, background .2s;" style-hover="background: #C2C29E; transform: translateY(-2px);">Otvoriť kroniku</a>
     </div>
@@ -515,36 +515,39 @@ class Component extends DCLogic {
 </script>
 <script>
 (function () {
-  var cielHodina = 15, cielMinuta = 30, trvanieHodin = 5;
   var el = document.getElementById('odpocet-cas');
+  var info = document.getElementById('pg-domov-misia-info');
   if (!el) return;
-  function najblizsiaSobota() {
-    var teraz = new Date();
-    var d = new Date(teraz);
-    d.setHours(cielHodina, cielMinuta, 0, 0);
-    var doSoboty = (6 - d.getDay() + 7) % 7;
-    d.setDate(d.getDate() + doSoboty);
-    if (d <= teraz) d.setDate(d.getDate() + 7);
-    return d;
-  }
-  function obnov() {
-    var teraz = new Date();
-    var start = najblizsiaSobota();
-    var koniecPrebiehajucej = new Date(start);
-    koniecPrebiehajucej.setDate(koniecPrebiehajucej.getDate() - 7);
-    koniecPrebiehajucej.setHours(cielHodina + trvanieHodin, cielMinuta, 0, 0);
-    if (teraz.getDay() === 6 && teraz < koniecPrebiehajucej && koniecPrebiehajucej - teraz < trvanieHodin * 3600000) {
-      el.textContent = 'Kapitola sa práve píše';
-      return;
-    }
-    var diff = start - teraz;
+  var ciel = null;
+  function tik() {
+    if (!ciel) return;
+    var diff = ciel - Date.now();
+    if (diff <= -5 * 3600000) { el.textContent = '—'; return; }
+    if (diff <= 0) { el.textContent = 'Kapitola sa práve píše'; return; }
     var d = Math.floor(diff / 86400000);
     var hod = Math.floor(diff % 86400000 / 3600000);
     var min = Math.floor(diff % 3600000 / 60000);
-    el.textContent = (d > 0 ? d + 'd ' : '') + hod + 'h ' + min + 'm';
+    var sek = Math.floor(diff % 60000 / 1000);
+    el.textContent = (d > 0 ? d + 'd ' : '') + hod + 'h ' + min + 'm' + (d > 0 ? '' : ' ' + sek + 's');
   }
-  obnov();
-  setInterval(obnov, 30000);
+  fetch("https://hrfvenycjsenjlbpztsd.supabase.co/functions/v1/verejna-misia", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "apikey": "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq" },
+    body: "{}"
+  }).then(function(r){ return r.json(); }).then(function(v){
+    if (!v || !v.misia) {
+      el.textContent = '—';
+      if (info) info.textContent = 'Žiadna misia nie je vypísaná';
+      return;
+    }
+    var d = new Date(v.misia.datum);
+    ciel = d.getTime();
+    if (info) info.textContent = (v.misia.nazov || '') + ' · '
+      + d.toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'numeric' })
+      + ' · ' + d.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+    tik();
+    setInterval(tik, 1000);
+  }).catch(function(){ el.textContent = '—'; });
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

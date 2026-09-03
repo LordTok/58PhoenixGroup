@@ -247,7 +247,7 @@
 <header class="admin-hero">
   <div class="sirka">
     <div class="eyebrow">Veliteľské rozhranie</div>
-    <h1>Správa jednotky <span class="stitok">NÁHĽAD — ukladá sa len v prehliadači</span></h1>
+    <h1>Správa jednotky</h1>
     <p>Vyber člena a uprav presne to, čo vidí vo svojom profile — hodnosť, tím, status, odznaky, stužky aj XP. Každá zmena sa v ostrej verzii zapíše do záznamu aktivity nižšie.</p>
   </div>
 </header>
@@ -309,7 +309,7 @@
           
 
           <div class="sekcia-editor">
-            <div class="nadpis">Veterancia (XP)</div>
+            <div class="nadpis">XP</div>
             <div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:14px; flex-wrap:wrap;">
               <label class="pole" style="margin:0; flex:1; min-width:220px;"><span>Rýchle udelenie zo sadzobníka</span><select class="vstup" id="rychle-sel"></select></label>
               <button class="btn" onclick="rychloUdel()">Pripísať</button>
@@ -397,7 +397,7 @@
   </div>
 </section>
 
-<div class="toast" id="toast"><span style="color:var(--tan)">✓</span> Uložené do prehliadača (dočasný náhľad).</div>
+<div class="toast" id="toast"><span style="color:var(--tan)">✓</span> Uložené.</div>
 
 <footer>
   <p class="paticka-copy">© 2020–2026 · 58. Phoenix Group · Veliteľské rozhranie</p>
@@ -471,7 +471,7 @@
   function zapisLog(akcia) {
     var d = new Date(), p = function(n){ return (n<10?"0":"")+n; };
     var cas = p(d.getDate())+"."+p(d.getMonth()+1)+". "+p(d.getHours())+":"+p(d.getMinutes());
-    LOG.unshift({ cas: cas, kto: "ty (náhľad)", akcia: akcia });
+    LOG.unshift({ cas: cas, kto: "veliteľ", akcia: akcia });
     try { localStorage.setItem(LOGKLUC, JSON.stringify(LOG)); } catch(e){}
     vykresliLog();
   }
