@@ -515,13 +515,8 @@ class Component extends DCLogic {
 </script>
 <script>
 (function () {
-  var el = document.getElementById('odpocet-cas');
-  var info = document.getElementById('pg-domov-misia-info');
-  var l2 = document.getElementById('pg-domov2-lista');
-  var l2datum = document.getElementById('pg-domov2-datum');
-  var l2nazov = document.getElementById('pg-domov2-nazov');
-  var l2odp = document.getElementById('pg-domov2-odpocet');
-  var ciel = null;
+  var MISIA = null; // {nazov, datum:Date}
+  function el(id){ return document.getElementById(id); }
   function odpocetText(diff) {
     if (diff <= 0) return 'prebieha';
     var d = Math.floor(diff / 86400000);
@@ -530,37 +525,36 @@ class Component extends DCLogic {
     var sek = Math.floor(diff % 60000 / 1000);
     return (d > 0 ? d + 'd ' : '') + hod + 'h ' + min + 'm' + (d > 0 ? '' : ' ' + sek + 's');
   }
-  function tik() {
-    if (!ciel) return;
-    var diff = ciel - Date.now();
-    if (el) {
-      if (diff <= -5 * 3600000) el.textContent = '—';
-      else if (diff <= 0) el.textContent = 'Kapitola sa práve píše';
-      else el.textContent = odpocetText(diff);
+  function vypln() {
+    var a = el('odpocet-cas'), info = el('pg-domov-misia-info');
+    var l2 = el('pg-domov2-lista'), ld = el('pg-domov2-datum'), ln = el('pg-domov2-nazov'), lo = el('pg-domov2-odpocet');
+    if (MISIA === null) return; // este nemame odpoved
+    if (MISIA === false) { // ziadna misia
+      if (a) a.textContent = '—';
+      if (info) info.textContent = 'Žiadna misia nie je vypísaná';
+      if (l2) l2.style.display = 'none';
+      return;
     }
-    if (l2odp) l2odp.textContent = (diff <= 0 ? 'prebieha' : 'o ' + odpocetText(diff));
+    var diff = MISIA.datum.getTime() - Date.now();
+    var datumTxt = MISIA.datum.toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'numeric' })
+      + ' — ' + MISIA.datum.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+    if (a) a.textContent = (diff <= -5*3600000) ? '—' : (diff <= 0 ? 'Kapitola sa práve píše' : odpocetText(diff));
+    if (info) info.textContent = MISIA.nazov + ' · ' + datumTxt;
+    if (l2) l2.style.display = '';
+    if (ld) ld.textContent = datumTxt;
+    if (ln) ln.textContent = MISIA.nazov;
+    if (lo) lo.textContent = (diff <= 0 ? 'prebieha' : 'o ' + odpocetText(diff));
   }
+  setInterval(vypln, 1000); // beží stále — prežije aj dc prekreslenie elementov
   fetch("https://hrfvenycjsenjlbpztsd.supabase.co/functions/v1/verejna-misia", {
     method: "POST",
     headers: { "Content-Type": "application/json", "apikey": "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq" },
     body: "{}"
   }).then(function(r){ return r.json(); }).then(function(v){
-    if (!v || !v.misia) {
-      if (el) el.textContent = '—';
-      if (info) info.textContent = 'Žiadna misia nie je vypísaná';
-      if (l2) l2.style.display = 'none';
-      return;
-    }
-    var d = new Date(v.misia.datum);
-    ciel = d.getTime();
-    var datumTxt = d.toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'numeric' })
-      + ' — ' + d.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
-    if (info) info.textContent = (v.misia.nazov || '') + ' · ' + datumTxt;
-    if (l2datum) l2datum.textContent = datumTxt;
-    if (l2nazov) l2nazov.textContent = v.misia.nazov || '';
-    tik();
-    setInterval(tik, 1000);
-  }).catch(function(){ if (el) el.textContent = '—'; });
+    if (!v || !v.misia) { MISIA = false; }
+    else { MISIA = { nazov: v.misia.nazov || '', datum: new Date(v.misia.datum) }; }
+    vypln();
+  }).catch(function(){ MISIA = null; });
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
