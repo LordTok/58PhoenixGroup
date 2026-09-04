@@ -133,6 +133,19 @@
     } catch (e) { return { error: String(e) }; }
   };
 
+  // Skorý štart: prihlásený používateľ dostane chip hneď, ako parser vytvorí lištu —
+  // bez čakania na koniec načítania stránky (odstraňuje sekundové "miznutie" pri preklikávaní).
+  if (document.readyState === "loading" && kes()) {
+    var skory = new MutationObserver(function () {
+      strazca();
+      if (!document.getElementById("pg-nav-wrap")) window.pgNavChip();
+      verziaDoPaticky();
+      if (document.getElementById("pg-nav-wrap") && document.getElementById("pg-verzia")) skory.disconnect();
+    });
+    skory.observe(document.documentElement, { childList: true, subtree: true });
+    document.addEventListener("DOMContentLoaded", function () { skory.disconnect(); });
+  }
+
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
 })();
