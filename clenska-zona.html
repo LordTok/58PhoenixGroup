@@ -680,19 +680,10 @@ class Component extends DCLogic {
     return h;
   }
   async function prihlasNaMisiu(misiaId, akcia, btn) {
-    var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
-    if (!kk) return;
-    var sess = (await kk.auth.getSession()).data.session;
-    if (!sess) return;
     if (btn) { btn.disabled = true; btn.style.opacity = "0.6"; }
     try {
-      var r = await fetch(SUPA_URL + "/functions/v1/prihlas-na-misiu", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
-        body: JSON.stringify({ misiaId: misiaId, akcia: akcia })
-      });
-      var v = await r.json();
-      if (!r.ok || v.error) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } return; }
+      var v = await window.pgVolaj("prihlas-na-misiu", { misiaId: misiaId, akcia: akcia });
+      if (!v || v.error) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } return; }
     } catch (e) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } return; }
     // prekresli kalendár (aby sa aktualizoval stav aj počty)
     naplnKalendar();
@@ -709,17 +700,8 @@ class Component extends DCLogic {
     });
   }
     async function nacitajMisieProZonu(archiv) {
-    var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
-    if (!kk) return null;
-    var sess = (await kk.auth.getSession()).data.session;
-    if (!sess) return null;
-    var r = await fetch(SUPA_URL + "/functions/v1/nacitaj-kalendar", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
-      body: JSON.stringify({ archiv: !!archiv })
-    });
-    var v = await r.json();
-    if (!r.ok || v.error) return null;
+    var v = await window.pgVolaj("nacitaj-kalendar", { archiv: !!archiv });
+    if (!v || v.error) return null;
     return v.misie || [];
   }
   async function naplnKalendar(pokus) {
@@ -762,18 +744,9 @@ class Component extends DCLogic {
     pokus = pokus || 0;
     var box = document.getElementById("pg-roster-db");
     if (!box) { if (pokus < 30) setTimeout(function(){ naplnRoster(pokus+1); }, 250); return; }
-    var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
-    if (!kk) return;
-    var sess = (await kk.auth.getSession()).data.session;
-    if (!sess) return;
     try {
-      var r = await fetch(SUPA_URL + "/functions/v1/nacitaj-clenov", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
-        body: "{}"
-      });
-      var v = await r.json();
-      if (!r.ok || v.error) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Členov sa nepodarilo načítať.</div>'; return; }
+      var v = await window.pgVolaj("nacitaj-clenov", {});
+      if (!v || v.error) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Členov sa nepodarilo načítať.</div>'; return; }
       if (!v.clenovia || !v.clenovia.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Zatiaľ žiadni členovia v databáze.</div>'; return; }
       box.innerHTML = v.clenovia.map(clenRiadok).join("");
     } catch (e) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Chyba: ' + e.message + '</div>'; }
@@ -827,49 +800,17 @@ class Component extends DCLogic {
         + '<span style="font-size:11.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; border:1px solid ' + (os?"#C9A227":"#7FB069") + '; color:' + (os?"#D8B45A":"#9Fd089") + ';">' + (os?"Ospravedlnený":"Prihlásený") + '</span></div>';
     }).join("");
   }
-  async function pgOznam(telo) {
-    try {
-      var kk = window.pgSupaKlient ? window.pgSupaKlient() : null; if (!kk) return { error: "Bez pripojenia" };
-      var sess = (await kk.auth.getSession()).data.session; if (!sess) return { error: "Nie si prihlásený" };
-      var r = await fetch(SUPA_URL + "/functions/v1/sprava-oznamov", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
-        body: JSON.stringify(telo)
-      });
-      return await r.json();
-    } catch (e) { return { error: String(e) }; }
-  }
-  async function pgNeaktivita(telo) {
-    try {
-      var kk = window.pgSupaKlient ? window.pgSupaKlient() : null; if (!kk) return { error: "Bez pripojenia" };
-      var sess = (await kk.auth.getSession()).data.session; if (!sess) return { error: "Nie si prihlásený" };
-      var r = await fetch(SUPA_URL + "/functions/v1/nastav-neaktivitu", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
-        body: JSON.stringify(telo)
-      });
-      return await r.json();
-    } catch (e) { return { error: String(e) }; }
-  }
+  async function pgOznam(telo) { return await window.pgVolaj("sprava-oznamov", telo); }
+  async function pgNeaktivita(telo) { return await window.pgVolaj("nastav-neaktivitu", telo); }
   async function naplnPrehlad(pokus) {
     pokus = pokus || 0;
     function znova(){ if (pokus < 30) setTimeout(function(){ naplnPrehlad(pokus+1); }, 350); }
     var cielove = ["pg-nastenka-misia","pg-nastenka-doch","pg-nastenka-prihlasenia","pg-profil-doch","pg-profil-prihlasenia","pg-profil-zaznam"];
     if (!cielove.some(function(id){ return document.getElementById(id); })) { znova(); return; }
-    var kk = null;
-    try { kk = window.pgSupaKlient ? window.pgSupaKlient() : null; } catch(e){ kk = null; }
-    if (!kk) { znova(); return; }
-    var sess = (await kk.auth.getSession()).data.session;
-    if (!sess) { znova(); return; }
     var v = null;
     try {
-      var r = await fetch(SUPA_URL + "/functions/v1/nacitaj-moj-prehlad", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
-        body: "{}"
-      });
-      v = await r.json();
-      if (!r.ok || v.error) { znova(); return; }
+      v = await window.pgVolaj("nacitaj-moj-prehlad", {});
+      if (!v || v.error) { znova(); return; }
     } catch(e){ znova(); return; }
 
     // BANNER najbližšia misia
@@ -1098,17 +1039,8 @@ class Component extends DCLogic {
   }
   async function naplnProfil() {
     try {
-      var kk = window.pgSupaKlient ? window.pgSupaKlient() : null;
-      if (!kk) return;
-      var sess = (await kk.auth.getSession()).data.session;
-      if (!sess) return;
-      var r = await fetch(SUPA_URL + "/functions/v1/nacitaj-profil", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
-        body: "{}"
-      });
-      var v = await r.json();
-      if (!r.ok || v.error || !v.profil) return;
+      var v = await window.pgVolaj("nacitaj-profil", {});
+      if (!v || v.error || !v.profil) return;
       var p = v.profil;
       var elN = document.getElementById("pg-profil-nick");
       if (elN) elN.textContent = "„" + (p.nick || "") + "\u201c";

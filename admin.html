@@ -573,20 +573,9 @@
   }
 
   // ===== NAPOJENIE NA DB (write-through) =====
-  var SUPA_URL_A = "https://hrfvenycjsenjlbpztsd.supabase.co";
-  var SUPA_ANON_A = "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq";
   var CLEN_DB_ID = {}; // slug/kľúč -> DB uuid
   async function supaVolaj(fn, body) {
-    var klient = window.pgSupaKlient ? window.pgSupaKlient() : null;
-    if (!klient) return { error: "no client" };
-    var sess = (await klient.auth.getSession()).data.session;
-    if (!sess) return { error: "no session" };
-    var r = await fetch(SUPA_URL_A + "/functions/v1/" + fn, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_A },
-      body: JSON.stringify(body || {})
-    });
-    return await r.json();
+    return await window.pgVolaj(fn, body || {});
   }
   async function nacitajClenovDoDATA(pokus) {
     pokus = pokus || 0;
@@ -779,17 +768,8 @@
     }
     try {
       var klient = null;
-      try { klient = window.pgSupaKlient ? window.pgSupaKlient() : null; } catch (e) { klient = null; }
-      if (!klient) { znova(); return; }
-      var sess = (await klient.auth.getSession()).data.session;
-      if (!sess) { znova(); return; }
-      var r = await fetch("https://hrfvenycjsenjlbpztsd.supabase.co/functions/v1/nacitaj-misie", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq" },
-        body: JSON.stringify({ archiv: false })
-      });
-      var v = await r.json();
-      if (!r.ok || v.error || !v.misie) { znova(); return; }
+      var v = await supaVolaj("nacitaj-misie", { archiv: false });
+      if (!v || v.error || !v.misie) { znova(); return; }
       // premapuj DB misie na formát UDALOSTI
       UDALOSTI = v.misie.map(function(m){
         var dz = m.datum ? new Date(m.datum).toLocaleString("sk-SK", { weekday:"short", day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" }) : "";
@@ -801,8 +781,6 @@
   }
 
   // ===== VYTVORENIE UDALOSTI (DB + Discord) =====
-  var SUPA_URL_ADMIN = "https://hrfvenycjsenjlbpztsd.supabase.co";
-  var SUPA_ANON_ADMIN = "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq";
   async function vytvorUdalost() {
     var nazov = document.getElementById("nu-nazov").value.trim();
     var typ = document.getElementById("nu-typ").value;
@@ -821,13 +799,8 @@
 
       // jedno volanie: funkcia uloží misiu do DB (service_role) aj pošle na Discord
       var datumISO = new Date(datumRaw).toISOString();
-      var fnRes = await fetch(SUPA_URL_ADMIN + "/functions/v1/posli-misiu-tlacidla", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
-        body: JSON.stringify({ nazov: nazov, typ: typ, datum: datumISO, brief: brief, modpack: modpack })
-      });
-      var fn = await fnRes.json();
-      if (!fnRes.ok || fn.error) { stav.textContent = "Zlyhalo: " + (fn.error || fnRes.status) + (fn.detail ? " — " + String(fn.detail).slice(0,80) : ""); stav.style.color = "#C98B7A"; btn.disabled = false; return; }
+      var fn = await supaVolaj("posli-misiu-tlacidla", { nazov: nazov, typ: typ, datum: datumISO, brief: brief, modpack: modpack });
+      if (!fn || fn.error) { stav.textContent = "Zlyhalo: " + (fn.error || fnRes.status) + (fn.detail ? " — " + String(fn.detail).slice(0,80) : ""); stav.style.color = "#C98B7A"; btn.disabled = false; return; }
       var datumZobraz = new Date(datumRaw).toLocaleString("sk-SK", { weekday:"long", day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" });
 
       stav.textContent = "✓ Vytvorené a odoslané na Discord!"; stav.style.color = "#7FB069";
@@ -848,14 +821,8 @@
     DOCH_MISIA = misiaId;
     kam.innerHTML = '<div class="ulozene-info">Načítavam členov a dochádzku…</div>';
     try {
-      var klient = window.pgSupaKlient(); var sess = (await klient.auth.getSession()).data.session;
-      var r = await fetch(SUPA_URL_ADMIN + "/functions/v1/nacitaj-dochadzku", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
-        body: JSON.stringify({ misiaId: misiaId })
-      });
-      var v = await r.json();
-      if (!r.ok || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + (v.error||r.status) + ').</div>'; return; }
+      var v = await supaVolaj("nacitaj-dochadzku", { misiaId: misiaId });
+      if (!v || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + (v.error||"?") + ').</div>'; return; }
       if (!v.clenovia || !v.clenovia.length) { kam.innerHTML = '<div class="ulozene-info">Zatiaľ nie sú v databáze žiadni členovia. Pribudnú po prihlásení alebo synchronizácii rostra.</div>'; return; }
       var pocetPrih = v.clenovia.filter(function(c){ return c.prihlaseny === "prihlaseny"; }).length;
       var html = '<div style="display:flex; gap:8px; margin-bottom:14px;">'
@@ -890,14 +857,8 @@
     riadok.querySelectorAll("button").forEach(function(b){ b.className = ""; });
     if (novyStav) btn.className = novyStav + "-akt";
     try {
-      var klient = window.pgSupaKlient(); var sess = (await klient.auth.getSession()).data.session;
-      var r = await fetch(SUPA_URL_ADMIN + "/functions/v1/uloz-dochadzku", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
-        body: JSON.stringify({ misiaId: misiaId, clenId: clenId, stav: novyStav })
-      });
-      var v = await r.json();
-      if (!r.ok || v.error) { toast(); }
+      var v = await supaVolaj("uloz-dochadzku", { misiaId: misiaId, clenId: clenId, stav: novyStav });
+      if (!v || v.error) { toast(); }
     } catch (e) { /* ostane vizuál */ }
   }
 
@@ -920,17 +881,8 @@
     if (!kam) return;
     kam.innerHTML = '<div class="ulozene-info">Načítavam archív…</div>';
     try {
-      var klient = window.pgSupaKlient ? window.pgSupaKlient() : null;
-      if (!klient) return;
-      var sess = (await klient.auth.getSession()).data.session;
-      if (!sess) return;
-      var r = await fetch(SUPA_URL_ADMIN + "/functions/v1/nacitaj-misie", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
-        body: JSON.stringify({ archiv: true })
-      });
-      var v = await r.json();
-      if (!r.ok || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + (v.error||r.status) + ').</div>'; return; }
+      var v = await supaVolaj("nacitaj-misie", { archiv: true });
+      if (!v || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + (v.error||"?") + ').</div>'; return; }
       if (!v.misie || !v.misie.length) { kam.innerHTML = '<div class="ulozene-info">Archív je zatiaľ prázdny.</div>'; return; }
       kam.innerHTML = "";
       v.misie.forEach(function(m){
@@ -985,14 +937,8 @@
 
   // ===== SPRÁVA MISIE (archivovať / zmazať) =====
   async function spravaMisie(misiaId, akcia, extra) {
-    var klient = window.pgSupaKlient(); var sess = (await klient.auth.getSession()).data.session;
     var body = Object.assign({ misiaId: misiaId, akcia: akcia }, extra || {});
-    var r = await fetch(SUPA_URL_ADMIN + "/functions/v1/sprava-misie", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON_ADMIN },
-      body: JSON.stringify(body)
-    });
-    return await r.json();
+    return await supaVolaj("sprava-misie", body);
   }
   async function archivujMisiu(misiaId) {
     if (!confirm("Archivovať túto misiu? Presunie sa z kalendára do archívu.")) return;

@@ -548,9 +548,9 @@ class Component extends DCLogic {
     if (lo) lo.textContent = (diff <= 0 ? 'prebieha' : 'o ' + odpocetText(diff));
   }
   setInterval(vypln, 1000); // beží stále — prežije aj dc prekreslenie elementov
-  fetch("https://hrfvenycjsenjlbpztsd.supabase.co/functions/v1/verejna-misia", {
+  fetch(SUPA_URL + "/functions/v1/verejna-misia", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "apikey": "sb_publishable_WXlGV5lGAS4uqaq7wxdN8Q_y8ASRmiq" },
+    headers: { "Content-Type": "application/json", "apikey": SUPA_ANON },
     body: "{}"
   }).then(function(r){ return r.json(); }).then(function(v){
     if (!v || !v.misia) { MISIA = false; }
