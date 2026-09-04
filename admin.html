@@ -269,7 +269,7 @@
           <div class="karta-hlava">
             <div class="avatar" id="k-avatar">S</div>
             <div>
-              <div class="meno" id="k-meno">des. „Straka"</div>
+              <div class="meno" id="k-meno">—</div>
               <div class="riadok">
                 <img id="k-insignia" src="assets/hodnosti/04-desiatnik.png" alt="">
                 <span id="k-hodnost">desiatnik</span>
@@ -312,15 +312,11 @@
 
           <div class="sekcia-editor">
             <div class="nadpis">XP</div>
-            <div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:14px; flex-wrap:wrap;">
-              <label class="pole" style="margin:0; flex:1; min-width:220px;"><span>Rýchle udelenie zo sadzobníka</span><select class="vstup" id="rychle-sel"></select></label>
-              <button class="btn" onclick="rychloUdel()">Pripísať</button>
-            </div>
             <div class="xp-riadok">
-              <label class="pole" style="margin:0;"><span>Bonus XP (ručná korekcia)</span><input class="vstup" type="number" id="e-xp" oninput="nahladXp()"></label>
+              <label class="pole" style="margin:0;"><span>Bonus XP (ručná korekcia)</span><input class="vstup" type="number" id="e-xp"></label>
               <label class="pole" style="margin:0; flex:1; min-width:180px;"><span>Dôvod zmeny (do záznamu)</span><input class="vstup" id="e-xp-dovod" placeholder="misia / oprava / bonus"></label>
             </div>
-            <div class="ulozene-info" id="xp-nahlad">Stupeň: —</div>
+            
             <button class="btn" style="margin-top:14px;" onclick="ulozXp()">Uložiť XP</button>
           </div>
         </div>
@@ -382,7 +378,6 @@
         <div class="nadpis">Vypísané udalosti</div>
         <div id="doch-udalosti" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;"></div>
         <div class="nadpis" id="doch-nazov" style="margin-bottom: 4px;"></div>
-        <p class="ulozene-info" id="doch-sadzby" style="margin: 0 0 14px;"></p>
         <div id="doch-clenovia"></div>
       </div>
     </div>
@@ -418,59 +413,25 @@
   var TIMY = [["Líška","team-fox"],["Vlk","team-wolf"],["Grizzly","team-grizzly"],["Duch","team-duch"],["Hotel","team-hotel"],["Alžbeta","patch-alzbeta"],["Rosnička (záloha)","team-fox"]];
   var VYCVIKY = [["zav","Základný výcvik"],["cmd","Command training"],["rto","RTO training"],["med","Medical training"],["sn","Sharpshooter/Sniper"],["eng","Sapper/Engineer"],["mo","Mechanized operator"],["uav","UAV operator"],["p","Pilot training"],["tm","Tactical movement"],["cqc","CQC training"],["at","Anti-tank course"],["aa","Anti-air course"],["mg","Machine gunner course"],["gl","Grenade launcher course"]];
   var UROVNE = ["bronz","striebro","zlato"];
-  var STUZKY = [["Pochvala velenia","linear-gradient(90deg,#8A5F44 0 30%,#C2C29E 30% 50%,#8A5F44 50% 70%,#C2C29E 70% 100%)"],["Operácia Tichý hrebeň","linear-gradient(90deg,#4A5A38 0 20%,#9C9C74 20% 80%,#4A5A38 80% 100%)"],["Joint Ops veterán","linear-gradient(90deg,#2d69ad 0 15%,#C2C29E 15% 50%,#8A5F44 50% 85%,#2d69ad 85% 100%)"]];
+  
   var VYZNAMENANIA = [["Medaila za vernosť", "#C2A57B", "★"], ["Kríž za odvahu", "#9C9C74", "✚"], ["Medaila Joint Ops", "#2d69ad", "◆"], ["Za zásluhy o jednotku", "#8A5F44", "✪"]];
-  var XP_DEFAULT = {
-    stupne: [["Nováčik",0],["Vojak kampane",300],["Skúsený operátor",800],["Veterán",1600],["Legenda Vardaku",2600]],
-    odmeny: [["Účasť na misii",50],["Účasť na výcviku",30],["Dokončený výcvik — bronz",40],["Dokončený výcvik — striebro",60],["Dokončený výcvik — zlato",80],["Pochvala velenia",25],["Vedenie misie (Zeus / veliteľ)",40]],
-    penalizacie: [["Neúčasť bez ospravedlnenia",-30],["Predčasné opustenie misie",-20]],
-    auto: { dochadzka: true, ospravedlnenie: true, penalizacie: true },
-    decay: { aktivne: true, tyzden: 10 }
-  };
-  function nacitajXpCfg() {
-    try { var s = localStorage.getItem("pg_xp_config"); if (s) { var c = JSON.parse(s);
-      return { stupne: c.stupne || XP_DEFAULT.stupne, odmeny: c.odmeny || XP_DEFAULT.odmeny,
-               penalizacie: c.penalizacie || XP_DEFAULT.penalizacie, auto: Object.assign({}, XP_DEFAULT.auto, c.auto || {}), decay: Object.assign({}, XP_DEFAULT.decay, c.decay || {}) }; } } catch(e){}
-    return JSON.parse(JSON.stringify(XP_DEFAULT));
-  }
-  var XPCFG = nacitajXpCfg();
-  function ulozXpCfg() {
-    XPCFG.stupne.sort(function(a,b){ return a[1]-b[1]; });
-    try { localStorage.setItem("pg_xp_config", JSON.stringify(XPCFG)); } catch(e){}
-  }
+  
+  
+  
+  
 
-  // ---- Predvolení členovia (demo východisko) ----
-  var VYCHOZI = {
-    "straka": { i:"S", meno:'„Straka"', hod:"Desiatnik", tim:"Líška", od:"03/2022", status:"Aktívny",
-      odznaky:{ zav:"zlato", rto:"striebro", med:"bronz" }, stuzky:["Pochvala velenia","Joint Ops veterán"], xp:1240 },
-    "havran": { i:"H", meno:'„Havran"', hod:"Nadporučík", tim:"Alžbeta", od:"01/2021", status:"Aktívny",
-      odznaky:{ zav:"zlato", cmd:"zlato", rto:"zlato" }, stuzky:["Pochvala velenia","Operácia Tichý hrebeň","Joint Ops veterán"], xp:2410 },
-    "sova": { i:"S", meno:'„Sova"', hod:"Rotmajster", tim:"Alžbeta", od:"06/2021", status:"Aktívny",
-      odznaky:{ zav:"zlato", med:"zlato", rto:"striebro" }, stuzky:["Pochvala velenia"], xp:1720 },
-    "vlk": { i:"V", meno:'„Vlk"', hod:"Čatár", tim:"Grizzly", od:"09/2022", status:"Aktívny",
-      odznaky:{ zav:"striebro" }, stuzky:[], xp:640 },
-    "rys": { i:"R", meno:'„Rys"', hod:"Vojak 1. stupňa", tim:"Duch", od:"02/2026", status:"Aktívny",
-      odznaky:{}, stuzky:[], xp:80 }
-  };
-
-  var KLUC = "pg_admin_data_v1", LOGKLUC = "pg_admin_log_v1";
-  var DATA = nacitaj(), LOG = nacitajLog(), aktivny = "straka";
+  // ---- Dáta členov (plnia sa z DB) ----
+  var KLUC = "pg_admin_data_v1";
+  var DATA = nacitaj(), aktivny = "";
   if (!DATA[aktivny]) { var _prvyKluc = Object.keys(DATA)[0]; if (_prvyKluc) aktivny = _prvyKluc; }
 
   function nacitaj() {
     try { var s = localStorage.getItem(KLUC); if (s) return JSON.parse(s); } catch(e){}
-    return JSON.parse(JSON.stringify(VYCHOZI));
+    return {};
   }
   function uložData() { try { localStorage.setItem(KLUC, JSON.stringify(DATA)); } catch(e){} }
-  function nacitajLog() {
-    try { var s = localStorage.getItem(LOGKLUC); if (s) return JSON.parse(s); } catch(e){}
-    return [
-      { cas:"26.08. 21:18", kto:"npor. Havran", akcia:'pridal misiu <strong>Operácia Čierny les</strong> do kalendára' },
-      { cas:"26.08. 20:44", kto:"kpt. Orol", akcia:'povýšil <strong>čat. Vlk</strong> — Rotný → Čatár' },
-      { cas:"24.08. 18:30", kto:"kpt. Orol", akcia:'upravil náborový text na verejnej stránke' }
-    ];
-  }
-  function zapisLog(akcia) { /* logy píše server do DB + Discord #log */ }
+  
+  
   function menoClena(id) { var c = DATA[id]; return (HOD_SKR[c.hod]||"") + " " + c.meno.replace(/[„"]/g,""); }
 
   // ---- Zoznam členov ----
@@ -506,9 +467,7 @@
     var ss = document.getElementById("e-status"); ss.innerHTML = "";
     ["Aktívny","Neaktívny","Na dovolenke","Rezerva"].forEach(function(x){ var o=document.createElement("option"); o.text=x; o.selected=(x===c.status); ss.add(o); });
     document.getElementById("e-xp").value = c.xp;
-    naplnRychle();
-    nahladXp();
-  }
+    }
 
   function vykresliOdznaky() {
     var c = DATA[aktivny]; if (!c) return;
@@ -533,8 +492,8 @@
   function prepniOdznak(kod) {
     var c = DATA[aktivny];
     var noveUroven = null;
-    if (c.odznaky[kod]) { if (!confirm('Naozaj odobrať tento odznak?')) return; delete c.odznaky[kod]; noveUroven = null; zapisLog('odobral <strong>'+menoClena(aktivny)+'</strong> odznak <strong>'+kod.toUpperCase()+'</strong>'); }
-    else { c.odznaky[kod] = "bronz"; noveUroven = "bronz"; zapisLog('udelil <strong>'+menoClena(aktivny)+'</strong> odznak <strong>'+kod.toUpperCase()+' · bronz</strong>'); }
+    if (c.odznaky[kod]) { if (!confirm('Naozaj odobrať tento odznak?')) return; delete c.odznaky[kod]; noveUroven = null; }
+    else { c.odznaky[kod] = "bronz"; noveUroven = "bronz"; }
     uložData(); vykresliOdznaky(); toast();
     if (CLEN_DB_ID[aktivny]) supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[aktivny], akcia: "vycvik", vycvik: kod, uroven: noveUroven });
   }
@@ -544,58 +503,28 @@
     if (!c.odznaky[kod]) { c.odznaky[kod] = u; }
     else if (c.odznaky[kod] === u) { }
     else { c.odznaky[kod] = u; }
-    zapisLog('nastavil <strong>'+menoClena(aktivny)+'</strong> odznak <strong>'+kod.toUpperCase()+' · '+u+'</strong>');
     uložData(); vykresliOdznaky(); toast();
     if (CLEN_DB_ID[aktivny]) supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[aktivny], akcia: "vycvik", vycvik: kod, uroven: u });
   }
 
-  function vykresliVyzn() {
-    var c = DATA[aktivny]; if (!c.vyzn) c.vyzn = [];
-    var host = document.getElementById("vyznamenania"); host.innerHTML = "";
-    VYZNAMENANIA.forEach(function(v){
-      var nazov = v[0], farba = v[1], znak = v[2], ma = c.vyzn.indexOf(nazov) > -1;
-      var el = document.createElement("div");
-      el.className = "stuzka-riadok " + (ma ? "ma" : "nema");
-      el.innerHTML = '<span class="medaila" style="background:' + farba + '22; border-color:' + farba + '; color:' + farba + '">' + znak + '</span><span class="nazov">' + nazov + '</span><button class="prep">' + (ma ? "Udelené ✓" : "Udeliť") + '</button>';
-      el.querySelector(".prep").onclick = function(){ prepniVyzn(nazov); };
-      host.appendChild(el);
-    });
-  }
+  
   function prepniVyzn(nazov) {
     var c = DATA[aktivny]; if (!c.vyzn) c.vyzn = [];
     var k = c.vyzn.indexOf(nazov);
-    if (k > -1) { if (!confirm('Naozaj odobrať toto vyznamenanie?')) return; c.vyzn.splice(k, 1); zapisLog('odobral <strong>' + menoClena(aktivny) + '</strong> vyznamenanie <strong>' + nazov + '</strong>'); }
-    else { c.vyzn.push(nazov); zapisLog('udelil <strong>' + menoClena(aktivny) + '</strong> vyznamenanie <strong>' + nazov + '</strong>'); }
+    if (k > -1) { if (!confirm('Naozaj odobrať toto vyznamenanie?')) return; c.vyzn.splice(k, 1); }
+    else { c.vyzn.push(nazov); }
     uložData();  toast();
   }
-  function vykresliStuzky() {
-    var c = DATA[aktivny], host = document.getElementById("stuzky"); host.innerHTML = "";
-    STUZKY.forEach(function(s){
-      var nazov=s[0], grad=s[1], ma = c.stuzky.indexOf(nazov) > -1;
-      var el = document.createElement("div");
-      el.className = "stuzka-riadok " + (ma ? "ma" : "nema");
-      el.innerHTML = '<span class="pruh" style="background:'+grad+'"></span><span class="nazov">'+nazov+'</span><button class="prep">'+(ma?"Udelená ✓":"Udeliť")+'</button>';
-      el.querySelector(".prep").onclick = function(){ prepniStuzku(nazov); };
-      host.appendChild(el);
-    });
-  }
+  
   function prepniStuzku(nazov) {
     var c = DATA[aktivny], k = c.stuzky.indexOf(nazov);
-    if (k > -1) { if (!confirm('Naozaj odobrať túto stužku?')) return; c.stuzky.splice(k,1); zapisLog('odobral <strong>'+menoClena(aktivny)+'</strong> stužku <strong>'+nazov+'</strong>'); }
-    else { c.stuzky.push(nazov); zapisLog('udelil <strong>'+menoClena(aktivny)+'</strong> stužku <strong>'+nazov+'</strong>'); }
+    if (k > -1) { if (!confirm('Naozaj odobrať túto stužku?')) return; c.stuzky.splice(k,1); }
+    else { c.stuzky.push(nazov); }
     uložData();  toast();
   }
 
-  function stupenPreXp(xp) {
-    var st = XPCFG.stupne, akt = st.length ? st[0][0] : "—", dalsi = null;
-    for (var k=0;k<st.length;k++){ if (xp >= st[k][1]) akt = st[k][0]; else { dalsi = st[k]; break; } }
-    return { akt: akt, dalsi: dalsi };
-  }
-  function nahladXp() {
-    var xp = parseInt(document.getElementById("e-xp").value || "0", 10);
-    var s = stupenPreXp(xp);
-    document.getElementById("xp-nahlad").innerHTML = "Stupeň: <strong style='color:var(--khaki-svetla)'>"+s.akt+"</strong>" + (s.dalsi ? " · do stupňa "+s.dalsi[0]+" ostáva "+(s.dalsi[1]-xp)+" XP" : " · najvyšší stupeň");
-  }
+  
+  
   function ulozZakladne() {
     var c = DATA[aktivny];
     var noveHod = document.getElementById("e-hodnost").value;
@@ -608,13 +537,12 @@
       supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[aktivny], akcia: "hodnost", hodnost: c.hod });
       supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[aktivny], akcia: "status", status: c.status });
     }
-    if (zmeny.length) zapisLog('upravil <strong>'+menoClena(aktivny)+'</strong> — '+zmeny.join(", "));
-    vykresliZoznam(""); vykresliKartu(); toast();
+    if (zmeny.length) vykresliZoznam(""); vykresliKartu(); toast();
   }
   function ulozXp() {
     var c = DATA[aktivny], nove = parseInt(document.getElementById("e-xp").value||"0",10);
     var dovod = document.getElementById("e-xp-dovod").value;
-    if (nove !== c.xp) { zapisLog('upravil <strong>'+menoClena(aktivny)+'</strong> XP '+c.xp+' → '+nove+(dovod?" ("+dovod+")":"")); c.xp = nove; uložData(); if (CLEN_DB_ID[aktivny]) supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[aktivny], akcia: "xp", xp: nove }); }
+    if (nove !== c.xp) { c.xp = nove; uložData(); if (CLEN_DB_ID[aktivny]) supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[aktivny], akcia: "xp", xp: nove }); }
     document.getElementById("e-xp-dovod").value = "";
     toast();
   }
@@ -719,17 +647,7 @@
 
   function vykresliVsetko() { vykresliZoznam(document.getElementById("hladaj-vstup") ? document.getElementById("hladaj-vstup").value : ""); vykresliKartu(); vykresliOdznaky(); }
 
-  function riadokXp(hodnoty, idx, pole, minJeden) {
-    var r = document.createElement("div"); r.className = "xp-edit-riadok";
-    var n = document.createElement("input"); n.className = "vstup"; n.value = hodnoty[0];
-    n.onchange = function(){ XPCFG[pole][idx][0] = n.value.trim() || hodnoty[0]; ulozXpCfg(); vykresliXp(); nahladXp(); };
-    var x = document.createElement("input"); x.className = "vstup"; x.type = "number"; x.value = hodnoty[1];
-    x.onchange = function(){ XPCFG[pole][idx][1] = parseInt(x.value||"0",10); ulozXpCfg(); vykresliXp(); nahladXp(); };
-    var k = document.createElement("button"); k.className = "kos"; k.textContent = "🗑"; k.title = "Odstrániť";
-    k.onclick = function(){ if (minJeden && XPCFG[pole].length <= 1) return; if (!confirm('Naozaj odstrániť „' + XPCFG[pole][idx][0] + '“?')) return; zapisLog('odstránil z XP systému: <strong>' + XPCFG[pole][idx][0] + '</strong>'); XPCFG[pole].splice(idx,1); ulozXpCfg(); vykresliXp(); nahladXp(); toast(); };
-    r.appendChild(n); r.appendChild(x); r.appendChild(k);
-    return r;
-  }
+  
   async function vykresliXp(pokus) {
     pokus = pokus || 0;
     var host = document.getElementById("xp-prahy");
@@ -780,31 +698,14 @@
       if (vv && vv.error) { alert("Chyba: " + vv.error); return; }
       var ok = document.getElementById("xp-ulozene");
       if (ok) { ok.style.display = "inline"; setTimeout(function(){ ok.style.display = "none"; }, 2500); }
-      zapisLog("XP nastavenia upravené (sadzby/prahy)");
       vykresliXp();
     };
   }
-  function naplnRychle() {
-    var sel = document.getElementById("rychle-sel"); if (!sel) return;
-    sel.innerHTML = "";
-    var go = document.createElement("optgroup"); go.label = "Odmeny";
-    XPCFG.odmeny.forEach(function(o, i){ var op = document.createElement("option"); op.value = "odmeny|" + i; op.text = o[0] + " (+" + o[1] + " XP)"; go.appendChild(op); });
-    var gp = document.createElement("optgroup"); gp.label = "Penalizácie";
-    XPCFG.penalizacie.forEach(function(p, i){ var op = document.createElement("option"); op.value = "penalizacie|" + i; op.text = p[0] + " (" + p[1] + " XP)"; gp.appendChild(op); });
-    sel.appendChild(go); sel.appendChild(gp);
-  }
-  function rychloUdel() {
-    var sel = document.getElementById("rychle-sel"); if (!sel || !sel.value) return;
-    var cast = sel.value.split("|"), polozka = XPCFG[cast[0]][parseInt(cast[1],10)];
-    if (!polozka) return;
-    var c = DATA[aktivny]; c.xp = Math.max(0, c.xp + polozka[1]);
-    uložData();
-    zapisLog((polozka[1] >= 0 ? 'pripísal' : 'strhol') + ' <strong>' + menoClena(aktivny) + '</strong>: ' + polozka[0] + ' (' + (polozka[1] >= 0 ? '+' : '') + polozka[1] + ' XP)');
-    vykresliKartu(); toast();
-  }
-  function pridajStupen() { var max = XPCFG.stupne.length ? XPCFG.stupne[XPCFG.stupne.length-1][1] : 0; XPCFG.stupne.push(["Nový stupeň", max + 500]); zapisLog('pridal stupeň veterancie'); ulozXpCfg(); vykresliXp(); toast(); }
-  function pridajOdmenu() { XPCFG.odmeny.push(["Nová aktivita", 10]); zapisLog('pridal XP odmenu'); ulozXpCfg(); vykresliXp(); toast(); }
-  function pridajPenal() { XPCFG.penalizacie.push(["Nové porušenie", -10]); zapisLog('pridal penalizáciu'); ulozXpCfg(); vykresliXp(); toast(); }
+  
+  
+  
+  
+  
 
   // ===== DOCHÁDZKY =====
   var UDALOSTI = [
@@ -815,32 +716,15 @@
   var DOCH = (function(){ try { var s = localStorage.getItem("pg_admin_dochadzka"); if (s) return JSON.parse(s); } catch(e){} return {}; })();
   var dochAktivna = "m1";
   function ulozDoch() { try { localStorage.setItem("pg_admin_dochadzka", JSON.stringify(DOCH)); } catch(e){} }
-  function sadzbaUcast(typ) {
-    var hlad = typ === "misia" ? "Účasť na misii" : "Účasť na výcviku";
-    var r = XPCFG.odmeny.filter(function(o){ return o[0].indexOf(hlad) === 0; })[0];
-    return r ? r[1] : (typ === "misia" ? 50 : 30);
-  }
-  function sadzbaNeucast() {
-    var r = XPCFG.penalizacie.filter(function(p){ return p[0].indexOf("Neúčasť") === 0; })[0];
-    return r ? r[1] : -30;
-  }
-  function dochEfekt(stav, typ) {
-    if (stav === "dorazil")   return XPCFG.auto.dochadzka   ? sadzbaUcast(typ)  : 0;
-    if (stav === "nedorazil") return XPCFG.auto.penalizacie ? sadzbaNeucast()   : 0;
-    return 0;
-  }
+  
+  
+  
   function nastavDoch(memberId, stav) {
     var ud = UDALOSTI.filter(function(u){ return u.id === dochAktivna; })[0];
     DOCH[ud.id] = DOCH[ud.id] || {};
     var stary = DOCH[ud.id][memberId] || null;
     var novy = (stary === stav) ? null : stav;
-    var delta = dochEfekt(novy, ud.typ) - dochEfekt(stary, ud.typ);
-    if (delta !== 0) { DATA[memberId].xp = Math.max(0, DATA[memberId].xp + delta); uložData(); }
     DOCH[ud.id][memberId] = novy; ulozDoch();
-    if (novy === "dorazil") zapisLog('potvrdil dochádzku <strong>' + menoClena(memberId) + '</strong> — ' + ud.nazov + (delta ? ' (+' + delta + ' XP)' : ''));
-    else if (novy === "nedorazil") zapisLog('označil neúčasť <strong>' + menoClena(memberId) + '</strong> — ' + ud.nazov + (delta ? ' (' + delta + ' XP)' : ''));
-    else if (novy === "osprav") zapisLog('ospravedlnil <strong>' + menoClena(memberId) + '</strong> — ' + ud.nazov);
-    else zapisLog('zrušil záznam dochádzky <strong>' + menoClena(memberId) + '</strong> — ' + ud.nazov);
     vykresliDoch(); if (memberId === aktivny) vykresliKartu(); toast();
   }
   function vykresliDoch() {
@@ -854,7 +738,6 @@
     });
     var ud = UDALOSTI.filter(function(u){ return u.id === dochAktivna; })[0];
     document.getElementById("doch-nazov").textContent = ud.nazov + " — " + ud.datum;
-    document.getElementById("doch-sadzby").textContent = "Dorazil +" + sadzbaUcast(ud.typ) + " XP · Nedorazil " + sadzbaNeucast() + " XP · Ospravedlnený 0 XP (podľa sadzobníka a pravidiel automatizácie)";
     // panel prihlásených z Discordu (pre DB udalosti)
     var stareP = document.getElementById("doch-prihlaseni-box");
     if (stareP) stareP.remove();
@@ -863,8 +746,8 @@
       pbox.id = "doch-prihlaseni-box";
       pbox.style.cssText = "margin:6px 0 18px; padding:14px; background:var(--oliva); border:1px solid var(--linka); border-radius:6px;";
       pbox.innerHTML = '<div class="ulozene-info">Načítavam…</div>';
-      var sadzby = document.getElementById("doch-sadzby");
-      sadzby.parentNode.insertBefore(pbox, sadzby.nextSibling);
+      var kotva = document.getElementById("doch-clenovia");
+      kotva.parentNode.insertBefore(pbox, kotva);
       if (typeof nacitajDochadzkuDB === "function") nacitajDochadzkuDB(ud.id, pbox);
     }
     var hc = document.getElementById("doch-clenovia"); hc.innerHTML = "";
@@ -886,73 +769,7 @@
   }
 
   // ===== VÝCVIKY =====
-  var VYC_MAP = { "ZaV":"zav", "CMD-T":"cmd", "RTO-T":"rto", "M-T":"med", "TM-T":"tm", "CQC-T":"cqc", "AT-C":"at", "AA-C":"aa", "MG-C":"mg", "GL-C":"gl" };
-  var VYC_NAZVY = { "ZaV":"Základný prijímací výcvik", "CMD-T":"Command training", "RTO-T":"Radio tower operator", "M-T":"Medical training", "SS/SN-T":"Sharpshooter/Sniper", "SP/ENG-T":"Sapper/Engineer", "MO-T":"Mechanized operator", "UAV-T":"UAV operator", "P-T":"Pilot training", "TM-T":"Tactical movement", "CQC-T":"Close Quarters Combat", "AT-C":"Anti-tank course", "AA-C":"Anti-air course", "MG-C":"Machine gunner course", "GL-C":"Grenade launcher course" };
-  var VYC_EXTRA = (function(){ try { var s = localStorage.getItem("pg_admin_vyc_extra"); if (s) return JSON.parse(s); } catch(e){} return { havran: ["P-T"], vlk: ["MG-C"] }; })();
-  var VYC_DONE = (function(){ try { var s = localStorage.getItem("pg_admin_vyc_done"); if (s) return JSON.parse(s); } catch(e){} return []; })();
-  var vycVyber = null;
-  function ulozVyc() { try { localStorage.setItem("pg_admin_vyc_extra", JSON.stringify(VYC_EXTRA)); localStorage.setItem("pg_admin_vyc_done", JSON.stringify(VYC_DONE)); } catch(e){} }
-  function vycPrihlasky() {
-    var vsetky = [];
-    try { var s = localStorage.getItem("pg_vycvik_prihlasky"); if (s) { var p = JSON.parse(s); Object.keys(p).forEach(function(skr){ if (p[skr]) vsetky.push({ member: "straka", skr: skr }); }); } } catch(e){}
-    Object.keys(VYC_EXTRA).forEach(function(m){ VYC_EXTRA[m].forEach(function(skr){ vsetky.push({ member: m, skr: skr }); }); });
-    return vsetky.filter(function(v){ return VYC_DONE.map(function(d){ return d.kluc; }).indexOf(v.member + "|" + v.skr) < 0; });
-  }
-  function sadzbaVycvik(uroven) {
-    var hlad = "Dokončený výcvik — " + uroven;
-    var r = XPCFG.odmeny.filter(function(o){ return o[0] === hlad; })[0];
-    return r ? r[1] : ({ bronz: 40, striebro: 60, zlato: 80 })[uroven];
-  }
-  function splnVyc(member, skr, uroven) {
-    var kod = VYC_MAP[skr], xp = sadzbaVycvik(uroven);
-    var c = DATA[member]; if (!c) return;
-    if (kod) { c.odznaky[kod] = uroven; }
-    c.xp = Math.max(0, c.xp + xp);
-    uložData();
-    if (CLEN_DB_ID[member] && kod) { supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[member], akcia: "vycvik", vycvik: kod, uroven: uroven }); supaVolaj("uloz-clena-admin", { clenId: CLEN_DB_ID[member], akcia: "xp", xp: c.xp }); }
-    VYC_DONE.unshift({ kluc: member + "|" + skr, uroven: uroven });
-    if (member === "straka") {
-      try { var s = localStorage.getItem("pg_vycvik_prihlasky"); var p = s ? JSON.parse(s) : {}; delete p[skr]; localStorage.setItem("pg_vycvik_prihlasky", JSON.stringify(p)); } catch(e){}
-    } else if (VYC_EXTRA[member]) { VYC_EXTRA[member] = VYC_EXTRA[member].filter(function(x){ return x !== skr; }); }
-    ulozVyc();
-    zapisLog('označil výcvik <strong>' + skr + '</strong> (' + menoClena(member) + ') ako splnený — ' + uroven + ' (+' + xp + ' XP' + (kod ? ', odznak udelený' : '') + ')');
-    vycVyber = null;  vykresliOdznaky(); if (member === aktivny) vykresliKartu(); toast();
-  }
-  function vykresliVyc() {
-    var hc = document.getElementById("vyc-cakajuce"); hc.innerHTML = "";
-    var caka = vycPrihlasky();
-    if (!caka.length) { hc.innerHTML = '<div class="ulozene-info">Nikto nečaká na splnenie výcviku.</div>'; }
-    caka.forEach(function(v){
-      var el = document.createElement("div"); el.className = "vyc-riadok";
-      var kluc = v.member + "|" + v.skr;
-      var akcia;
-      if (vycVyber === kluc) {
-        akcia = '<div class="urovne-vyber"><button>Bronz</button><button>Striebro</button><button>Zlato</button><button style="border-color:var(--linka); color:var(--text-tlm);">×</button></div>';
-      } else {
-        akcia = '<button class="btn2">Splnené ▾</button>';
-      }
-      el.innerHTML = '<span class="kodv">' + v.skr + '</span><span class="info"><span class="kto">' + menoClena(v.member) + '</span> · ' + (VYC_NAZVY[v.skr] || v.skr) + '</span>' + akcia;
-      if (vycVyber === kluc) {
-        var ub = el.querySelectorAll(".urovne-vyber button");
-        ub[0].onclick = function(){ splnVyc(v.member, v.skr, "bronz"); };
-        ub[1].onclick = function(){ splnVyc(v.member, v.skr, "striebro"); };
-        ub[2].onclick = function(){ splnVyc(v.member, v.skr, "zlato"); };
-        ub[3].onclick = function(){ vycVyber = null;  };
-      } else {
-        el.querySelector(".btn2").onclick = function(){ vycVyber = kluc;  };
-      }
-      hc.appendChild(el);
-    });
-    var hh = document.getElementById("vyc-hotove"); hh.innerHTML = "";
-    if (!VYC_DONE.length) { hh.innerHTML = '<div class="ulozene-info">Zatiaľ žiadny splnený výcvik.</div>'; }
-    VYC_DONE.forEach(function(d){
-      var cast = d.kluc.split("|");
-      var el = document.createElement("div"); el.className = "vyc-riadok hotovy";
-      el.innerHTML = '<span class="kodv">' + cast[1] + '</span><span class="info"><span class="kto">' + menoClena(cast[0]) + '</span> · ' + (VYC_NAZVY[cast[1]] || cast[1]) + '</span><span style="font-size:12.5px; color:var(--khaki-svetla);">Splnené ✓ ' + d.uroven + '</span>';
-      hh.appendChild(el);
-    });
-  }
-
+  
   // ===== NAČÍTANIE MISIÍ Z DB =====
   async function nacitajMisieDB(pokus) {
     pokus = pokus || 0;
@@ -1014,7 +831,6 @@
       var datumZobraz = new Date(datumRaw).toLocaleString("sk-SK", { weekday:"long", day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" });
 
       stav.textContent = "✓ Vytvorené a odoslané na Discord!"; stav.style.color = "#7FB069";
-      zapisLog('vytvoril udalosť <strong>' + nazov + '</strong> (' + typ + ') a odoslal na Discord');
       document.getElementById("nu-nazov").value = ""; document.getElementById("nu-brief").value = "";
       document.querySelectorAll(".nu-modpack-cb").forEach(function(cb){ cb.checked = true; }); document.getElementById("nu-datum").value = "";
       // znovu načítaj misie z DB (aby ostali aj po F5)
@@ -1136,8 +952,8 @@
           + '<div class="archiv-edit" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid #35402A;"></div>';
         var btns = karta.querySelectorAll("button[data-a]");
         btns[0].onclick = function(){ archivUprav(karta, m); };
-        btns[1].onclick = async function(){ if(!confirm("Vrátiť misiu do kalendára?"))return; var x=await spravaMisie(m.id,"odarchivovat"); if(x.error){alert(x.error);return;} zapisLog('vrátil misiu z archívu'); nacitajArchivDB(); if(typeof nacitajMisieDB==="function")nacitajMisieDB(); toast(); };
-        btns[2].onclick = async function(){ if(!confirm("Natrvalo zmazať túto misiu z archívu?"))return; var x=await spravaMisie(m.id,"zmazat"); if(x.error){alert(x.error);return;} zapisLog('zmazal misiu z archívu'); nacitajArchivDB(); toast(); };
+        btns[1].onclick = async function(){ if(!confirm("Vrátiť misiu do kalendára?"))return; var x=await spravaMisie(m.id,"odarchivovat"); if(x.error){alert(x.error);return;} nacitajArchivDB(); if(typeof nacitajMisieDB==="function")nacitajMisieDB(); toast(); };
+        btns[2].onclick = async function(){ if(!confirm("Natrvalo zmazať túto misiu z archívu?"))return; var x=await spravaMisie(m.id,"zmazat"); if(x.error){alert(x.error);return;} nacitajArchivDB(); toast(); };
         kam.appendChild(karta);
       });
     } catch (e) { kam.innerHTML = '<div class="ulozene-info">Chyba: ' + e.message + '</div>'; }
@@ -1162,7 +978,6 @@
       if (datumRaw) extra.datum = new Date(datumRaw).toISOString();
       var x = await spravaMisie(m.id, "upravit", extra);
       if (x.error) { alert("Nepodarilo sa: " + x.error); return; }
-      zapisLog('upravil archivovanú misiu <strong>' + get("nazov") + '</strong>');
       nacitajArchivDB(); toast();
     };
     box.style.display = "block";
@@ -1183,7 +998,6 @@
     if (!confirm("Archivovať túto misiu? Presunie sa z kalendára do archívu.")) return;
     var v = await spravaMisie(misiaId, "archivovat");
     if (v.error) { alert("Nepodarilo sa: " + v.error); return; }
-    zapisLog('archivoval misiu');
     await nacitajMisieDB();
     if (typeof nacitajArchivDB === "function") nacitajArchivDB();
     toast();
@@ -1192,7 +1006,6 @@
     if (!confirm("Naozaj ZMAZAŤ túto misiu? Nenávratne sa odstráni aj s dochádzkou a prihláseniami.")) return;
     var v = await spravaMisie(misiaId, "zmazat");
     if (v.error) { alert("Nepodarilo sa: " + v.error); return; }
-    zapisLog('zmazal misiu');
     dochAktivna = null;
     await nacitajMisieDB();
     toast();
