@@ -96,11 +96,26 @@
       if (kes() && !document.getElementById("pg-nav-wrap")) window.pgNavChip();
     }).observe(nav, { childList: true, subtree: true });
   }
+  function verziaDoPaticky() {
+    if (document.getElementById("pg-verzia")) return;
+    var vsetky = document.querySelectorAll("footer *, footer");
+    for (var i = 0; i < vsetky.length; i++) {
+      var el = vsetky[i];
+      if (el.children.length === 0 && (el.textContent || "").indexOf("\u00a9 2020") > -1) {
+        var s = document.createElement("span");
+        s.id = "pg-verzia";
+        s.textContent = " \u00b7 v" + PG_VERZIA;
+        el.appendChild(s);
+        return;
+      }
+    }
+  }
   function start() {
     if (!kes()) document.documentElement.classList.remove("pg-auth");
     strazca();
     if (kes()) window.pgNavChip();
-    [300, 900, 2000].forEach(function (t) { setTimeout(function(){ strazca(); if (kes() && !document.getElementById("pg-nav-wrap")) window.pgNavChip(); }, t); });
+    verziaDoPaticky();
+    [300, 900, 2000].forEach(function (t) { setTimeout(function(){ strazca(); verziaDoPaticky(); if (kes() && !document.getElementById("pg-nav-wrap")) window.pgNavChip(); }, t); });
   }
   // Spoločný volací pomocník na Edge Functions (jednotné volanie + chyby)
   window.pgVolaj = async function (nazov, telo) {
