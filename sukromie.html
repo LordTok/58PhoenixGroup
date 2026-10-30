@@ -48,7 +48,7 @@
 <style>
   :root {
     --oliva: #242B1C; --oliva-svetla: #35402A; --oliva-panel: #2C3522;
-    --khaki: #9C9C74; --khaki-svetla: #C2C29E; --hneda: #8A5F44;
+    --khaki: #9C9C74; --khaki-svetla: #C2C29E; --hneda: #C2A57B;
     --text: #D8D8C0; --text-tlm: #A8A890;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -73,7 +73,7 @@
   @media (max-width: 640px) { .nav-linky { gap: 14px; } .nav-linky a { font-size: 14px; } }
 
   header.podpora-hero {
-    background: linear-gradient(rgba(28,34,22,.85), rgba(36,43,28,.96)), url('assets/gal-prieskum.jpg') center 40% / cover no-repeat;
+    background: linear-gradient(rgba(28,34,22,.85), rgba(36,43,28,.96)), url('assets/gal-prieskum.webp') center 40% / cover no-repeat;
     border-bottom: 1px solid var(--oliva-svetla);
     text-align: center; padding: 76px 24px 84px;
   }
@@ -154,8 +154,8 @@
   .paticka-linky a:hover { color: var(--khaki-svetla); }
   .paticka-copy { margin-top: 18px; font-size: 13px; letter-spacing: 1px; color: var(--text-tlm); }
 </style>
-<script src="./config.js"></script>
-<script src="./pg-core.js"></script>
+<script src="./config.js?v=0.78"></script>
+<script src="./pg-core.js?v=0.78"></script>
 </head>
 <body>
 
@@ -170,11 +170,12 @@
       <a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kampaň</a>
       <a href="podpora.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #C2C29E;" style-hover="color: #C2C29E;">Podpora</a>
       <a href="clenska-zona.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #C2C29E; border: 1px solid #9C9C74; padding: 7px 14px; border-radius: 4px;" style-hover="background: #35402A; border-color: #C2C29E;">Prihlásiť</a>
-      <a href="admin.html" style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; text-decoration: none; color: #8A5F44; border: 1px solid #6E4C36; padding: 6px 12px; border-radius: 4px;" title="Veliteľské rozhranie">⚙ Admin</a>
+      <a href="admin.html" style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; text-decoration: none; color: #C2A57B; border: 1px solid #6E4C36; padding: 6px 12px; border-radius: 4px;" title="Veliteľské rozhranie">⚙ Admin</a>
     </div>
   </div>
 </nav>
 
+<main>
 <header class="podpora-hero">
   <div class="eyebrow">Právne informácie</div>
   <h1>Ochrana osobných údajov</h1>
@@ -196,6 +197,7 @@
     <p class="navrh-stitok">Platné od 15. 10. 2026</p>
   </div>
 </section>
+</main>
 
 <footer>
   <div class="paticka-linky">

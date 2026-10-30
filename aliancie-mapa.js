@@ -23,14 +23,14 @@ svg:focus{outline:none}
 .tooltip{pointer-events:none;position:absolute;z-index:10;display:none;max-width:230px;border:1px solid #9C9C74;background:rgba(28,34,22,.94);color:#D8D8C0;padding:8px 10px;border-radius:6px;font-size:13.5px;line-height:1.35}
 .tooltip strong{color:#C2C29E}
 .sidebar{border:1px solid #4A5A38;background:#2C3522;border-radius:6px;padding:16px;min-width:0}
-.eyebrow{font-family:'Staatliches',sans-serif;font-size:13px;letter-spacing:3px;color:#8A5F44}
+.eyebrow{font-family:'Staatliches',sans-serif;font-size:13px;letter-spacing:3px;color:#C2A57B}
 .empty{margin-top:14px;color:#A8A890;font-size:14px}
 .info{display:none;margin-top:14px}
 .info-head{display:flex;gap:12px;align-items:flex-start}
 .info h2{margin:0;font-family:'Staatliches',sans-serif;font-weight:400;letter-spacing:2px;font-size:20px;color:#C2C29E}
 .info p{margin:4px 0 0;color:#A8A890;font-size:14px}
 dl{margin:16px 0 0;display:grid;gap:12px}
-dt{font-family:'Staatliches',sans-serif;color:#8A5F44;font-size:12px;letter-spacing:2px;margin-bottom:3px}
+dt{font-family:'Staatliches',sans-serif;color:#C2A57B;font-size:12px;letter-spacing:2px;margin-bottom:3px}
 dd{margin:0;font-size:14px;line-height:1.45}
 button{min-height:40px;border-radius:4px;border:1px solid #9C9C74;background:transparent;color:#C2C29E;padding:8px 12px;cursor:pointer;font-family:'Staatliches',sans-serif;letter-spacing:2px;font-size:14px}
 button:hover{background:#35402A}
@@ -109,7 +109,7 @@ button:focus-visible{outline:2px solid #C2C29E;outline-offset:2px}
     $('zrusit').addEventListener('click', zrus);
     this.addEventListener('keydown', e => { if (e.key === 'Escape') zrus(); });
 
-    (async () => {
+    const spustiMapu = async () => {
       // knižnice sú uložené lokálne v assets/vendor (žiadne CDN tretích strán)
       const nacitajSkript = (src, glob) => window[glob] ? Promise.resolve(window[glob]) : new Promise((ok, zle) => {
         const s = document.createElement('script');
@@ -153,6 +153,14 @@ button:focus-visible{outline:2px solid #C2C29E;outline-offset:2px}
           if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); vyber(this, d); }
           if (event.key === 'Escape') zrus();
         });
-    })();
+    };
+    // v0.78: d3 + atlas sveta (≈1 MB) sa sťahujú až keď používateľ doskroluje k mape
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver((zaznamy) => {
+        if (zaznamy.some(z => z.isIntersecting)) { io.disconnect(); spustiMapu(); }
+      }, { rootMargin: "600px 0px" });
+      io.observe(this);
+    } else { spustiMapu(); }
+
   }
 });

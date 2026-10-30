@@ -17,6 +17,52 @@
     u = String(u || "");
     return /^https:\/\/(cdn|media)\.discordapp\.(com|net)\/[^"'<>\s]+$/.test(u) ? u : "";
   };
+  // ---- Spoločný toast (úspech / chyba) + prístupnostné štýly pre všetky stránky ----
+  var TOAST_CSS = ""
+    + "#pg-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;"
+    + "z-index:9999;max-width:min(92vw,560px);padding:11px 18px;border-radius:6px;font-family:'Barlow',sans-serif;font-size:14.5px;"
+    + "background:#2C3522;border:1px solid #9C9C74;color:#E8E8CC;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:opacity .2s,transform .2s}"
+    + "#pg-toast.zobraz{opacity:1;transform:translateX(-50%) translateY(0)}"
+    + "#pg-toast.chyba{border-color:#C98B7A;color:#F0D6CC}"
+    + ":focus-visible{outline:2px solid #C2C29E !important;outline-offset:2px}"
+    + "@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}}";
+  function vlozCss() {
+    if (document.getElementById("pg-core-css")) return;
+    var st = document.createElement("style"); st.id = "pg-core-css"; st.textContent = TOAST_CSS;
+    (document.head || document.documentElement).appendChild(st);
+  }
+  vlozCss();
+  var toastT = null;
+  function toastEl() {
+    var el = document.getElementById("pg-toast");
+    if (!el) {
+      el = document.createElement("div"); el.id = "pg-toast";
+      el.setAttribute("role", "status"); el.setAttribute("aria-live", "polite");
+      (document.body || document.documentElement).appendChild(el);
+    }
+    return el;
+  }
+  // pgToast(text) = zelený úspech; pgChyba(text) = červená chyba (aj do konzoly)
+  window.pgToast = function (text, jeChyba) {
+    var el = toastEl();
+    el.textContent = (jeChyba ? "\u2715 " : "\u2713 ") + (text || (jeChyba ? "Nepodarilo sa." : "Uložené."));
+    el.className = "zobraz" + (jeChyba ? " chyba" : "");
+    el.setAttribute("role", jeChyba ? "alert" : "status");
+    clearTimeout(toastT); toastT = setTimeout(function(){ el.className = ""; }, jeChyba ? 6000 : 2200);
+  };
+  window.pgChyba = function (text) {
+    try { console.error("[58PG] " + text); } catch (e) {}
+    window.pgToast(text, true);
+  };
+  // text chyby z odpovede/výnimky
+  window.pgChybaText = function (v) {
+    if (!v) return "Server neodpovedal.";
+    if (typeof v === "string") return v;
+    if (v.error) return String(v.error);
+    if (v.message) return String(v.message);
+    return "Neznáma chyba.";
+  };
+
   window.pgSupaKlient = window.pgSupaKlient || function () {
     if (!window.__pgSupa && window.supabase) {
       window.__pgSupa = window.supabase.createClient(SUPA_URL, SUPA_ANON, {
@@ -131,19 +177,41 @@
     [300, 900, 2000].forEach(function (t) { setTimeout(function(){ strazca(); verziaDoPaticky(); if (kes() && !document.getElementById("pg-nav-wrap")) window.pgNavChip(); }, t); });
   }
   // Spoločný volací pomocník na Edge Functions (jednotné volanie + chyby)
+  var PG_TIMEOUT_MS = 15000;
+  // Volá sa, keď server/klient hlási vypršané prihlásenie. Stránka si môže zavesiť vlastnú reakciu
+  // (členská zóna ukáže overlay); inak sa iba vymaže lokálny účet a ponúkne prihlásenie.
+  window.pgSessionVyprsala = function () {
+    if (window.__pgVyprsaloHlasene) return; window.__pgVyprsaloHlasene = true;
+    var bolPrihlaseny = !!kes();
+    try { localStorage.removeItem("pg_ucet"); localStorage.removeItem("pg_rola"); } catch (e) {}
+    if (!bolPrihlaseny) return; // nikdy nebol prihlásený → nič nehlásiť
+    if (typeof window.pgNaVyprsanie === "function") { try { window.pgNaVyprsanie(); return; } catch (e) {} }
+    window.pgChyba("Prihlásenie vypršalo — prihlás sa znova.");
+  };
   window.pgVolaj = async function (nazov, telo) {
+    var ctrl = (typeof AbortController === "function") ? new AbortController() : null;
+    var casovac = ctrl ? setTimeout(function(){ ctrl.abort(); }, PG_TIMEOUT_MS) : null;
     try {
       var k = window.pgSupaKlient ? window.pgSupaKlient() : null;
       if (!k) return { error: "Klient nie je pripravený" };
       var sess = (await k.auth.getSession()).data.session;
-      if (!sess) return { error: "Nie si prihlásený" };
+      if (!sess) { window.pgSessionVyprsala(); return { error: "Nie si prihlásený", vyprsalo: true }; }
       var r = await fetch(SUPA_URL + "/functions/v1/" + nazov, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sess.access_token, "apikey": SUPA_ANON },
-        body: JSON.stringify(telo || {})
+        body: JSON.stringify(telo || {}),
+        signal: ctrl ? ctrl.signal : undefined
       });
-      return await r.json();
-    } catch (e) { return { error: String(e) }; }
+      if (r.status === 401) { window.pgSessionVyprsala(); return { error: "Prihlásenie vypršalo", vyprsalo: true }; }
+      var v = null;
+      try { v = await r.json(); } catch (e) { v = null; }
+      if (!v) return { error: "Server vrátil neplatnú odpoveď (" + r.status + ")" };
+      if (!r.ok && !v.error) v.error = "Chyba servera (" + r.status + ")";
+      return v;
+    } catch (e) {
+      if (e && e.name === "AbortError") return { error: "Server neodpovedá (časový limit " + (PG_TIMEOUT_MS/1000) + " s)." };
+      return { error: String(e && e.message || e) };
+    } finally { if (casovac) clearTimeout(casovac); }
   };
 
   // Skorý štart: prihlásený používateľ dostane chip hneď, ako parser vytvorí lištu —

@@ -31,10 +31,10 @@
 <style>html.pg-auth nav a[href="clenska-zona.html"]:not(#pg-nav-chip){display:none !important;}html.pg-auth #pg-nav-wrap{display:inline-block !important;}#pg-nav-chip{visibility:visible !important;}</style>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script src="./support.js?v=0.78"></script>
 <style>/* tab Výcviky skrytý (funkcie odchádzajú) */ [data-pg-tabs] > *:nth-child(5) { display:none !important; }</style>
-<script src="./config.js"></script>
-<script src="./pg-core.js"></script>
+<script src="./config.js?v=0.78"></script>
+<script src="./pg-core.js?v=0.78"></script>
 </head>
 <body>
 <x-dc>
@@ -71,14 +71,14 @@ a:hover { color: #E8E8CC; }
       <a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kampaň</a>
       <a href="podpora.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Podpora</a>
       <a href="clenska-zona.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #C2C29E; border: 1px solid #9C9C74; padding: 7px 14px; border-radius: 4px;" style-hover="background: #35402A; border-color: #C2C29E;">Prihlásiť</a>
-      <a href="admin.html" style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; text-decoration: none; color: #8A5F44; border: 1px solid #6E4C36; padding: 6px 12px; border-radius: 4px;" title="Veliteľské rozhranie">⚙ Admin</a>
+      <a href="admin.html" style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; text-decoration: none; color: #C2A57B; border: 1px solid #6E4C36; padding: 6px 12px; border-radius: 4px;" title="Veliteľské rozhranie">⚙ Admin</a>
     </div>
   </div>
 </nav>
 <div style="height: 59px;"></div>
 
 <div style="border-bottom: 1px solid #35402A; background: #1C2216; position: sticky; top: 59px; z-index: 40;">
-  <div style="box-sizing: content-box; display: flex; gap: 4px; max-width: 1120px; margin: 0 auto; padding: 0 24px; overflow-x: auto;" data-pg-tabs>
+  <div role="tablist" aria-label="Sekcie členskej zóny" style="box-sizing: content-box; display: flex; gap: 4px; max-width: 1120px; margin: 0 auto; padding: 0 24px; overflow-x: auto;" data-pg-tabs>
     <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
       <button onClick="{{ t.pick }}" style="display: {{ t.display }}; background: {{ t.bg }}; border: none; border-bottom: 3px solid {{ t.underline }}; color: {{ t.color }}; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 14px 18px 11px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;">{{ t.label }}</button>
     </sc-for>
@@ -89,17 +89,17 @@ a:hover { color: #E8E8CC; }
 
   <div style="display: {{ showNastenka }};">
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-      <div style="grid-column: 1 / -1; background: linear-gradient(rgba(44,53,34,.92), rgba(44,53,34,.96)), url('assets/gal-strecha.jpg') center / cover no-repeat; border: 1px solid #9C9C74; border-radius: 6px; padding: 26px 26px 28px;">
+      <div style="grid-column: 1 / -1; background: linear-gradient(rgba(44,53,34,.92), rgba(44,53,34,.96)), url('assets/gal-strecha.webp') center / cover no-repeat; border: 1px solid #9C9C74; border-radius: 6px; padding: 26px 26px 28px;">
         <div id="pg-nastenka-misia"><div style="color:#A8A890; font-size:14px;">Načítavam najbližšiu misiu…</div></div>
       </div>
       <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 22px 24px;">
   <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px;">
-    <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #8A5F44;">Oznamy</div>
+    <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #C2A57B;">Oznamy</div>
     <button id="pg-oznam-novy" style="display: none; align-items:center; background:#8A5F44; color:#F0E6D8; border:none; border-radius:5px; padding:6px 13px; font-family:'Staatliches',sans-serif; letter-spacing:1px; font-size:12.5px; cursor:pointer;">+ Nový oznam</button>
   </div>
-  <div id="pg-oznam-form" style="display: none; margin-bottom:14px; padding:14px; border:1px dashed #8A5F44; border-radius:6px;">
-    <input id="oznam-nadpis" placeholder="Nadpis oznamu" style="width:100%; box-sizing:border-box; background:#242B1C; border:1px solid #4A5A38; border-radius:5px; color:#D8D8C0; padding:8px 12px; font-family:inherit; font-size:14px; margin-bottom:8px;">
-    <textarea id="oznam-text" rows="2" placeholder="Text oznamu" style="width:100%; box-sizing:border-box; background:#242B1C; border:1px solid #4A5A38; border-radius:5px; color:#D8D8C0; padding:8px 12px; font-family:inherit; font-size:14px;"></textarea>
+  <div id="pg-oznam-form" style="display: none; margin-bottom:14px; padding:14px; border:1px dashed #C2A57B; border-radius:6px;">
+    <input id="oznam-nadpis" aria-label="Nadpis oznamu" placeholder="Nadpis oznamu" style="width:100%; box-sizing:border-box; background:#242B1C; border:1px solid #4A5A38; border-radius:5px; color:#D8D8C0; padding:8px 12px; font-family:inherit; font-size:14px; margin-bottom:8px;">
+    <textarea id="oznam-text" aria-label="Text oznamu" rows="2" placeholder="Text oznamu" style="width:100%; box-sizing:border-box; background:#242B1C; border:1px solid #4A5A38; border-radius:5px; color:#D8D8C0; padding:8px 12px; font-family:inherit; font-size:14px;"></textarea>
     <div style="display:flex; gap:8px; margin-top:8px;">
       <button id="pg-oznam-uloz" style="background:#8A5F44; color:#F0E6D8; border:none; border-radius:5px; padding:7px 15px; font-family:'Staatliches',sans-serif; letter-spacing:1px; font-size:13px; cursor:pointer;">Pridať</button>
       <button id="pg-oznam-zrus" style="background:transparent; color:#C2C29E; border:1px solid #9C9C74; border-radius:5px; padding:7px 13px; font-family:'Staatliches',sans-serif; letter-spacing:1px; font-size:13px; cursor:pointer;">Zrušiť</button>
@@ -109,9 +109,9 @@ a:hover { color: #E8E8CC; }
 </div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 22px 24px;">
-  <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">Tvoja dochádzka</div><div id="pg-nastenka-doch"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div>
+  <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 12px;">Tvoja dochádzka</div><div id="pg-nastenka-doch"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div>
 <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 22px 24px;">
-  <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">Moje prihlásenia</div><div id="pg-nastenka-prihlasenia"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div>
+  <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 12px;">Moje prihlásenia</div><div id="pg-nastenka-prihlasenia"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div>
 </div>
     </div>
   
@@ -119,10 +119,10 @@ a:hover { color: #E8E8CC; }
 
 </div><div style="display: {{ showOrbat }};">
     <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
-      <h1 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Členovia jednotky</h1>
+      <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Členovia jednotky</h2>
       <span style="font-size: 14px; color: #A8A890;">Ukážkové dáta — napojíme na Supabase</span>
     </div>
-    <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">Adresár tímov a frekvencie</div>
+    <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 12px;">Adresár tímov a frekvencie</div>
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 36px;">
       <sc-for list="{{ dirTeams }}" as="d" hint-placeholder-count="6">
         <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 14px 16px; display: grid; gap: 4px; transition: border-color .25s, transform .25s;" style-hover="border-color: #9C9C74; transform: translateY(-2px);">
@@ -130,24 +130,24 @@ a:hover { color: #E8E8CC; }
             <img src="{{ d.patch }}" alt="" style="width: 34px;">
             <div>
               <div style="font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 1.5px; color: #C2C29E; line-height: 1.1;">{{ d.name }}</div>
-              <div style="font-size: 11.5px; letter-spacing: 1px; color: #8A5F44; font-family: 'Staatliches', sans-serif;">{{ d.role }}</div>
+              <div style="font-size: 11.5px; letter-spacing: 1px; color: #C2A57B; font-family: 'Staatliches', sans-serif;">{{ d.role }}</div>
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 12px; margin-top: 6px; border-top: 1px solid #35402A; padding-top: 8px; font-feature-settings: 'tnum' 1;">
             <span style="font-size: 12.5px; color: #A8A890;">LR <strong style="color: #C2C29E; font-weight: 600;">{{ d.lr }}</strong></span>
-            <span style="font-size: 12.5px; color: #A8A890;">SR <strong style="color: #C2C29E; font-weight: 600;">{{ d.sr }}</strong></span><button onClick="{{ d.uprav }}" title="Upraviť frekvencie" style="display: {{ editShow }}; align-items:center; justify-content:center; width:24px; height:24px; margin-left:auto; background:#35402A; border:1px solid #8A5F44; border-radius:4px; color:#C2A57B; cursor:pointer; font-size:12px;">✎</button>
+            <span style="font-size: 12.5px; color: #A8A890;">SR <strong style="color: #C2C29E; font-weight: 600;">{{ d.sr }}</strong></span><button onClick="{{ d.uprav }}" title="Upraviť frekvencie" style="display: {{ editShow }}; align-items:center; justify-content:center; width:24px; height:24px; margin-left:auto; background:#35402A; border:1px solid #C2A57B; border-radius:4px; color:#C2A57B; cursor:pointer; font-size:12px;">✎</button>
           </div>
 <div style="display: {{ d.editDisp }}; gap: 8px; align-items: center; margin-top: 8px; flex-wrap: wrap;">
-  <input id="tim-lr-{{ d.idx }}" placeholder="LR" style="width: 74px; background: #242B1C; border: 1px solid #4A5A38; border-radius: 4px; color: #D8D8C0; padding: 5px 8px; font-size: 13px; font-family: inherit;">
-  <input id="tim-sr-{{ d.idx }}" placeholder="SR" style="width: 74px; background: #242B1C; border: 1px solid #4A5A38; border-radius: 4px; color: #D8D8C0; padding: 5px 8px; font-size: 13px; font-family: inherit;">
-  <button onClick="{{ ulozTim }}" style="background: #8A5F44; color: #F0E6D8; border: none; border-radius: 4px; padding: 5px 12px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 12px; cursor: pointer;">Uložiť</button>
+  <input id="tim-lr-{{ d.idx }}" aria-label="Frekvencia LR" placeholder="LR" style="width: 74px; background: #242B1C; border: 1px solid #4A5A38; border-radius: 4px; color: #D8D8C0; padding: 5px 8px; font-size: 13px; font-family: inherit;">
+  <input id="tim-sr-{{ d.idx }}" aria-label="Frekvencia SR" placeholder="SR" style="width: 74px; background: #242B1C; border: 1px solid #4A5A38; border-radius: 4px; color: #D8D8C0; padding: 5px 8px; font-size: 13px; font-family: inherit;">
+  <button onClick="{{ ulozTim }}" style="background:#8A5F44; color:#F0E6D8; border: none; border-radius: 4px; padding: 5px 12px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 12px; cursor: pointer;">Uložiť</button>
   <button onClick="{{ zrusTim }}" style="background: transparent; color: #C2C29E; border: 1px solid #9C9C74; border-radius: 4px; padding: 5px 10px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 12px; cursor: pointer;">Zrušiť</button>
 </div>
         </div>
       </sc-for>
     </div>
     <div style="display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; margin-bottom: 12px;">
-      <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #8A5F44;">Zoznam členov</div>
+      <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 3px; color: #C2A57B;">Zoznam členov</div>
       <div style="display: flex; gap: 6px; flex-wrap: wrap;">
         <sc-for list="{{ filters }}" as="f" hint-placeholder-count="7">
           <button onClick="{{ f.pick }}" style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 1.5px; padding: 4px 12px; border-radius: 3px; cursor: pointer; background: {{ f.bg }}; border: 1px solid {{ f.border }}; color: {{ f.color }}; transition: background .2s, color .2s;">{{ f.label }}</button>
@@ -155,10 +155,10 @@ a:hover { color: #E8E8CC; }
       </div>
     </div>
     <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; overflow: hidden;">
-      <div style="display: grid; grid-template-columns: 44px minmax(120px,1fr) 96px minmax(150px,1.4fr) 92px 112px; gap: 14px; align-items: center; padding: 10px 20px; background: #35402A; border-bottom: 1px solid #4A5A38; font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; color: #8A5F44;">
+      <div style="display: grid; grid-template-columns: 44px minmax(120px,1fr) 96px minmax(150px,1.4fr) 92px 112px; gap: 14px; align-items: center; padding: 10px 20px; background: #35402A; border-bottom: 1px solid #4A5A38; font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; color: #C2A57B;">
         <span></span><span>Člen</span><span>Oprávnenie</span><span>Špecializácie</span><span style="justify-self: end;">Vstup</span><span style="justify-self: end;">Naposledy hral</span>
       </div>
-      <div style="display: {{ emRoster }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">ORBAT sa naplní po pridaní členov cez Discord.</div></div>
+      <div style="display: {{ emRoster }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #C2A57B; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">ORBAT sa naplní po pridaní členov cez Discord.</div></div>
 <div style="display: block;"><div id="pg-roster-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam členov…</div></div>
     </div>
   </div>
@@ -166,34 +166,34 @@ a:hover { color: #E8E8CC; }
   </div>
 <div style="display: {{ showKalendar }};">
     <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 28px;">
-      <h1 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Kalendár · september 2026</h1>
+      <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Kalendár · september 2026</h2>
       <span style="font-size: 14px; color: #A8A890;">Klikni na misiu pre brífing a prílohy</span>
     </div>
     <div style="display: grid; gap: 22px;">
-      <div style="display: {{ emEvents }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Kalendár misií je pripravený — prvá misia pribudne z admin rozhrania.</div></div>
+      <div style="display: {{ emEvents }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #C2A57B; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Kalendár misií je pripravený — prvá misia pribudne z admin rozhrania.</div></div>
 <div style="display: grid; gap: 26px;"><div id="pg-kalendar-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam misie…</div></div></div>
     </div>
   </div>
 
   <div style="display: {{ showArchiv }};">
     <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
-      <h1 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Archív misií · AAR</h1>
+      <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Archív misií · AAR</h2>
       <span style="font-size: 14px; color: #A8A890;">After Action Reports odohraných operácií</span>
     </div>
     <div style="display: grid; gap: 12px;">
-      <div style="display: {{ emAars }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Archív po-akčných hlásení sa začne plniť po prvej misii.</div></div>
+      <div style="display: {{ emAars }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #C2A57B; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Archív po-akčných hlásení sa začne plniť po prvej misii.</div></div>
 <div style="display: grid; gap: 26px;"><div id="pg-archiv-db"><div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Načítavam archív…</div></div></div>
     </div>
   </div>
 
   <div style="display: {{ showVycviky }};">
     <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
-      <h1 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Výcviky a tvoj progres</h1>
+      <h2 style="font-family: 'Staatliches', sans-serif; font-weight: 400; letter-spacing: 3px; color: #C2C29E; font-size: 32px; margin: 0;">Výcviky a tvoj progres</h2>
       <span style="font-size: 14px; color: #A8A890;">des. „Straka" · Líška</span>
     </div>
-    <div style="display: {{ emTrainings }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; margin-bottom: 24px;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Ponuka výcvikového strediska sa načíta z databázy.</div></div>
+    <div style="display: {{ emTrainings }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; margin-bottom: 24px;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #C2A57B; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Ponuka výcvikového strediska sa načíta z databázy.</div></div>
 <div style="display: {{ dataDisplay }};">
-  <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 4px; color: #8A5F44; margin-bottom: 4px;">Výcvikové stredisko</div>
+  <div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 4px; color: #C2A57B; margin-bottom: 4px;">Výcvikové stredisko</div>
   <p style="font-size: 14px; color: #A8A890; margin: 0 0 16px; max-width: 640px;">Kompletná ponuka výcvikov a kurzov. Prihlás sa — termín si dohodneš s inštruktorom na Discorde.</p>
   <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin-bottom: 34px;">
     <sc-for list="{{ katalog }}" as="k" hint-placeholder-count="15">
@@ -208,9 +208,9 @@ a:hover { color: #E8E8CC; }
     </sc-for>
   </div>
 </div>
-<div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 4px; color: #8A5F44; margin-bottom: 14px;">Tvoj progres</div>
+<div style="font-family: 'Staatliches', sans-serif; font-size: 14px; letter-spacing: 4px; color: #C2A57B; margin-bottom: 14px;">Tvoj progres</div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-      <div style="display: {{ emTrainings }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Zoznam výcvikov sa zobrazí po napojení výcvikového strediska.</div></div>
+      <div style="display: {{ emTrainings }}; border: 1px dashed #4A5A38; border-radius: 6px; padding: 30px; text-align: center; grid-column: 1 / -1;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #C2A57B; font-size: 13px; margin-bottom: 6px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #A8A890; font-size: 14px;">Zoznam výcvikov sa zobrazí po napojení výcvikového strediska.</div></div>
 <div style="display: {{ dataDisplay }};"><sc-for list="{{ trainings }}" as="tr" hint-placeholder-count="21">
         <div style="display: {{ tr.disp }}; background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 20px 22px; transition: border-color .25s, transform .25s;" style-hover="border-color: #9C9C74; transform: translateY(-2px);">
           <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px;">
@@ -236,9 +236,9 @@ a:hover { color: #E8E8CC; }
   <span style="font-size: 17px;">🔕</span>
   <span style="flex: 1; min-width: 220px; font-size: 14px; color: #F0E6D8;">Nahlásená neaktivita do <strong id="pg-neak-banner-do"></strong><span id="pg-neak-banner-dovod"></span> — misie ťa v tomto období automaticky ospravedlňujú.</span>
   <button data-pg-neak-zrus style="background: transparent; color: #C2A57B; border: 1px solid #C2A57B; border-radius: 4px; padding: 6px 13px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 12.5px; cursor: pointer;">Zrušiť neaktivitu</button>
-</div><div style="display: {{ emRoster }}; border: 1px dashed #4A5A38; border-radius: 8px; padding: 44px 30px; text-align: center;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #8A5F44; font-size: 14px; margin-bottom: 8px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #D8D8C0; font-size: 15px; margin-bottom: 4px;">Tvoj služobný záznam sa vytvorí po prihlásení cez Discord.</div><div style="color: #A8A890; font-size: 13.5px;">Hodnosť, odznaky, veterancia aj história povýšení sa naplnia z tvojej reálnej aktivity v klane.</div></div><div style="display: {{ dataDisplay }};">
+</div><div style="display: {{ emRoster }}; border: 1px dashed #4A5A38; border-radius: 8px; padding: 44px 30px; text-align: center;"><div style="font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: #C2A57B; font-size: 14px; margin-bottom: 8px;">ČAKÁ SA NA SPUSTENIE</div><div style="color: #D8D8C0; font-size: 15px; margin-bottom: 4px;">Tvoj služobný záznam sa vytvorí po prihlásení cez Discord.</div><div style="color: #A8A890; font-size: 13.5px;">Hodnosť, odznaky, veterancia aj história povýšení sa naplnia z tvojej reálnej aktivity v klane.</div></div><div style="display: {{ dataDisplay }};">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-    <div style="grid-column: 1 / -1; background: linear-gradient(rgba(44,53,34,.94), rgba(36,43,28,.97)), url('assets/gal-prieskum.jpg') center 30% / cover no-repeat; border: 1px solid #9C9C74; border-radius: 8px; overflow: hidden;">
+    <div style="grid-column: 1 / -1; background: linear-gradient(rgba(44,53,34,.94), rgba(36,43,28,.97)), url('assets/gal-prieskum.webp') center 30% / cover no-repeat; border: 1px solid #9C9C74; border-radius: 8px; overflow: hidden;">
   <div style="display: grid; grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr); gap: 0;">
     <div style="padding: 28px;">
         <div style="display: flex; gap: 18px; align-items: center;">
@@ -260,34 +260,34 @@ a:hover { color: #E8E8CC; }
           <div><div style="font-family: 'Staatliches', sans-serif; font-size: 26px; color: #C2C29E; line-height: 1;" id="pg-stat-zamerania">—</div><div style="font-size: 12.5px; color: #A8A890; margin-top: 4px;">zamerania</div></div>
         </div>
         <div style="margin-top: 20px;">
-          <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 8px;">Zamerania</div>
+          <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 8px;">Zamerania</div>
           <div id="pg-profil-zamerania"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div>
         </div>
       </div>
     <div style="padding: 28px; border-left: 1px solid #4A5A38; background: rgba(28,34,22,.35);">
-            <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">XP a postup</div><div id="pg-profil-xp"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div>
+            <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 12px;">XP a postup</div><div id="pg-profil-xp"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div>
   </div>
 </div>
   </div>
   <div style="display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 20px; margin-top: 20px;">
     <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 8px; overflow: hidden;"><div style="padding: 26px;">
-        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">Kvalifikačné odznaky</div>
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 16px;">Kvalifikačné odznaky</div>
         <div id="pg-profil-odznaky"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div>
       </div><div style="border-top: 1px solid #4A5A38; padding: 26px;">
-        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 16px;">História povýšení</div><div id="pg-profil-povysenia"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div><div style="border-top: 1px solid #4A5A38; padding: 26px;">
-        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 12px;">Služobný záznam</div><div id="pg-profil-zaznam"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div></div>
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 16px;">História povýšení</div><div id="pg-profil-povysenia"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div><div style="border-top: 1px solid #4A5A38; padding: 26px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 12px;">Služobný záznam</div><div id="pg-profil-zaznam"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div></div>
     <div style="display: grid; gap: 20px; align-content: start;">
 <div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 18px 20px;">
-  <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 10px;">Neaktivita</div>
+  <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 10px;">Neaktivita</div>
   <div id="pg-neak-form" style="display: block;">
     <p style="font-size: 13px; color: #A8A890; margin: 0 0 10px;">Nahlás obdobie, keď sa nebudeš môcť zúčastňovať — systém ťa na misiách automaticky ospravedlní.</p>
     <label style="display: block; margin-bottom: 10px;"><span style="display: block; font-size: 12px; color: #A8A890; margin-bottom: 4px;">Neaktívny do</span>
-      <input type="date" id="neak-do" style="width: 100%; box-sizing: border-box; background: #242B1C; border: 1px solid #4A5A38; border-radius: 5px; color: #D8D8C0; padding: 8px 10px; font-family: inherit; font-size: 14px; color-scheme: dark;">
+      <input type="date" id="neak-do" aria-label="Neaktívny do dátumu" style="width: 100%; box-sizing: border-box; background: #242B1C; border: 1px solid #4A5A38; border-radius: 5px; color: #D8D8C0; padding: 8px 10px; font-family: inherit; font-size: 14px; color-scheme: dark;">
     </label>
     <label style="display: block; margin-bottom: 12px;"><span style="display: block; font-size: 12px; color: #A8A890; margin-bottom: 4px;">Dôvod (dobrovoľné)</span>
-      <input id="neak-dovod" placeholder="napr. dovolenka, skúškové…" style="width: 100%; box-sizing: border-box; background: #242B1C; border: 1px solid #4A5A38; border-radius: 5px; color: #D8D8C0; padding: 8px 10px; font-family: inherit; font-size: 14px;">
+      <input id="neak-dovod" aria-label="Dôvod neaktivity" placeholder="napr. dovolenka, skúškové…" style="width: 100%; box-sizing: border-box; background: #242B1C; border: 1px solid #4A5A38; border-radius: 5px; color: #D8D8C0; padding: 8px 10px; font-family: inherit; font-size: 14px;">
     </label>
-    <button id="pg-neak-uloz" style="background: #8A5F44; color: #F0E6D8; border: none; border-radius: 5px; padding: 8px 16px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 13px; cursor: pointer;">Nahlásiť neaktivitu</button>
+    <button id="pg-neak-uloz" style="background:#8A5F44; color:#F0E6D8; border: none; border-radius: 5px; padding: 8px 16px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 13px; cursor: pointer;">Nahlásiť neaktivitu</button>
   </div>
   <div id="pg-neak-aktiv" style="display: none;">
     <p style="font-size: 13.5px; color: #F0E6D8; margin: 0 0 4px;">🔕 Neaktívny do <strong id="pg-neak-do-txt"></strong></p>
@@ -295,8 +295,8 @@ a:hover { color: #E8E8CC; }
     <button data-pg-neak-zrus style="background: transparent; color: #C2A57B; border: 1px solid #C2A57B; border-radius: 4px; padding: 6px 13px; font-family: 'Staatliches', sans-serif; letter-spacing: 1px; font-size: 12.5px; cursor: pointer;">Zrušiť neaktivitu</button>
   </div>
 </div><div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
-        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 14px;">Dochádzka</div><div id="pg-profil-doch"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div><div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
-        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #8A5F44; margin-bottom: 14px;">Moje prihlásenia</div><div id="pg-profil-prihlasenia"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div></div>
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 14px;">Dochádzka</div><div id="pg-profil-doch"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div><div style="background: #2C3522; border: 1px solid #4A5A38; border-radius: 6px; padding: 26px;">
+        <div style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 3px; color: #C2A57B; margin-bottom: 14px;">Moje prihlásenia</div><div id="pg-profil-prihlasenia"><div style="color:#A8A890; font-size:13px;">Načítavam…</div></div></div></div>
   </div>
 </div></div>
 
@@ -358,28 +358,28 @@ class Component extends DCLogic {
   ];
   eventDefs = [
     { day: "So 29. 8.", time: "15:30", title: "Operácia Tichý hrebeň, časť III", note: "Zraz na TS 15:00 · brífing 15:15", type: "Interná", modpack: "Moderna", kind: "misia",
-      brief: "Záverečné vyčistenie údolí Severnej provincie. Líška a Duch zaisťujú prieskum kót, Grizzly vedie hlavný postup údolím, Hotel drží MEDEVAC pohotovosť. Očakávaný odpor: pechota s ATGM.", attach: "OPORD-2026-31.pdf", img: "assets/gal-prieskum.jpg", imgCap: "AO — hrebeň nad údolím, foto z prieskumu" },
+      brief: "Záverečné vyčistenie údolí Severnej provincie. Líška a Duch zaisťujú prieskum kót, Grizzly vedie hlavný postup údolím, Hotel drží MEDEVAC pohotovosť. Očakávaný odpor: pechota s ATGM.", attach: "OPORD-2026-31.pdf", img: "assets/gal-prieskum.webp", imgCap: "AO — hrebeň nad údolím, foto z prieskumu" },
     { day: "So 5. 9.", time: "15:30", title: "Joint Ops s 22. MEU", note: "Spoločná operácia · 30+ hráčov", type: "Joint Ops", modpack: "Moderna", kind: "joint",
-      brief: "Spoločný obojživelný výsadok s 22. MEU. My staviame prieskum a vrtuľníkové krídlo, partneri mechanizovanú pechotu. Jednotný ACRE plán — frekvencie v prílohe.", attach: "COMMS-PLAN-JO22.pdf", img: "assets/gal-clny.jpg", imgCap: "Nočný presun na člnoch — nácvik výsadku" },
+      brief: "Spoločný obojživelný výsadok s 22. MEU. My staviame prieskum a vrtuľníkové krídlo, partneri mechanizovanú pechotu. Jednotný ACRE plán — frekvencie v prílohe.", attach: "COMMS-PLAN-JO22.pdf", img: "assets/gal-clny.webp", imgCap: "Nočný presun na člnoch — nácvik výsadku" },
     { day: "St 9. 9.", time: "19:00", title: "Výcvik CLS + RTO", note: "Kapacita 8 miest · inštruktor Sova", type: "Výcvik", modpack: "Engine", kind: "vycvik",
-      brief: "Kombinovaný večerný výcvik: prvá pomoc pod paľbou (CLS etapa 3) a rádiová prevádzka pre nováčikov. Prines si vlastné poznámky z minulej etapy.", attach: "sylabus-CLS-3.pdf", img: "assets/gal-schody.jpg", imgCap: "Výcvikový priestor — CQB dom" },
+      brief: "Kombinovaný večerný výcvik: prvá pomoc pod paľbou (CLS etapa 3) a rádiová prevádzka pre nováčikov. Prines si vlastné poznámky z minulej etapy.", attach: "sylabus-CLS-3.pdf", img: "assets/gal-schody.webp", imgCap: "Výcvikový priestor — CQB dom" },
     { day: "So 12. 9.", time: "15:30", title: "Operácia Tichý hrebeň, časť IV", note: "Pokračovanie kampane", type: "Interná", modpack: "Moderna", kind: "misia",
-      brief: "Nadväzuje na výsledok časti III — presný zámer sa dozvieš na brífingu podľa toho, ako dopadne sobota. Veliteľstvo pripravuje dve vetvy scenára.", attach: "WARNORD-2026-32.pdf", img: "assets/gal-pandur.jpg", imgCap: "Mechanizovaná zostava Grizzly" },
+      brief: "Nadväzuje na výsledok časti III — presný zámer sa dozvieš na brífingu podľa toho, ako dopadne sobota. Veliteľstvo pripravuje dve vetvy scenára.", attach: "WARNORD-2026-32.pdf", img: "assets/gal-pandur.webp", imgCap: "Mechanizovaná zostava Grizzly" },
     { day: "St 16. 9.", time: "19:00", title: "Pilotný výcvik — Hotel", note: "Len pre vrtuľníkové krídlo", type: "Výcvik", modpack: "Engine", kind: "vycvik",
-      brief: "Nočné lietanie s NVG: okruhy, pristátia v neoznačenej LZ, núdzové postupy pri výpadku motora. Povinné pre nových kopilotov.", attach: "sylabus-NVG.pdf", img: "assets/gal-noc.jpg", imgCap: "Nočné podmienky — NVG" },
+      brief: "Nočné lietanie s NVG: okruhy, pristátia v neoznačenej LZ, núdzové postupy pri výpadku motora. Povinné pre nových kopilotov.", attach: "sylabus-NVG.pdf", img: "assets/gal-noc.webp", imgCap: "Nočné podmienky — NVG" },
     { day: "So 19. 9.", time: "15:30", title: "Odľahčená akcia — Zeus", note: "Otvorené aj pre nováčikov", type: "Voľná", modpack: "Moderna", kind: "volna",
-      brief: "Oddychová sobota mimo kampane — Zeus scenár na želanie. Ideálna príležitosť vyskúšať si novú rolu bez tlaku na výsledok.", attach: "bez príloh", img: "assets/gal-cqb.jpg", imgCap: "CQB nácvik z minulej voľnej akcie" }
+      brief: "Oddychová sobota mimo kampane — Zeus scenár na želanie. Ideálna príležitosť vyskúšať si novú rolu bez tlaku na výsledok.", attach: "bez príloh", img: "assets/gal-cqb.webp", imgCap: "CQB nácvik z minulej voľnej akcie" }
   ];
   aarDefs = [
-    { date: "22. 8.", name: "Op. Tichý hrebeň II", result: "Úspech", img: "assets/gal-sniper.jpg", imgCap: "Prekrytie postupu — DMR pozícia",
+    { date: "22. 8.", name: "Op. Tichý hrebeň II", result: "Úspech", img: "assets/gal-sniper.webp", imgCap: "Prekrytie postupu — DMR pozícia",
       report: "Obsadené obe kóty nad údolím. Duch odhalil mínometnú pozíciu skôr, než stihla zasiahnuť hlavný postup — umlčaná Vlkom na druhú salvu. Jedna evakuácia, žiadne straty. Pripomienka z debrífu: hlásiť prechody medzi SR sieťami skôr." },
-    { date: "15. 8.", name: "Op. Tichý hrebeň I", result: "Čiastočný", img: "assets/gal-uav.jpg", imgCap: "ISR obraz pred postupom",
+    { date: "15. 8.", name: "Op. Tichý hrebeň I", result: "Čiastočný", img: "assets/gal-uav.webp", imgCap: "ISR obraz pred postupom",
       report: "Vstup do údolia zabezpečený, ale severný priesmyk ostal v rukách milícií po strate IFV na míne. EOD odviedol dobrú prácu na sekundárnom vstupe. Pokračujeme časťou II s upraveným plánom." },
-    { date: "8. 8.", name: "Joint Ops — Redwood", result: "Úspech", img: "assets/gal-clny.jpg", imgCap: "Spoločný nočný výsadok",
+    { date: "8. 8.", name: "Joint Ops — Redwood", result: "Úspech", img: "assets/gal-clny.webp", imgCap: "Spoločný nočný výsadok",
       report: "Spoločná operácia s Redwood PMC — nočný výsadok na pobrežie a raid na sklad zbraní. Naša úloha (prieskum + door gunneri) splnená bez strát. Partneri ocenili disciplínu v éteri." },
-    { date: "1. 8.", name: "Op. Posledný konvoj", result: "Úspech", img: "assets/gal-pandur.jpg", imgCap: "Konvoj pred výjazdom",
+    { date: "1. 8.", name: "Op. Posledný konvoj", result: "Úspech", img: "assets/gal-pandur.webp", imgCap: "Konvoj pred výjazdom",
       report: "Eskorta humanitárneho konvoja cez sporné územie. Dve léčky — obe odrazené, konvoj bez strát. Grizzly si sadol ako predné aj zadné krytie, výborná komunikácia s Alžbetou." },
-    { date: "25. 7.", name: "Op. Studňa", result: "Neúspech", img: "assets/gal-cqb.jpg", imgCap: "Vstup do komplexu",
+    { date: "25. 7.", name: "Op. Studňa", result: "Neúspech", img: "assets/gal-cqb.webp", imgCap: "Vstup do komplexu",
       report: "Raid na veliteľské stanovište milícií zlyhal na strate momentu prekvapenia — hliadka nás odhalila pri infiltrácii. Organizovaný ústup bez strát. Poučenie: viac času na pozorovanie pred vstupom, menej rádiovej prevádzky pri infiltrácii." }
   ];
   trainingDefs = [
@@ -462,8 +462,8 @@ class Component extends DCLogic {
     const countdown = Math.floor(ms / 86400000) + "d " + pad(Math.floor(ms / 3600000) % 24) + ":" + pad(Math.floor(ms / 60000) % 60) + ":" + pad(Math.floor(ms / 1000) % 60);
     const stMap = { "Aktívny": ["#4A6741", "#A8C29E", "rgba(74,103,65,.25)", "#7FB069"], "Nováčik": ["#9C9C74", "#C2C29E", "rgba(156,156,116,.2)", "#C2C29E"], "Neaktívny": ["#6E4C36", "#C2A57B", "rgba(110,76,54,.25)", "#C2A57B"], "Záloha": ["#5A4A3A", "#A8A890", "rgba(90,74,58,.25)", "#A8A890"] }
       const rankMap = { "voj.": ["01-vojak-1-stupna", "Vojak 1. stupňa"], "slob.": ["03-slobodnik", "Slobodník"], "des.": ["04-desiatnik", "Desiatnik"], "čat.": ["05-catar", "Čatár"], "rtn.": ["06-rotny", "Rotný"], "rtm.": ["07-rotmajster", "Rotmajster"], "nrtm.": ["08-nadrotmajster", "Nadrotmajster"], "por.": ["13-porucik", "Poručík"], "npor.": ["14-nadporucik", "Nadporučík"], "kpt.": ["15-kapitan", "Kapitán"], "mjr.": ["16-major", "Major"] };
-    const tagMap = { "Interná": ["#4A6741", "#A8C29E", "rgba(74,103,65,.25)"], "Joint Ops": ["#9C9C74", "#C2C29E", "transparent"], "Výcvik": ["#8A5F44", "#C29E8A", "rgba(138,95,68,.2)"], "Voľná": ["#5A6B45", "#A8A890", "transparent"] };
-    const resMap = { "Úspech": ["#4A6741", "#A8C29E"], "Čiastočný": ["#9C9C74", "#C2C29E"], "Neúspech": ["#8A5F44", "#C29E8A"] };
+    const tagMap = { "Interná": ["#4A6741", "#A8C29E", "rgba(74,103,65,.25)"], "Joint Ops": ["#9C9C74", "#C2C29E", "transparent"], "Výcvik": ["#C2A57B", "#C29E8A", "rgba(138,95,68,.2)"], "Voľná": ["#5A6B45", "#A8A890", "transparent"] };
+    const resMap = { "Úspech": ["#4A6741", "#A8C29E"], "Čiastočný": ["#9C9C74", "#C2C29E"], "Neúspech": ["#C2A57B", "#C29E8A"] };
     const attLabels = ["Účasť", "Absencia", "Ospravedlnený"];
     return {
       setDemo: () => { if (typeof localStorage!=="undefined") localStorage.setItem("pg_mode","demo"); this.setState({ mode: "demo" }); },
@@ -482,13 +482,13 @@ class Component extends DCLogic {
       prihlaskyEmpty: (this.isOstry || !this.d(this.eventDefs).some((e, i) => (this.state.signed && this.state.signed[i]) && !(this.state.zmazMisie||[]).includes(i))) ? "block" : "none",
       demoBg: this.state.mode === "demo" ? "#9C9C74" : "transparent",
       demoColor: this.state.mode === "demo" ? "#242B1C" : "#C2C29E",
-      ostryBg: this.state.mode === "ostry" ? "#8A5F44" : "transparent",
+      ostryBg: this.state.mode === "ostry" ? "#C2A57B" : "transparent",
       ostryColor: this.state.mode === "ostry" ? "#F0E6D8" : "#C2C29E",
       setMember: () => { if (typeof localStorage!=="undefined") localStorage.setItem("pg_rola","member"); this.setState({ rola: "member" }); },
       setVelitel: () => { if (typeof localStorage!=="undefined") localStorage.setItem("pg_rola","velitel"); this.setState({ rola: "velitel" }); },
       memberBg: this.state.rola === "member" ? "#9C9C74" : "transparent",
       memberColor: this.state.rola === "member" ? "#242B1C" : "#C2C29E",
-      velitelBg: this.state.rola === "velitel" ? "#8A5F44" : "transparent",
+      velitelBg: this.state.rola === "velitel" ? "#C2A57B" : "transparent",
       velitelColor: this.state.rola === "velitel" ? "#F0E6D8" : "#C2C29E",
       ulozAtrapa: () => { const t = Date.now(); this.setState({ atrapaMsg: t }); setTimeout(() => { if (this.state.atrapaMsg === t) this.setState({ atrapaMsg: 0 }); }, 2600); },
       countdown,
@@ -558,7 +558,7 @@ class Component extends DCLogic {
       events: this.d(this.eventDefs).map((e, i) => {
         const _del = (this.state.zmazMisie||[]).includes(i); const _excM = !!(this.state.excused && this.state.excused[i]); const _neak = this.neaktivitaAktivna; const _exc = _excM || _neak; const s = !!signed[i], tg = tagMap[e.type], open = openEv === i;
         return { ...e, disp: _del ? "none" : "block", tagBorder: tg[0], tagColor: tg[1], tagBg: tg[2],
-          stripe: e.kind === "vycvik" ? "#8A5F44" : e.kind === "joint" ? "#9C9C74" : "#4A6741",
+          stripe: e.kind === "vycvik" ? "#C2A57B" : e.kind === "joint" ? "#9C9C74" : "#4A6741",
           cardBorder: open ? "#9C9C74" : "#4A5A38",
           expand: () => this.setState({ openEv: open ? -1 : i }),
           rows: open ? "1fr" : "0fr",
@@ -609,7 +609,7 @@ class Component extends DCLogic {
   <div style="max-width: 420px; width: 100%; background: #2C3522; border: 1px solid #4A5A38; border-radius: 8px; padding: 36px 32px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,.5);">
     <img src="assets/phoenix58.png" alt="58. Phoenix Group" style="width: 84px; height: 84px; object-fit: contain; margin: 0 auto 14px; display: block;">
     <div style="font-family: 'Staatliches', sans-serif; font-size: 26px; letter-spacing: 3px; color: #E8E8CC;">Členská zóna</div>
-    <div id="pg-auth-stav" style="margin-top: 8px; font-size: 14px; color: #A8A890;">Overujem prístup…</div>
+    <div id="pg-auth-stav" role="status" aria-live="polite" style="margin-top: 8px; font-size: 14px; color: #A8A890;">Overujem prístup…</div>
     <div id="pg-auth-login" style="display: none; margin-top: 22px;">
       <p style="font-size: 14px; color: #D8D8C0; margin: 0 0 18px;">Prístup majú len členovia 58. Phoenix Group. Prihlás sa svojím Discord účtom.</p>
       <button onclick="pgLogin()" style="cursor: pointer; border: none; border-radius: 6px; background: #5865F2; color: #fff; font-family: 'Staatliches', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 12px 26px; width: 100%;">Prihlásiť cez Discord</button>
@@ -639,11 +639,12 @@ class Component extends DCLogic {
     document.getElementById("pg-auth-stav").textContent = text || "";
     ov.style.display = "flex";
   }
+  window.pgNaVyprsanie = function () { ukaz("login", "Prihlásenie vypršalo — prihlás sa znova."); };
   function dnu() { ov.style.display = "none"; if (window.pgNavChip) window.pgNavChip(); naplnProfil(); naplnKalendar(); naplnArchiv(); naplnRoster(); naplnPrehlad(); }
   function tagFarby(typ) {
-    if (typ === "vycvik") return ["#4A5A38", "#9C9C74", "rgba(156,156,116,.12)", "#8A5F44"];
+    if (typ === "vycvik") return ["#4A5A38", "#9C9C74", "rgba(156,156,116,.12)", "#C2A57B"];
     if (typ === "event")  return ["#4A5A38", "#A8A890", "rgba(168,168,144,.12)", "#5A6B44"];
-    return ["#8A5F44", "#C2A57A", "rgba(138,95,68,.15)", "#8A5F44"]; // misia
+    return ["#C2A57B", "#C2A57A", "rgba(138,95,68,.15)", "#C2A57B"]; // misia
   }
   function misiaKarta(m, archiv) {
     var d = m.datum ? new Date(m.datum) : null;
@@ -683,8 +684,9 @@ class Component extends DCLogic {
     if (btn) { btn.disabled = true; btn.style.opacity = "0.6"; }
     try {
       var v = await window.pgVolaj("prihlas-na-misiu", { misiaId: misiaId, akcia: akcia });
-      if (!v || v.error) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } return; }
-    } catch (e) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } return; }
+      if (!v || v.error) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } if (!(v && v.vyprsalo)) pgChyba("Prihlásenie na misiu zlyhalo: " + pgChybaText(v)); return; }
+      pgToast(akcia === "odhlasit" ? "Prihlásenie zrušené." : (akcia === "ospravedlnit" ? "Ospravedlnenie zapísané." : "Si prihlásený na misiu."));
+    } catch (e) { if (btn){ btn.disabled=false; btn.style.opacity="1"; } pgChyba("Prihlásenie na misiu zlyhalo: " + pgChybaText(e)); return; }
     // prekresli kalendár (aby sa aktualizoval stav aj počty)
     naplnKalendar();
   }
@@ -761,7 +763,7 @@ class Component extends DCLogic {
   function pgStavFarby(stav) {
     if (stav === "dorazil") return ["#7FB069","Dorazil"];
     if (stav === "osprav") return ["#C9A227","Ospravedlnený"];
-    if (stav === "nedorazil") return ["#8A5F44","Nedorazil"];
+    if (stav === "nedorazil") return ["#C2A57B","Nedorazil"];
     return ["#35402A","Bez záznamu"];
   }
   function pgDochBox(d, mini) {
@@ -804,27 +806,27 @@ class Component extends DCLogic {
   async function pgNeaktivita(telo) { return await window.pgVolaj("nastav-neaktivitu", telo); }
   async function naplnPrehlad(pokus) {
     pokus = pokus || 0;
-    function znova(){ if (pokus < 30) setTimeout(function(){ naplnPrehlad(pokus+1); }, 350); }
+    function znova(){ if (pokus < 30) setTimeout(function(){ naplnPrehlad(pokus+1); }, 350); else pgChyba("Nástenku sa nepodarilo načítať. Skús obnoviť stránku."); }
     var cielove = ["pg-nastenka-misia","pg-nastenka-doch","pg-nastenka-prihlasenia","pg-profil-doch","pg-profil-prihlasenia","pg-profil-zaznam"];
     if (!cielove.some(function(id){ return document.getElementById(id); })) { znova(); return; }
     var v = null;
     try {
       v = await window.pgVolaj("nacitaj-moj-prehlad", {});
-      if (!v || v.error) { znova(); return; }
+      if (!v || v.error) { if (v && v.vyprsalo) return; znova(); return; }
     } catch(e){ znova(); return; }
 
     // BANNER najbližšia misia
     var bm = document.getElementById("pg-nastenka-misia");
     if (bm) {
       if (!v.najblizsia) {
-        bm.innerHTML = '<div style="font-family:\'Staatliches\',sans-serif; font-size:14px; letter-spacing:4px; color:#8A5F44;">Najbližšia misia</div><h1 style="font-family:\'Staatliches\',sans-serif; font-weight:400; letter-spacing:2px; color:#C2C29E; font-size:clamp(24px,3vw,32px); margin:6px 0 0;">Žiadna misia nie je vypísaná</h1><p style="margin:10px 0 0; font-size:14.5px; color:#A8A890;">Nová pribudne z veliteľského rozhrania.</p>';
+        bm.innerHTML = '<div style="font-family:\'Staatliches\',sans-serif; font-size:14px; letter-spacing:4px; color:#C2A57B;">Najbližšia misia</div><h1 style="font-family:\'Staatliches\',sans-serif; font-weight:400; letter-spacing:2px; color:#C2C29E; font-size:clamp(24px,3vw,32px); margin:6px 0 0;">Žiadna misia nie je vypísaná</h1><p style="margin:10px 0 0; font-size:14.5px; color:#A8A890;">Nová pribudne z veliteľského rozhrania.</p>';
       } else {
         var nb = v.najblizsia; var nd = new Date(nb.datum);
         var dz = nd.toLocaleDateString("sk-SK",{weekday:"long",day:"numeric",month:"numeric"}) + " " + nd.toLocaleTimeString("sk-SK",{hour:"2-digit",minute:"2-digit"});
         PG_ODPOCET = nd.getTime();
         var jePr = nb.moj_stav === "prihlaseny", jeOs = nb.moj_stav === "ospravedlneny";
         bm.innerHTML = '<div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">'
-          + '<span style="font-family:\'Staatliches\',sans-serif; font-size:14px; letter-spacing:4px; color:#8A5F44;">Najbližšia misia · ' + esc(dz) + '</span>'
+          + '<span style="font-family:\'Staatliches\',sans-serif; font-size:14px; letter-spacing:4px; color:#C2A57B;">Najbližšia misia · ' + esc(dz) + '</span>'
           + '<span id="pg-countdown" style="font-family:\'Staatliches\',sans-serif; font-size:16px; letter-spacing:2px; color:#E8E8CC; background:#35402A; border:1px solid #9C9C74; border-radius:4px; padding:2px 12px;">' + pgOdpocetText(PG_ODPOCET) + '</span></div>'
           + '<h1 style="font-family:\'Staatliches\',sans-serif; font-weight:400; letter-spacing:2px; color:#C2C29E; font-size:clamp(28px,4vw,40px); margin:6px 0 0;">' + esc(nb.nazov||"") + '</h1>'
           + (nb.brief ? '<p style="max-width:620px; margin:12px 0 0; font-size:15.5px;">' + esc(nb.brief) + '</p>' : '')
@@ -874,11 +876,12 @@ class Component extends DCLogic {
       if (ulozBtn2) ulozBtn2.onclick = async function(){
         var nad = (document.getElementById("oznam-nadpis")||{}).value || "";
         var txt = (document.getElementById("oznam-text")||{}).value || "";
-        if (!nad.trim()) { alert("Napíš nadpis oznamu."); return; }
+        if (!nad.trim()) { pgChyba("Napíš nadpis oznamu."); return; }
         ulozBtn2.disabled = true; ulozBtn2.textContent = "Ukladám…";
         var vv = await pgOznam({ akcia: "pridat", titulok: nad, text: txt });
         ulozBtn2.disabled = false; ulozBtn2.textContent = "Pridať";
-        if (vv && vv.error) { alert("Chyba: " + vv.error); return; }
+        if (!vv || vv.error) { pgChyba("Oznam sa neuložil: " + pgChybaText(vv)); return; }
+        pgToast("Oznam pridaný.");
         var ni = document.getElementById("oznam-nadpis"); if (ni) ni.value = "";
         var ti = document.getElementById("oznam-text"); if (ti) ti.value = "";
         var f = document.getElementById("pg-oznam-form"); if (f) f.style.display = "none";
@@ -893,7 +896,7 @@ class Component extends DCLogic {
           return '<div style="border-bottom:1px solid #35402A; padding:10px 0;"><div style="display:flex; gap:12px; align-items:flex-start;">'
             + '<div style="flex:1; min-width:0;"><div style="font-size:15px; color:#C2C29E; font-weight:600;">' + esc(o.titulok||"") + '</div>'
             + (o.text ? '<div style="font-size:13.5px; color:#A8A890; margin-top:2px;">' + esc(o.text) + '</div>' : '')
-            + '<div style="font-size:11.5px; color:#8A5F44; margin-top:4px;">' + esc(dz) + '</div></div>'
+            + '<div style="font-size:11.5px; color:#C2A57B; margin-top:4px;">' + esc(dz) + '</div></div>'
             + (jeVel ? '<button data-pg-oznam-zmaz="' + esc(o.id) + '" title="Zmazať oznam" style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:#35402A; border:1px solid #7A3B2E; border-radius:4px; color:#C98B7A; cursor:pointer; font-size:12.5px; flex-shrink:0;">🗑</button>' : '')
             + '</div></div>';
         }).join("") + '</div>';
@@ -902,7 +905,8 @@ class Component extends DCLogic {
             if (!confirm("Zmazať tento oznam?")) return;
             b.disabled = true;
             var vv = await pgOznam({ akcia: "zmazat", id: b.getAttribute("data-pg-oznam-zmaz") });
-            if (vv && vv.error) { alert("Chyba: " + vv.error); b.disabled = false; return; }
+            if (!vv || vv.error) { pgChyba("Oznam sa nepodarilo zmazať: " + pgChybaText(vv)); b.disabled = false; return; }
+            pgToast("Oznam zmazaný.");
             naplnPrehlad();
           };
         });
@@ -938,12 +942,13 @@ class Component extends DCLogic {
       var ulozBtn = document.getElementById("pg-neak-uloz");
       if (ulozBtn) ulozBtn.onclick = async function(){
         var doD = (document.getElementById("neak-do")||{}).value;
-        if (!doD) { alert("Vyber dátum, do kedy budeš neaktívny."); return; }
+        if (!doD) { pgChyba("Vyber dátum, do kedy budeš neaktívny."); return; }
         var dovod = (document.getElementById("neak-dovod")||{}).value || "";
         ulozBtn.disabled = true; ulozBtn.textContent = "Ukladám…";
         var vv = await pgNeaktivita({ akcia: "nastavit", "do": doD, dovod: dovod });
         ulozBtn.disabled = false; ulozBtn.textContent = "Nahlásiť neaktivitu";
-        if (vv && vv.error) { alert("Chyba: " + vv.error); return; }
+        if (!vv || vv.error) { pgChyba("Neaktivitu sa nepodarilo nahlásiť: " + pgChybaText(vv)); return; }
+        pgToast("Neaktivita nahlásená.");
         naplnPrehlad(); naplnKalendar(); naplnRoster();
       };
       document.querySelectorAll("[data-pg-neak-zrus]").forEach(function(b){
@@ -952,7 +957,8 @@ class Component extends DCLogic {
           b.disabled = true;
           var vv = await pgNeaktivita({ akcia: "zrusit" });
           b.disabled = false;
-          if (vv && vv.error) { alert("Chyba: " + vv.error); return; }
+          if (!vv || vv.error) { pgChyba("Neaktivitu sa nepodarilo zrušiť: " + pgChybaText(vv)); return; }
+          pgToast("Neaktivita zrušená.");
           naplnPrehlad(); naplnRoster();
         };
       });
@@ -985,7 +991,7 @@ class Component extends DCLogic {
       (v.povysenia || []).forEach(function(p){ datumy[p.hodnost] = p.datum; });
       var hh = "";
       KATEG.forEach(function(k){
-        hh += '<div style="font-family:\'Staatliches\',sans-serif; font-size:12.5px; letter-spacing:3px; color:#8A5F44; margin:14px 0 8px;">' + k[2] + '</div>';
+        hh += '<div style="font-family:\'Staatliches\',sans-serif; font-size:12.5px; letter-spacing:3px; color:#C2A57B; margin:14px 0 8px;">' + k[2] + '</div>';
         for (var ri = k[0]; ri <= k[1]; ri++) {
           var dosiahnute = ri <= aktIdx;
           var dt = datumy[HODN[ri]] ? new Date(datumy[HODN[ri]]).toLocaleDateString("sk-SK",{day:"numeric",month:"numeric",year:"numeric"}) : null;
