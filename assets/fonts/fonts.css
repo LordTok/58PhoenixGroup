@@ -1,0 +1,31 @@
+/* 58. Phoenix Group — lokálne fonty (namiesto Google Fonts)
+   Staatliches a Barlow, licencia SIL Open Font License 1.1 (OFL-*.txt v tomto priečinku).
+   Orezané na latinku vrátane SK/CZ diakritiky. */
+@font-face {
+  font-family: "Staatliches";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("Staatliches-Regular.woff") format("woff");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("Barlow-Regular.woff") format("woff");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("Barlow-Medium.woff") format("woff");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("Barlow-SemiBold.woff") format("woff");
+}

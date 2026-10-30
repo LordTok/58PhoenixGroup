@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://cdn.discordapp.com https://media.discordapp.net; media-src 'self'; connect-src 'self' https://hrfvenycjsenjlbpztsd.supabase.co wss://hrfvenycjsenjlbpztsd.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <script>
 (function(){
   function maCache(){ try { return !!JSON.parse(localStorage.getItem("pg_ucet")||"null"); } catch(e){ return false; } }
@@ -49,9 +51,7 @@
 <meta property="og:description" content="Česko-slovenská MILSIM komunita od roku 2020. Replikujeme slovenskú armádu — pridaj sa k nám.">
 <meta property="og:image" content="https://lordtok.github.io/58PhoenixGroup/assets/og-nahlad.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 <style>
 body { margin: 0; background: #242B1C; color: #D8D8C0; font-family: 'Barlow', sans-serif; line-height: 1.6; text-wrap: pretty; }
 a { color: #C2C29E; }
@@ -307,7 +307,7 @@ a:hover { color: #E8E8CC; }
 
 <div style="max-width: 880px; margin: 26px auto 0; padding: 18px 24px 0; border-top: 1px solid rgba(74,90,56,.45); text-align: center;">
   <p style="margin: 0 0 8px; font-size: 12px; line-height: 1.65; color: #8F8F7A;">58. Phoenix Group je fanúšikovská herná komunita (MILSIM) pre hru <strong style="color:#A8A890; font-weight:600;">Arma 3</strong>. Všetok obsah webu — jednotky, hodnosti, výcviky, operácie aj vyznamenania — je čisto herný a fiktívny. Nie sme skutočná vojenská ani polovojenská organizácia a nemáme žiadne prepojenie s ozbrojenými silami, štátnymi inštitúciami ani reálnymi konfliktami. Arma 3 je produkt spoločnosti Bohemia Interactive a.s.; tento fanúšikovský web s ňou nie je oficiálne spojený.</p>
-  <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva sledovacie cookies ani analytické nástroje tretích strán. Nastavenia sa ukladajú iba lokálne vo vašom prehliadači a neopúšťajú vaše zariadenie. Členská zóna bude po spustení používať prihlásenie cez Discord — spracúvané budú len údaje nevyhnutné na správu členstva (meno, ID a role na serveri).</p>
+  <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva cookies na sledovanie, reklamu ani analytiku a nenačítava nič od tretích strán (fonty a knižnice sú uložené priamo na webe). Členská zóna používa prihlásenie cez Discord a spracúva len údaje potrebné na chod klanu. <a href="sukromie.html" style="color:#C2C29E;">Ochrana osobných údajov</a></p>
 </div>
 </footer>
 
@@ -626,7 +626,7 @@ class Component extends DCLogic {
     <p style="margin: 26px 0 0; font-size: 11.5px; color: #6b6b56;">Prihlásenie beží cez Discord — spracúvame len meno, ID a role na serveri.</p>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./assets/vendor/supabase.js"></script>
 <script>
 (function(){
   var klient = window.pgSupaKlient();
@@ -655,16 +655,16 @@ class Component extends DCLogic {
     var h = '<div style="margin-bottom: 22px;">';
     // ZÁLOŽKA hore (zložkový vzhľad)
     h += '<div style="display: inline-flex; align-items: center; gap: 10px; background: #35402A; border: 1px solid #4A5A38; border-bottom: none; border-radius: 6px 6px 0 0; padding: 5px 16px; margin-left: 16px; position: relative; top: 1px;">'
-      + '<span style="font-family: \'Staatliches\', sans-serif; font-size: 15px; letter-spacing: 2px; color: #C2C29E;">' + den + '</span>'
-      + '<span style="font-size: 12.5px; color: #A8A890;">' + cas + '</span>'
+      + '<span style="font-family: \'Staatliches\', sans-serif; font-size: 15px; letter-spacing: 2px; color: #C2C29E;">' + esc(den) + '</span>'
+      + '<span style="font-size: 12.5px; color: #A8A890;">' + esc(cas) + '</span>'
       + '<span style="font-size: 11.5px; letter-spacing: 1px; padding: 1px 8px; border-radius: 3px; border: 1px solid ' + tagBorder + '; color: ' + tagColor + '; background: ' + tagBg + ';">' + typLabel + '</span>'
       + '</div>';
     // TELO karty s ľavým prúžkom
     h += '<div style="background: #2C3522; border: 1px solid #4A5A38; border-left: 4px solid ' + stripe + '; border-radius: 0 6px 6px 6px; padding: 18px 20px;">';
-    h += '<div style="font-family: \'Staatliches\', sans-serif; font-size: 21px; letter-spacing: 1px; color: #C2C29E; margin-bottom: 6px;">' + (m.nazov || "") + '</div>';
-    if (m.brief) h += '<div style="font-size: 14px; color: #D8D8C0; line-height: 1.65; margin-bottom: 10px;">' + m.brief + '</div>';
+    h += '<div style="font-family: \'Staatliches\', sans-serif; font-size: 21px; letter-spacing: 1px; color: #C2C29E; margin-bottom: 6px;">' + esc(m.nazov || "") + '</div>';
+    if (m.brief) h += '<div style="font-size: 14px; color: #D8D8C0; line-height: 1.65; margin-bottom: 10px;">' + esc(m.brief) + '</div>';
     var meta = [];
-    if (m.modpack) meta.push("Modpack: " + m.modpack);
+    if (m.modpack) meta.push("Modpack: " + esc(m.modpack));
     if (typeof m.pocet_prihlasenych === "number") meta.push("Prihlásených: " + m.pocet_prihlasenych);
     if (meta.length) h += '<div style="font-size: 12.5px; color: #8A8A6E; margin-bottom: ' + (archiv ? "0" : "14") + 'px;">' + meta.join("  ·  ") + '</div>';
     // PRIHLASOVACIE TLAČIDLÁ (len kalendár, nie archív)
@@ -672,8 +672,8 @@ class Component extends DCLogic {
       var jePr = m.moj_stav === "prihlaseny";
       var jeOs = m.moj_stav === "ospravedlneny";
       h += '<div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">'
-        + '<button data-akcia="prihlasit" data-misia="' + m.id + '" style="cursor:pointer; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; font-size:14px; padding:8px 18px; border-radius:5px; border:1px solid ' + (jePr ? "#7FB069" : "#4A5A38") + '; background:' + (jePr ? "rgba(127,176,105,.18)" : "transparent") + '; color:' + (jePr ? "#9Fd089" : "#C2C29E") + ';">' + (jePr ? "✓ Zúčastním sa" : "Zúčastním sa") + '</button>'
-        + '<button data-akcia="ospravedlnit" data-misia="' + m.id + '" style="cursor:pointer; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; font-size:14px; padding:8px 18px; border-radius:5px; border:1px solid ' + (jeOs ? "#C9A227" : "#4A5A38") + '; background:' + (jeOs ? "rgba(201,162,39,.16)" : "transparent") + '; color:' + (jeOs ? "#D8B45A" : "#C2C29E") + ';">' + (jeOs ? "✓ Ospravedlnený" : "Ospravedlním sa") + '</button>'
+        + '<button data-akcia="prihlasit" data-misia="' + esc(m.id) + '" style="cursor:pointer; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; font-size:14px; padding:8px 18px; border-radius:5px; border:1px solid ' + (jePr ? "#7FB069" : "#4A5A38") + '; background:' + (jePr ? "rgba(127,176,105,.18)" : "transparent") + '; color:' + (jePr ? "#9Fd089" : "#C2C29E") + ';">' + (jePr ? "✓ Zúčastním sa" : "Zúčastním sa") + '</button>'
+        + '<button data-akcia="ospravedlnit" data-misia="' + esc(m.id) + '" style="cursor:pointer; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; font-size:14px; padding:8px 18px; border-radius:5px; border:1px solid ' + (jeOs ? "#C9A227" : "#4A5A38") + '; background:' + (jeOs ? "rgba(201,162,39,.16)" : "transparent") + '; color:' + (jeOs ? "#D8B45A" : "#C2C29E") + ';">' + (jeOs ? "✓ Ospravedlnený" : "Ospravedlním sa") + '</button>'
         + '</div>';
     }
     h += '</div></div>';
@@ -719,7 +719,7 @@ class Component extends DCLogic {
     var vstupTxt = d ? d.toLocaleDateString("sk-SK", { day:"numeric", month:"numeric", year:"numeric" }) : "—";
     var hd = m.naposledy_hral ? new Date(m.naposledy_hral) : null;
     var hralTxt = hd ? hd.toLocaleDateString("sk-SK", { day:"numeric", month:"numeric", year:"numeric" }) : "—";
-    var avatar = m.avatar_url ? '<img src="' + m.avatar_url + '" alt="" style="width:38px; height:38px; border-radius:50%; object-fit:cover; background:#35402A; justify-self:center;">' : '<div style="width:38px; height:38px; border-radius:50%; background:#35402A; display:grid; place-items:center; font-family:\'Staatliches\',sans-serif; color:#C2C29E; justify-self:center;">' + (m.nick||"?").charAt(0).toUpperCase() + '</div>';
+    var avatar = pgImgUrl(m.avatar_url) ? '<img src="' + esc(pgImgUrl(m.avatar_url)) + '" alt="" style="width:38px; height:38px; border-radius:50%; object-fit:cover; background:#35402A; justify-self:center;">' : '<div style="width:38px; height:38px; border-radius:50%; background:#35402A; display:grid; place-items:center; font-family:\'Staatliches\',sans-serif; color:#C2C29E; justify-self:center;">' + esc((m.nick||"?").charAt(0).toUpperCase()) + '</div>';
     var opravnenie = m.je_velitel
       ? '<span style="font-size:10.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; background:rgba(156,156,116,.2); border:1px solid #9C9C74; color:#C2C29E;">VELITEĽ</span>'
       : '<span style="font-size:12px; color:#A8A890;">člen</span>';
@@ -728,12 +728,12 @@ class Component extends DCLogic {
       opravnenie += '<span title="Neaktívny do ' + nDo + '" style="display:inline-block; margin-top:3px; font-size:10.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; background:rgba(110,76,54,.28); border:1px solid #C2A57B; color:#E8D5B5;">🔕 do ' + nDo + '</span>';
     }
     var spec = (m.vycviky && m.vycviky.length)
-      ? '<span style="font-size:11.5px; letter-spacing:1px; color:#9C9C74; font-family:\'Staatliches\',sans-serif;">' + m.vycviky.map(function(k){ return k.toUpperCase(); }).join(" · ") + '</span>'
+      ? '<span style="font-size:11.5px; letter-spacing:1px; color:#9C9C74; font-family:\'Staatliches\',sans-serif;">' + m.vycviky.map(function(k){ return esc(String(k).toUpperCase()); }).join(" · ") + '</span>'
       : '<span style="font-size:12px; color:#6b6b56;">—</span>';
     var h = '<div style="display:grid; grid-template-columns:44px minmax(120px,1fr) 96px minmax(150px,1.4fr) 92px 112px; gap:14px; align-items:center; padding:10px 20px; border-bottom:1px solid #35402A; font-size:14.5px;">';
     h += avatar;
-    h += '<span style="min-width:0;"><span style="display:block; color:#E8E8CC; font-weight:600; line-height:1.25;">' + (m.nick||"") + '</span>'
-       + '<span style="display:block; font-size:12px; color:#9C9C74; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; margin-top:2px;">' + (m.hodnost || "—") + '</span></span>';
+    h += '<span style="min-width:0;"><span style="display:block; color:#E8E8CC; font-weight:600; line-height:1.25;">' + esc(m.nick||"") + '</span>'
+       + '<span style="display:block; font-size:12px; color:#9C9C74; font-family:\'Staatliches\',sans-serif; letter-spacing:1px; margin-top:2px;">' + esc(m.hodnost || "—") + '</span></span>';
     h += '<span>' + opravnenie + '</span>';
     h += '<span style="min-width:0;">' + spec + '</span>';
     h += '<span style="font-size:13px; color:#A8A890; justify-self:end;">' + vstupTxt + '</span>';
@@ -749,7 +749,7 @@ class Component extends DCLogic {
       if (!v || v.error) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Členov sa nepodarilo načítať.</div>'; return; }
       if (!v.clenovia || !v.clenovia.length) { box.innerHTML = '<div style="border:1px dashed #4A5A38; border-radius:6px; padding:30px; text-align:center; color:#A8A890; font-size:14px;">Zatiaľ žiadni členovia v databáze.</div>'; return; }
       box.innerHTML = v.clenovia.map(clenRiadok).join("");
-    } catch (e) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Chyba: ' + e.message + '</div>'; }
+    } catch (e) { box.innerHTML = '<div style="color:#A8A890; font-size:14px; padding:20px; text-align:center;">Chyba: ' + esc(e.message) + '</div>'; }
   }
   var PG_ODPOCET = null;
   function pgOdpocetText(cielMs) {
@@ -765,14 +765,14 @@ class Component extends DCLogic {
     return ["#35402A","Bez záznamu"];
   }
   function pgDochBox(d, mini) {
-    var h = '<div style="display:flex; align-items:baseline; gap:10px;"><span style="font-family:\'Staatliches\',sans-serif; font-size:40px; color:#C2C29E; line-height:1;">' + d.percento + '&nbsp;%</span><span style="font-size:14px; color:#A8A890;">za posledných ' + d.misie.length + ' misií</span></div>';
+    var h = '<div style="display:flex; align-items:baseline; gap:10px;"><span style="font-family:\'Staatliches\',sans-serif; font-size:40px; color:#C2C29E; line-height:1;">' + esc(d.percento) + '&nbsp;%</span><span style="font-size:14px; color:#A8A890;">za posledných ' + d.misie.length + ' misií</span></div>';
     h += '<div style="display:flex; gap:5px; margin-top:14px;">';
     var vyplnene = d.misie.slice().reverse(); // najstaršia vľavo
     for (var i = 0; i < 12; i++) {
       var m = vyplnene[i - (12 - vyplnene.length)] || null;
       var f = m ? pgStavFarby(m.stav) : ["#2C3522",""];
       var tt = m ? ((m.nazov||"") + " — " + f[1]) : "";
-      h += '<span title="' + tt.replace(/"/g,"&quot;") + '" style="flex:1; height:10px; background:' + f[0] + '; border-radius:2px;"></span>';
+      h += '<span title="' + esc(tt) + '" style="flex:1; height:10px; background:' + f[0] + '; border-radius:2px;"></span>';
     }
     h += '</div>';
     if (mini) {
@@ -795,8 +795,8 @@ class Component extends DCLogic {
       var dz = d.toLocaleDateString("sk-SK",{weekday:"short",day:"numeric",month:"numeric"}) + " " + d.toLocaleTimeString("sk-SK",{hour:"2-digit",minute:"2-digit"});
       var os = p.stav === "ospravedlneny";
       return '<div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; padding:9px 0; border-bottom:1px solid #35402A;">'
-        + '<span style="font-family:\'Staatliches\',sans-serif; font-size:15px; letter-spacing:1.5px; color:#C2C29E; white-space:nowrap;">' + dz + '</span>'
-        + '<span style="font-size:14px; color:#D8D8C0; flex:1; min-width:120px;">' + (p.nazov||"") + '</span>'
+        + '<span style="font-family:\'Staatliches\',sans-serif; font-size:15px; letter-spacing:1.5px; color:#C2C29E; white-space:nowrap;">' + esc(dz) + '</span>'
+        + '<span style="font-size:14px; color:#D8D8C0; flex:1; min-width:120px;">' + esc(p.nazov||"") + '</span>'
         + '<span style="font-size:11.5px; letter-spacing:1px; padding:1px 8px; border-radius:999px; border:1px solid ' + (os?"#C9A227":"#7FB069") + '; color:' + (os?"#D8B45A":"#9Fd089") + ';">' + (os?"Ospravedlnený":"Prihlásený") + '</span></div>';
     }).join("");
   }
@@ -824,11 +824,11 @@ class Component extends DCLogic {
         PG_ODPOCET = nd.getTime();
         var jePr = nb.moj_stav === "prihlaseny", jeOs = nb.moj_stav === "ospravedlneny";
         bm.innerHTML = '<div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">'
-          + '<span style="font-family:\'Staatliches\',sans-serif; font-size:14px; letter-spacing:4px; color:#8A5F44;">Najbližšia misia · ' + dz + '</span>'
+          + '<span style="font-family:\'Staatliches\',sans-serif; font-size:14px; letter-spacing:4px; color:#8A5F44;">Najbližšia misia · ' + esc(dz) + '</span>'
           + '<span id="pg-countdown" style="font-family:\'Staatliches\',sans-serif; font-size:16px; letter-spacing:2px; color:#E8E8CC; background:#35402A; border:1px solid #9C9C74; border-radius:4px; padding:2px 12px;">' + pgOdpocetText(PG_ODPOCET) + '</span></div>'
-          + '<h1 style="font-family:\'Staatliches\',sans-serif; font-weight:400; letter-spacing:2px; color:#C2C29E; font-size:clamp(28px,4vw,40px); margin:6px 0 0;">' + (nb.nazov||"") + '</h1>'
-          + (nb.brief ? '<p style="max-width:620px; margin:12px 0 0; font-size:15.5px;">' + nb.brief + '</p>' : '')
-          + (nb.modpack ? '<p style="margin:8px 0 0; font-size:13px; color:#A8A890;">Modpack: ' + nb.modpack + ' · Prihlásených: ' + nb.pocet_prihlasenych + '</p>' : '')
+          + '<h1 style="font-family:\'Staatliches\',sans-serif; font-weight:400; letter-spacing:2px; color:#C2C29E; font-size:clamp(28px,4vw,40px); margin:6px 0 0;">' + esc(nb.nazov||"") + '</h1>'
+          + (nb.brief ? '<p style="max-width:620px; margin:12px 0 0; font-size:15.5px;">' + esc(nb.brief) + '</p>' : '')
+          + (nb.modpack ? '<p style="margin:8px 0 0; font-size:13px; color:#A8A890;">Modpack: ' + esc(nb.modpack) + ' · Prihlásených: ' + esc(nb.pocet_prihlasenych) + '</p>' : '')
           + '<div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:20px;">'
           + '<button data-nb-akcia="prihlasit" style="padding:10px 24px; font-family:\'Staatliches\',sans-serif; font-size:16px; letter-spacing:2px; border-radius:4px; cursor:pointer; color:' + (jePr?"#242B1C":"#242B1C") + '; background:' + (jePr?"#C2C29E":"#9C9C74") + '; border:2px solid #C2C29E;">' + (jePr?"✓ Prihlásený":"Prihlásiť účasť") + '</button>'
           + '<button data-nb-akcia="ospravedlnit" style="padding:10px 24px; font-family:\'Staatliches\',sans-serif; font-size:16px; letter-spacing:2px; border-radius:4px; cursor:pointer; color:' + (jeOs?"#242B1C":"#C2C29E") + '; background:' + (jeOs?"#C9A227":"transparent") + '; border:2px solid ' + (jeOs?"#C9A227":"#9C9C74") + ';">' + (jeOs?"✓ Ospravedlnený":"Ospravedlniť sa") + '</button></div>';
@@ -891,10 +891,10 @@ class Component extends DCLogic {
           var d = new Date(o.created_at);
           var dz = d.toLocaleDateString("sk-SK",{day:"numeric",month:"numeric",year:"numeric"});
           return '<div style="border-bottom:1px solid #35402A; padding:10px 0;"><div style="display:flex; gap:12px; align-items:flex-start;">'
-            + '<div style="flex:1; min-width:0;"><div style="font-size:15px; color:#C2C29E; font-weight:600;">' + (o.titulok||"") + '</div>'
-            + (o.text ? '<div style="font-size:13.5px; color:#A8A890; margin-top:2px;">' + o.text + '</div>' : '')
-            + '<div style="font-size:11.5px; color:#8A5F44; margin-top:4px;">' + dz + '</div></div>'
-            + (jeVel ? '<button data-pg-oznam-zmaz="' + o.id + '" title="Zmazať oznam" style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:#35402A; border:1px solid #7A3B2E; border-radius:4px; color:#C98B7A; cursor:pointer; font-size:12.5px; flex-shrink:0;">🗑</button>' : '')
+            + '<div style="flex:1; min-width:0;"><div style="font-size:15px; color:#C2C29E; font-weight:600;">' + esc(o.titulok||"") + '</div>'
+            + (o.text ? '<div style="font-size:13.5px; color:#A8A890; margin-top:2px;">' + esc(o.text) + '</div>' : '')
+            + '<div style="font-size:11.5px; color:#8A5F44; margin-top:4px;">' + esc(dz) + '</div></div>'
+            + (jeVel ? '<button data-pg-oznam-zmaz="' + esc(o.id) + '" title="Zmazať oznam" style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:#35402A; border:1px solid #7A3B2E; border-radius:4px; color:#C98B7A; cursor:pointer; font-size:12.5px; flex-shrink:0;">🗑</button>' : '')
             + '</div></div>';
         }).join("") + '</div>';
         oz.querySelectorAll("[data-pg-oznam-zmaz]").forEach(function(b){
@@ -915,7 +915,7 @@ class Component extends DCLogic {
       var vycZ = v.vycviky || [];
       if (!vycZ.length) pz2.innerHTML = '<div style="color:#A8A890; font-size:14px;">Zatiaľ žiadne zameranie — získaš ho absolvovaním výcviku.</div>';
       else pz2.innerHTML = '<div style="display:flex; gap:8px; flex-wrap:wrap;">' + vycZ.map(function(x){
-        return '<span style="font-size:13px; letter-spacing:1px; padding:4px 12px; border:1px solid #4A6741; border-radius:3px; color:#A8C29E; background:rgba(74,103,65,.25);">' + (PG_VYC_Z[x.kod] || x.kod.toUpperCase()) + '</span>';
+        return '<span style="font-size:13px; letter-spacing:1px; padding:4px 12px; border:1px solid #4A6741; border-radius:3px; color:#A8C29E; background:rgba(74,103,65,.25);">' + esc(PG_VYC_Z[x.kod] || String(x.kod).toUpperCase()) + '</span>';
       }).join("") + '</div>';
     }
     // NEAKTIVITA
@@ -961,8 +961,8 @@ class Component extends DCLogic {
     var px = document.getElementById("pg-profil-xp");
     if (px && v.xp) {
       var xph = '<div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;">'
-        + '<span style="font-family:\'Staatliches\',sans-serif; font-size:24px; letter-spacing:2px; color:#C2C29E;">' + v.xp.celkom + ' XP</span>';
-      if (v.xp.dalsi) xph += '<span style="font-size:14px; color:#A8A890;">do hodnosti ' + v.xp.dalsi.hodnost + ' chýba ' + v.xp.dalsi.chyba + ' XP</span>';
+        + '<span style="font-family:\'Staatliches\',sans-serif; font-size:24px; letter-spacing:2px; color:#C2C29E;">' + esc(v.xp.celkom) + ' XP</span>';
+      if (v.xp.dalsi) xph += '<span style="font-size:14px; color:#A8A890;">do hodnosti ' + esc(v.xp.dalsi.hodnost) + ' chýba ' + esc(v.xp.dalsi.chyba) + ' XP</span>';
       else xph += '<span style="font-size:14px; color:#A8A890;">najvyššia hodnosť</span>';
       xph += '</div>';
       if (v.xp.dalsi) {
@@ -971,7 +971,7 @@ class Component extends DCLogic {
         var pct = Math.max(0, Math.min(100, Math.round(((v.xp.celkom - zaklad) / rozsah) * 100)));
         xph += '<div style="margin-top:12px; height:12px; border-radius:6px; background:#242B1C; border:1px solid #4A5A38; overflow:hidden;"><div style="width:' + pct + '%; height:100%; background:linear-gradient(to right, #4A6741, #9C9C74);"></div></div>';
       }
-      xph += '<p style="font-size:12.5px; color:#A8A890; margin:10px 0 0;">Účasť na misii +' + v.xp.sadzba_ucast + ' XP · splnený výcvik +' + v.xp.sadzba_vycvik + ' XP' + (v.xp.bonus ? ' · bonus ' + v.xp.bonus + ' XP' : '') + '. Po dosiahnutí prahu ťa systém navrhne veliteľovi na povýšenie.</p>';
+      xph += '<p style="font-size:12.5px; color:#A8A890; margin:10px 0 0;">Účasť na misii +' + esc(v.xp.sadzba_ucast) + ' XP · splnený výcvik +' + esc(v.xp.sadzba_vycvik) + ' XP' + (v.xp.bonus ? ' · bonus ' + esc(v.xp.bonus) + ' XP' : '') + '. Po dosiahnutí prahu ťa systém navrhne veliteľovi na povýšenie.</p>';
       px.innerHTML = xph;
     }
     // HISTÓRIA POVÝŠENÍ
@@ -1005,12 +1005,12 @@ class Component extends DCLogic {
       if (!vyc.length) po.innerHTML = '<div style="color:#A8A890; font-size:14px;">Zatiaľ žiadne kvalifikácie — absolvuj výcvik.</div>';
       else {
         po.innerHTML = '<div style="display:flex; gap:20px; flex-wrap:wrap;">' + vyc.map(function(x){
-          var kod = x.kod, ur = (x.uroven || "bronz");
+          var kod = String(x.kod || "").replace(/[^a-z0-9_-]/gi, ""), ur = String(x.uroven || "bronz").replace(/[^a-z0-9_-]/gi, "");
           var nazov = PG_VYC[kod] || kod.toUpperCase();
           return '<div style="display:grid; justify-items:center; gap:8px; width:100px;">'
-            + '<img src="assets/odznaky/odznak-' + kod + '-' + ur + '.png" alt="' + nazov + '" style="width:84px; height:84px; object-fit:contain;" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'grid\';">'
+            + '<img src="assets/odznaky/odznak-' + kod + '-' + ur + '.png" alt="' + esc(nazov) + '" style="width:84px; height:84px; object-fit:contain;" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'grid\';">'
             + '<div style="display:none; width:84px; height:84px; place-items:center; border:1px solid #4A5A38; border-radius:8px; font-family:\'Staatliches\',sans-serif; font-size:20px; color:#C2C29E;">' + kod.toUpperCase() + '</div>'
-            + '<div style="font-size:12px; color:#C2C29E; text-align:center; line-height:1.3;">' + nazov + '<br><span style="color:#9C9C74; font-size:11px;">' + ur + '</span></div></div>';
+            + '<div style="font-size:12px; color:#C2C29E; text-align:center; line-height:1.3;">' + esc(nazov) + '<br><span style="color:#9C9C74; font-size:11px;">' + ur + '</span></div></div>';
         }).join("") + '</div>'
         + '<p style="font-size:12.5px; color:#A8A890; margin:16px 0 0;">Odznaky podľa absolvovaných výcvikov (bronz / striebro / zlato)</p>';
       }
@@ -1022,7 +1022,7 @@ class Component extends DCLogic {
       else pz.innerHTML = '<div style="display:grid; gap:0;">' + v.sluzobny_zaznam.map(function(z){
         var d = new Date(z.datum);
         var dz = d.toLocaleDateString("sk-SK",{month:"2-digit",year:"numeric"});
-        return '<div style="display:grid; grid-template-columns:92px minmax(0,1fr); gap:12px; padding:10px 0; border-bottom:1px solid #35402A; font-size:14.5px;"><span style="color:#9C9C74; font-family:\'Staatliches\',sans-serif; letter-spacing:1px;">' + dz + '</span><span>Účasť — ' + (z.nazov||"") + '</span></div>';
+        return '<div style="display:grid; grid-template-columns:92px minmax(0,1fr); gap:12px; padding:10px 0; border-bottom:1px solid #35402A; font-size:14.5px;"><span style="color:#9C9C74; font-family:\'Staatliches\',sans-serif; letter-spacing:1px;">' + esc(dz) + '</span><span>Účasť — ' + esc(z.nazov||"") + '</span></div>';
       }).join("") + '</div>';
     }
   }
@@ -1046,7 +1046,7 @@ class Component extends DCLogic {
       if (elN) elN.textContent = "„" + (p.nick || "") + "\u201c";
       var elA = document.getElementById("pg-profil-avatar");
       if (elA) {
-        if (p.avatar_url) { elA.innerHTML = '<img src="' + p.avatar_url + '" alt="" style="width:100%;height:100%;object-fit:cover;">'; }
+        if (pgImgUrl(p.avatar_url)) { elA.innerHTML = '<img src="' + esc(pgImgUrl(p.avatar_url)) + '" alt="" style="width:100%;height:100%;object-fit:cover;">'; }
         else { elA.textContent = (p.nick || "?").charAt(0).toUpperCase(); }
       }
       var elV = document.getElementById("pg-profil-vstup");

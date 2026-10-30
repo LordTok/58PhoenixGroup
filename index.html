@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://cdn.discordapp.com https://media.discordapp.net; media-src 'self'; connect-src 'self' https://hrfvenycjsenjlbpztsd.supabase.co wss://hrfvenycjsenjlbpztsd.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <script>
 (function(){
   function maCache(){ try { return !!JSON.parse(localStorage.getItem("pg_ucet")||"null"); } catch(e){ return false; } }
@@ -48,9 +50,7 @@
 <meta property="og:description" content="Česko-slovenská MILSIM komunita od roku 2020. Replikujeme slovenskú armádu — pridaj sa k nám.">
 <meta property="og:image" content="https://lordtok.github.io/58PhoenixGroup/assets/og-nahlad.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 <style>
 body { margin: 0; background: #242B1C; color: #D8D8C0; font-family: 'Barlow', sans-serif; line-height: 1.6; text-wrap: pretty; }
 a { color: #C2C29E; }
@@ -370,7 +370,7 @@ img { max-width: 100%; }
 
 <div style="max-width: 880px; margin: 26px auto 0; padding: 18px 24px 0; border-top: 1px solid rgba(74,90,56,.45); text-align: center;">
   <p style="margin: 0 0 8px; font-size: 12px; line-height: 1.65; color: #8F8F7A;">58. Phoenix Group je fanúšikovská herná komunita (MILSIM) pre hru <strong style="color:#A8A890; font-weight:600;">Arma 3</strong>. Všetok obsah webu — jednotky, hodnosti, výcviky, operácie aj vyznamenania — je čisto herný a fiktívny. Nie sme skutočná vojenská ani polovojenská organizácia a nemáme žiadne prepojenie s ozbrojenými silami, štátnymi inštitúciami ani reálnymi konfliktami. Arma 3 je produkt spoločnosti Bohemia Interactive a.s.; tento fanúšikovský web s ňou nie je oficiálne spojený.</p>
-  <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva sledovacie cookies ani analytické nástroje tretích strán. Nastavenia sa ukladajú iba lokálne vo vašom prehliadači a neopúšťajú vaše zariadenie. Členská zóna bude po spustení používať prihlásenie cez Discord — spracúvané budú len údaje nevyhnutné na správu členstva (meno, ID a role na serveri).</p>
+  <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva cookies na sledovanie, reklamu ani analytiku a nenačítava nič od tretích strán (fonty a knižnice sú uložené priamo na webe). Členská zóna používa prihlásenie cez Discord a spracúva len údaje potrebné na chod klanu. <a href="sukromie.html" style="color:#C2C29E;">Ochrana osobných údajov</a></p>
 </div>
 </footer>
 </x-dc>
@@ -559,7 +559,7 @@ class Component extends DCLogic {
   }).catch(function(){ MISIA = null; });
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./assets/vendor/supabase.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://cdn.discordapp.com https://media.discordapp.net; media-src 'self'; connect-src 'self' https://hrfvenycjsenjlbpztsd.supabase.co wss://hrfvenycjsenjlbpztsd.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script>
+(function(){
+  function maCache(){ try { return !!JSON.parse(localStorage.getItem("pg_ucet")||"null"); } catch(e){ return false; } }
+  function nastav(){ if(maCache()){ if(document.documentElement.className.indexOf("pg-auth")<0) document.documentElement.className+=" pg-auth"; } else { document.documentElement.classList.remove("pg-auth"); } }
+  nastav();
+  // vytvor banner hneď ako sa dá, nečakaj na skript na konci stránky
+  function skusChip(){
+    if (!maCache()) return;
+    if (typeof window.pgNavChip === "function" && document.querySelector("nav") && !document.getElementById("pg-nav-wrap")) {
+      try { window.pgNavChip(); } catch(e){}
+    }
+  }
+  var raf = 0, pokusy = 0;
+  function slucka(){
+    skusChip();
+    if (document.getElementById("pg-nav-wrap") || pokusy++ > 120) { cancelAnimationFrame(raf); return; }
+    raf = requestAnimationFrame(slucka);
+  }
+  function start(){ nastav(); slucka(); }
+  if (window.addEventListener) window.addEventListener("pagereveal", start);
+  window.addEventListener("pageshow", start);
+  // spusti aj hneď (pre prípad že nav už je)
+  slucka();
+})();
+</script>
+<style>html.pg-auth nav a[href="clenska-zona.html"]:not(#pg-nav-chip){display:none !important;}html.pg-auth #pg-nav-wrap{display:inline-block !important;}#pg-nav-chip{visibility:visible !important;}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ochrana osobných údajov — 58. Phoenix Group</title>
+<style>@view-transition { navigation: none; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .18s; }</style>
+<link rel="prefetch" href="clenska-zona.html">
+<link rel="prefetch" href="index.html">
+<link rel="prefetch" href="kronika.html">
+
+<meta name="description" content="Ochrana osobných údajov na webe 58. Phoenix Group — aké údaje spracúvame, prečo a aké máš práva.">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ochrana osobných údajov — 58. Phoenix Group">
+<meta property="og:description" content="Aké údaje web 58. Phoenix Group spracúva a aké máš práva.">
+<meta property="og:image" content="https://lordtok.github.io/58PhoenixGroup/assets/og-nahlad.jpg">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+  :root {
+    --oliva: #242B1C; --oliva-svetla: #35402A; --oliva-panel: #2C3522;
+    --khaki: #9C9C74; --khaki-svetla: #C2C29E; --hneda: #8A5F44;
+    --text: #D8D8C0; --text-tlm: #A8A890;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--oliva); color: var(--text); font-family: 'Barlow', sans-serif; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Staatliches', sans-serif; letter-spacing: 3px; color: var(--khaki-svetla); font-weight: 400; }
+  a { color: var(--khaki-svetla); }
+  .sirka { box-sizing: content-box; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(36,43,28,.94); backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--oliva-svetla);
+  }
+  .nav-vnutro { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1120px; margin: 0 auto; }
+  .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .nav-logo img { width: 38px; height: 38px; }
+  .nav-logo span { font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--khaki-svetla); }
+  .nav-linky { display: flex; gap: 22px; flex-wrap: wrap; }
+  .nav-linky a { font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: var(--khaki); }
+  .nav-linky a:hover, .nav-linky a.tu { color: var(--khaki-svetla); }
+  @media (max-width: 640px) { .nav-linky { gap: 14px; } .nav-linky a { font-size: 14px; } }
+
+  header.podpora-hero {
+    background: linear-gradient(rgba(28,34,22,.85), rgba(36,43,28,.96)), url('assets/gal-prieskum.jpg') center 40% / cover no-repeat;
+    border-bottom: 1px solid var(--oliva-svetla);
+    text-align: center; padding: 76px 24px 84px;
+  }
+  .podpora-hero .eyebrow { font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: var(--hneda); }
+  .podpora-hero h1 { font-size: clamp(36px, 6.5vw, 60px); margin-top: 6px; }
+  .podpora-hero p { max-width: 620px; margin: 18px auto 0; font-size: 17px; }
+
+  section { padding: 68px 0; }
+  section[id] { scroll-margin-top: 118px; }
+  .sekcia-hlava { margin-bottom: 34px; }
+  .sekcia-hlava .eyebrow { font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 5px; color: var(--hneda); }
+  .sekcia-hlava h2 { font-size: clamp(28px, 4.5vw, 40px); margin-top: 4px; }
+  .sekcia-hlava p { max-width: 620px; margin-top: 12px; font-size: 15px; color: var(--text-tlm); }
+
+  .kroky { counter-reset: krok; display: grid; gap: 18px; max-width: 780px; }
+  .krok {
+    background: var(--oliva-panel); border: 1px solid var(--khaki); border-radius: 6px;
+    padding: 22px 24px 22px 78px; position: relative;
+  }
+  .krok::before {
+    counter-increment: krok; content: counter(krok, decimal-leading-zero);
+    position: absolute; left: 22px; top: 20px;
+    font-family: 'Staatliches', sans-serif; font-size: 30px; color: var(--hneda);
+  }
+  .krok h3 { font-size: 21px; letter-spacing: 2px; }
+  .krok p { margin-top: 8px; font-size: 15px; }
+  .krok .tip { margin-top: 10px; font-size: 14px; color: var(--text-tlm); border-left: 3px solid var(--hneda); padding-left: 12px; }
+  .krok a.tlacitko {
+    display: inline-block; margin-top: 12px; padding: 9px 18px;
+    font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px;
+    color: var(--oliva); background: var(--khaki); border-radius: 4px; text-decoration: none;
+  }
+  .krok a.tlacitko:hover { background: var(--khaki-svetla); }
+
+  #problemy { background: var(--oliva-panel); border-top: 1px solid var(--oliva-svetla); border-bottom: 1px solid var(--oliva-svetla); }
+  .problem { max-width: 780px; border: 1px solid var(--khaki); border-radius: 6px; background: var(--oliva-svetla); margin-bottom: 12px; overflow: hidden; }
+  .problem summary {
+    cursor: pointer; list-style: none; padding: 16px 20px;
+    font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 2px; color: var(--khaki-svetla);
+  }
+  .problem summary::-webkit-details-marker { display: none; }
+  .problem summary::before { content: '▸ '; color: var(--hneda); }
+  .problem[open] summary::before { content: '▾ '; }
+  .problem .riesenie { padding: 0 20px 18px; font-size: 15px; }
+  .problem .riesenie code {
+    background: var(--oliva); border: 1px solid var(--khaki); border-radius: 3px;
+    padding: 1px 6px; font-size: 13.5px; color: var(--khaki-svetla);
+  }
+
+  .pravidla { max-width: 780px; }
+  .pravidla li {
+    list-style: none; padding: 14px 18px 14px 42px; position: relative;
+    background: var(--oliva-panel); border: 1px solid var(--khaki); border-radius: 6px;
+    margin-bottom: 10px; font-size: 15.5px;
+  }
+  .pravidla li::before {
+    content: '▸'; position: absolute; left: 18px; top: 14px;
+    color: var(--hneda); font-family: 'Staatliches', sans-serif; font-size: 18px;
+  }
+  .pravidla li strong { color: var(--khaki-svetla); }
+  .navrh-stitok {
+    display: inline-block; margin-top: 14px; padding: 2px 10px;
+    font-family: 'Staatliches', sans-serif; font-size: 12px; letter-spacing: 2px;
+    color: var(--text-tlm); border: 1px dashed var(--text-tlm); border-radius: 3px;
+  }
+
+  .pomoc {
+    max-width: 780px; margin-top: 34px; padding: 22px 24px;
+    border: 1px solid var(--hneda); border-radius: 8px;
+    background: linear-gradient(135deg, var(--oliva-svetla), var(--oliva-panel));
+  }
+  .pomoc h3 { font-size: 20px; letter-spacing: 2px; }
+  .pomoc p { margin-top: 8px; font-size: 15px; }
+
+  footer { background: #1C2216; border-top: 1px solid var(--oliva-svetla); padding: 36px 0; text-align: center; }
+  .paticka-linky { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; }
+  .paticka-linky a { font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: var(--khaki); }
+  .paticka-linky a:hover { color: var(--khaki-svetla); }
+  .paticka-copy { margin-top: 18px; font-size: 13px; letter-spacing: 1px; color: var(--text-tlm); }
+</style>
+<script src="./config.js"></script>
+<script src="./pg-core.js"></script>
+</head>
+<body>
+
+<nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(36,43,28,.94); backdrop-filter: blur(6px); border-bottom: 1px solid #35402A;">
+  <div style="box-sizing: content-box; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 24px; max-width: 1120px; margin: 0 auto;">
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <img src="assets/phoenix58.png" alt="" style="width: 38px; height: 38px; display: block;">
+      <span style="font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 2px; color: #C2C29E;">58. Phoenix Group</span>
+    </a>
+    <div style="display: flex; align-items: center; gap: 22px; flex-wrap: wrap;">
+      <a href="index.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Domov</a>
+      <a href="kronika.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #9C9C74;" style-hover="color: #C2C29E;">Kampaň</a>
+      <a href="podpora.html" style="font-family: 'Staatliches', sans-serif; font-size: 16px; letter-spacing: 2px; text-decoration: none; color: #C2C29E;" style-hover="color: #C2C29E;">Podpora</a>
+      <a href="clenska-zona.html" style="font-family: 'Staatliches', sans-serif; font-size: 15px; letter-spacing: 2px; text-decoration: none; color: #C2C29E; border: 1px solid #9C9C74; padding: 7px 14px; border-radius: 4px;" style-hover="background: #35402A; border-color: #C2C29E;">Prihlásiť</a>
+      <a href="admin.html" style="font-family: 'Staatliches', sans-serif; font-size: 13px; letter-spacing: 2px; text-decoration: none; color: #8A5F44; border: 1px solid #6E4C36; padding: 6px 12px; border-radius: 4px;" title="Veliteľské rozhranie">⚙ Admin</a>
+    </div>
+  </div>
+</nav>
+
+<header class="podpora-hero">
+  <div class="eyebrow">Právne informácie</div>
+  <h1>Ochrana osobných údajov</h1>
+  <p>Aké údaje web 58. Phoenix Group spracúva, prečo, kde sú uložené a aké máš práva. Bez kľučiek, v skratke.</p>
+</header>
+
+<section>
+  <div class="sirka">
+    <ul class="pravidla">
+      <li><strong>Kto údaje spracúva (prevádzkovateľ):</strong> 58. Phoenix Group — neformálna herná komunita pre Arma 3. Za web a údaje zodpovedá správca webu, Discord: <strong>lord_mantok</strong>. Napíš mu súkromnú správu na Discorde alebo cez náš <a href="https://discord.gg/2sQKH3RkG9">Discord server</a>.</li>
+      <li><strong>Verejná časť webu:</strong> pri bežnom prezeraní o tebe nič neukladáme. Web nepoužíva analytiku, reklamu ani sledovacie cookies a nenačítava fonty ani skripty od tretích strán. Hosting zabezpečuje GitHub Pages, ktorý ako každý server technicky zaznamenáva IP adresy návštevníkov kvôli prevádzke a bezpečnosti.</li>
+      <li><strong>Členská zóna — aké údaje:</strong> po prihlásení cez Discord spracúvame tvoje Discord ID, prezývku, avatar, dátum vstupu na náš Discord server a tvoje klanové role. K tomu údaje z činnosti v klane: hodnosť, XP, absolvované výcviky, prihlásenia na misie, dochádzku, nahlásenú neaktivitu (vrátane dôvodu, ak ho uvedieš) a záznam úprav, ktoré vykonalo vedenie. E-mail od Discordu nežiadame.</li>
+      <li><strong>Prečo a na akom základe:</strong> aby klan fungoval — plánovanie misií, evidencia výcvikov a postupu v hodnostiach, prehľad dochádzky. Právnym základom je náš oprávnený záujem na organizácii komunity, do ktorej si vstúpil (čl. 6 ods. 1 písm. f) GDPR).</li>
+      <li><strong>Kto ďalší má k údajom prístup:</strong> členovia vidia roster (prezývka, avatar, hodnosť, zamerania, dátum vstupu, naposledy hral). Vedenie klanu vidí aj dochádzku a neaktivitu. Technicky údaje uchováva <strong>Supabase</strong> (databáza, dátové centrum vo Frankfurte, EÚ) a prihlásenie zabezpečuje <strong>Discord</strong>. Niektoré akcie (povýšenia, oznamy, neaktivita) sa zverejňujú aj v kanáloch nášho Discord servera. Údaje nepredávame ani neposkytujeme nikomu ďalšiemu.</li>
+      <li><strong>Ako dlho:</strong> počas tvojho členstva v klane. Po odchode z klanu ťa odstránime z rostra a na požiadanie tvoje údaje bez zbytočného odkladu vymažeme úplne. Bez žiadosti robíme ručné čistenie údajov bývalých členov najmenej raz ročne. Archív odohraných misií si môže ponechať len súhrnné informácie bez tvojich osobných údajov.</li>
+      <li><strong>Úložisko v prehliadači:</strong> web si do localStorage tvojho prehliadača ukladá prihlásenie (reláciu) a niekoľko nastavení zobrazenia. Je to nevyhnutné na fungovanie prihlásenia, nikam sa to neodosiela a zmaže sa odhlásením alebo vymazaním údajov stránky v prehliadači.</li>
+      <li><strong>Tvoje práva:</strong> máš právo na prístup k svojim údajom, ich opravu, vymazanie, obmedzenie spracúvania, prenosnosť a právo namietať proti spracúvaniu. Stačí napísať správcovi (kontakt vyššie). Ak máš pocit, že s údajmi zaobchádzame nesprávne, môžeš podať sťažnosť dozornému orgánu: na Slovensku <a href="https://dataprotection.gov.sk">Úrad na ochranu osobných údajov SR</a>, v Česku <a href="https://uoou.gov.cz">Úřad pro ochranu osobních údajů</a>.</li>
+    </ul>
+    <p class="navrh-stitok">Platné od 15. 10. 2026</p>
+  </div>
+</section>
+
+<footer>
+  <div class="paticka-linky">
+    <a href="index.html">Domov</a>
+    <a href="kronika.html">Kronika</a>
+    <a href="https://discord.gg/2sQKH3RkG9">Discord</a>
+    <a href="https://www.instagram.com/58_phoenix_group/">Instagram</a>
+  </div>
+  <p class="paticka-copy">© 2020–2026 · 58. Phoenix Group · Ochrana osobných údajov</p>
+
+<div style="max-width: 880px; margin: 26px auto 0; padding: 18px 24px 0; border-top: 1px solid rgba(74,90,56,.45); text-align: center;">
+  <p style="margin: 0 0 8px; font-size: 12px; line-height: 1.65; color: #8F8F7A;">58. Phoenix Group je fanúšikovská herná komunita (MILSIM) pre hru <strong style="color:#A8A890; font-weight:600;">Arma 3</strong>. Všetok obsah webu — jednotky, hodnosti, výcviky, operácie aj vyznamenania — je čisto herný a fiktívny. Nie sme skutočná vojenská ani polovojenská organizácia a nemáme žiadne prepojenie s ozbrojenými silami, štátnymi inštitúciami ani reálnymi konfliktami. Arma 3 je produkt spoločnosti Bohemia Interactive a.s.; tento fanúšikovský web s ňou nie je oficiálne spojený.</p>
+  <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva cookies na sledovanie, reklamu ani analytiku a nenačítava nič od tretích strán (fonty a knižnice sú uložené priamo na webe). Členská zóna používa prihlásenie cez Discord a spracúva len údaje potrebné na chod klanu. <a href="sukromie.html" style="color:#C2C29E;">Ochrana osobných údajov</a></p>
+</div>
+</footer>
+
+<script src="./assets/vendor/supabase.js"></script>
+
+</body>
+</html>

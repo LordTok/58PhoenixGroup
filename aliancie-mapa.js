@@ -110,10 +110,18 @@ button:focus-visible{outline:2px solid #C2C29E;outline-offset:2px}
     this.addEventListener('keydown', e => { if (e.key === 'Escape') zrus(); });
 
     (async () => {
+      // knižnice sú uložené lokálne v assets/vendor (žiadne CDN tretích strán)
+      const nacitajSkript = (src, glob) => window[glob] ? Promise.resolve(window[glob]) : new Promise((ok, zle) => {
+        const s = document.createElement('script');
+        s.src = new URL(src, document.baseURI).href;
+        s.onload = () => window[glob] ? ok(window[glob]) : zle(new Error(glob));
+        s.onerror = zle;
+        document.head.appendChild(s);
+      });
       const [d3m, topom, worldm] = await Promise.all([
-        import('https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm'),
-        import('https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm'),
-        import('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-50m.json/+esm')
+        nacitajSkript('assets/vendor/d3.min.js', 'd3'),
+        nacitajSkript('assets/vendor/topojson-client.min.js', 'topojson'),
+        fetch(new URL('assets/vendor/countries-50m.json', document.baseURI).href).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(j => ({ default: j }))
       ]).catch(() => [null, null, null]);
       if (!d3m || !topom || !worldm) { $('loading').textContent = 'Mapu sa nepodarilo načítať.'; return; }
       $('loading').remove();

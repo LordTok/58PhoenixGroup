@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://cdn.discordapp.com https://media.discordapp.net; media-src 'self'; connect-src 'self' https://hrfvenycjsenjlbpztsd.supabase.co wss://hrfvenycjsenjlbpztsd.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <script>
 (function(){
   function maCache(){ try { return !!JSON.parse(localStorage.getItem("pg_ucet")||"null"); } catch(e){ return false; } }
@@ -40,9 +42,7 @@
 <link rel="prefetch" href="index.html">
 <link rel="prefetch" href="kronika.html">
 <link rel="prefetch" href="clenska-zona.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 <style>
   :root {
     --oliva: #242B1C; --oliva-svetla: #35402A; --oliva-panel: #2C3522;
@@ -195,7 +195,7 @@
     </div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./assets/vendor/supabase.js"></script>
 <script>
 (function(){
   function kes(){ try { return JSON.parse(localStorage.getItem("pg_ucet")||"null"); } catch(e){ return null; } }
@@ -401,7 +401,7 @@
 
 <div style="max-width: 880px; margin: 26px auto 0; padding: 18px 24px 0; border-top: 1px solid rgba(74,90,56,.45); text-align: center;">
   <p style="margin: 0 0 8px; font-size: 12px; line-height: 1.65; color: #8F8F7A;">58. Phoenix Group je fanúšikovská herná komunita (MILSIM) pre hru <strong style="color:#A8A890; font-weight:600;">Arma 3</strong>. Všetok obsah webu — jednotky, hodnosti, výcviky, operácie aj vyznamenania — je čisto herný a fiktívny. Nie sme skutočná vojenská ani polovojenská organizácia a nemáme žiadne prepojenie s ozbrojenými silami, štátnymi inštitúciami ani reálnymi konfliktami. Arma 3 je produkt spoločnosti Bohemia Interactive a.s.; tento fanúšikovský web s ňou nie je oficiálne spojený.</p>
-  <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva sledovacie cookies ani analytické nástroje tretích strán. Nastavenia sa ukladajú iba lokálne vo vašom prehliadači a neopúšťajú vaše zariadenie. Členská zóna bude po spustení používať prihlásenie cez Discord — spracúvané budú len údaje nevyhnutné na správu členstva (meno, ID a role na serveri).</p>
+  <p style="margin: 0; font-size: 12px; line-height: 1.65; color: #8F8F7A;"><strong style="color:#A8A890; font-weight:600;">Súkromie:</strong> web nepoužíva cookies na sledovanie, reklamu ani analytiku a nenačítava nič od tretích strán (fonty a knižnice sú uložené priamo na webe). Členská zóna používa prihlásenie cez Discord a spracúva len údaje potrebné na chod klanu. <a href="sukromie.html" style="color:#C2C29E;">Ochrana osobných údajov</a></p>
 </div>
 </footer>
 
@@ -443,7 +443,7 @@
       var hi = HOD_IMG[HODNOSTI.indexOf(c.hod)] || "01-vojak-1-stupna";
       var el = document.createElement("div");
       el.className = "clen-polozka" + (id === aktivny ? " vybrany" : "");
-      el.innerHTML = '<img src="assets/hodnosti/'+hi+'.png" alt=""><div><div class="meno">'+menoClena(id)+'</div><div class="pod">'+c.hod+" · "+c.tim.replace(" (záloha)","")+'</div></div>';
+      el.innerHTML = '<img src="assets/hodnosti/'+hi+'.png" alt=""><div><div class="meno">'+esc(menoClena(id))+'</div><div class="pod">'+esc(c.hod)+" · "+esc(c.tim.replace(" (záloha)",""))+'</div></div>';
       el.onclick = function(){ aktivny = id; vykresliVsetko(); if (typeof nacitajKartuZDB === "function" && CLEN_DB_ID[id]) nacitajKartuZDB(id); };
       host.appendChild(el);
     });
@@ -473,7 +473,7 @@
     var c = DATA[aktivny]; if (!c) return;
     var host = document.getElementById("odznaky"); host.innerHTML = "";
     VYCVIKY.forEach(function(v){
-      var kod=v[0], nazov=v[1], ma = c.odznaky[kod], uroven = ma || "zlato";
+      var kod=v[0], nazov=v[1], ma = c.odznaky[kod]; if (ma && UROVNE.indexOf(ma) < 0) ma = "bronz"; var uroven = ma || "zlato";
       var el = document.createElement("div");
       el.className = "odznak-bunka " + (ma ? "ma" : "nema");
       var urovneHtml = UROVNE.map(function(u){
@@ -567,7 +567,7 @@
       var d = new Date(l.cas), p = function(n){ return (n<10?"0":"")+n; };
       var cas = p(d.getDate())+"."+p(d.getMonth()+1)+". "+p(d.getHours())+":"+p(d.getMinutes());
       var el = document.createElement("div"); el.className = "riadok";
-      el.innerHTML = '<span class="cas">'+cas+'</span><span class="kto">'+(l.kto||"—")+'</span><span class="akcia">'+(l.akcia||"")+'</span>';
+      el.innerHTML = '<span class="cas">'+cas+'</span><span class="kto">'+esc(l.kto||"—")+'</span><span class="akcia">'+esc(l.akcia||"")+'</span>';
       host.appendChild(el);
     });
   }
@@ -656,21 +656,21 @@
     v.hodnosti.forEach(function(hd, idx){
       var r = document.createElement("div");
       r.style.cssText = "display:grid; grid-template-columns:minmax(0,1fr) 110px; gap:10px; align-items:center; padding:5px 0; border-bottom:1px solid var(--ciara);";
-      r.innerHTML = '<span style="font-size:13.5px;">' + (idx+1) + '. ' + hd + '</span>'
-        + '<input class="vstup xp-prah-vstup" type="number" min="0" data-idx="' + idx + '" value="' + (v.prahy[idx] || 0) + '"' + (idx === 0 ? ' disabled' : '') + ' style="padding:6px 10px;">';
+      r.innerHTML = '<span style="font-size:13.5px;">' + (idx+1) + '. ' + esc(hd) + '</span>'
+        + '<input class="vstup xp-prah-vstup" type="number" min="0" data-idx="' + idx + '" value="' + (parseInt(v.prahy[idx],10) || 0) + '"' + (idx === 0 ? ' disabled' : '') + ' style="padding:6px 10px;">';
       host.appendChild(r);
     });
     var nav = document.getElementById("xp-navrhy");
     if (nav) {
       if (!v.navrhy.length) nav.innerHTML = '<div style="color:var(--text-tlm); font-size:13.5px;">Žiadne návrhy — nikto zatiaľ nedosiahol prah vyššej hodnosti.</div>';
       else nav.innerHTML = v.navrhy.map(function(n){
-        return '<div style="padding:8px 12px; margin-bottom:8px; border:1px solid #9C9C74; border-radius:6px; background:rgba(156,156,116,.12); font-size:13.5px;">🎖️ <strong>' + n.nick + '</strong> — ' + (n.hodnost || "—") + ' → <strong>' + n.navrh + '</strong> <span style="color:var(--text-tlm);">(XP ' + n.xp + ')</span><br><span style="font-size:12px; color:var(--text-tlm);">Povýš v Kartách členov — zapíše sa aj na Discord.</span></div>';
+        return '<div style="padding:8px 12px; margin-bottom:8px; border:1px solid #9C9C74; border-radius:6px; background:rgba(156,156,116,.12); font-size:13.5px;">🎖️ <strong>' + esc(n.nick) + '</strong> — ' + esc(n.hodnost || "—") + ' → <strong>' + esc(n.navrh) + '</strong> <span style="color:var(--text-tlm);">(XP ' + esc(n.xp) + ')</span><br><span style="font-size:12px; color:var(--text-tlm);">Povýš v Kartách členov — zapíše sa aj na Discord.</span></div>';
       }).join("");
     }
     var pre = document.getElementById("xp-prehlad");
     if (pre) {
       pre.innerHTML = v.clenovia.map(function(cx){
-        return '<div style="display:grid; grid-template-columns:minmax(0,1fr) 70px; gap:8px; padding:4px 0; border-bottom:1px solid var(--ciara);"><span>' + cx.nick + ' <span style="color:var(--text-tlm); font-size:12px;">(' + (cx.hodnost || "—") + ' · ' + cx.ucasti + ' misií · ' + cx.vycviky + ' výc.' + (cx.bonus ? ' · bonus ' + cx.bonus : '') + ')</span></span><strong style="justify-self:end;">' + cx.xp + ' XP</strong></div>';
+        return '<div style="display:grid; grid-template-columns:minmax(0,1fr) 70px; gap:8px; padding:4px 0; border-bottom:1px solid var(--ciara);"><span>' + esc(cx.nick) + ' <span style="color:var(--text-tlm); font-size:12px;">(' + esc(cx.hodnost || "—") + ' · ' + esc(cx.ucasti) + ' misií · ' + esc(cx.vycviky) + ' výc.' + (cx.bonus ? ' · bonus ' + esc(cx.bonus) : '') + ')</span></span><strong style="justify-self:end;">' + esc(cx.xp) + ' XP</strong></div>';
       }).join("");
     }
     var ub = document.getElementById("xp-uloz");
@@ -721,7 +721,7 @@
     UDALOSTI.forEach(function(u){
       var b = document.createElement("button");
       b.className = "ud-chip" + (u.id === dochAktivna ? " akt" : "");
-      b.innerHTML = '<span class="typ">' + (u.typ === "misia" ? "MISIA" : "VÝCVIK") + '</span>' + u.datum + ' · ' + u.nazov;
+      b.innerHTML = '<span class="typ">' + (u.typ === "misia" ? "MISIA" : "VÝCVIK") + '</span>' + esc(u.datum) + ' · ' + esc(u.nazov);
       b.onclick = function(){ dochAktivna = u.id; vykresliDoch(); };
       hu.appendChild(b);
     });
@@ -743,7 +743,7 @@
     Object.keys(DATA).forEach(function(id){
       var stav = (DOCH[ud.id] || {})[id] || null;
       var el = document.createElement("div"); el.className = "doch-riadok";
-      el.innerHTML = '<span class="meno">' + menoClena(id) + '</span>'
+      el.innerHTML = '<span class="meno">' + esc(menoClena(id)) + '</span>'
         + '<div class="doch-stavy">'
         + '<button class="' + (stav === "dorazil" ? "dorazil-akt" : "") + '">Dorazil</button>'
         + '<button class="' + (stav === "osprav" ? "osprav-akt" : "") + '">Ospravedlnený</button>'
@@ -822,18 +822,18 @@
     kam.innerHTML = '<div class="ulozene-info">Načítavam členov a dochádzku…</div>';
     try {
       var v = await supaVolaj("nacitaj-dochadzku", { misiaId: misiaId });
-      if (!v || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + (v.error||"?") + ').</div>'; return; }
+      if (!v || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + esc((v && v.error)||"?") + ').</div>'; return; }
       if (!v.clenovia || !v.clenovia.length) { kam.innerHTML = '<div class="ulozene-info">Zatiaľ nie sú v databáze žiadni členovia. Pribudnú po prihlásení alebo synchronizácii rostra.</div>'; return; }
       var pocetPrih = v.clenovia.filter(function(c){ return c.prihlaseny === "prihlaseny"; }).length;
       var html = '<div style="display:flex; gap:8px; margin-bottom:14px;">'
-        + '<button class="btn2" onclick="archivujMisiu(\'' + misiaId + '\')">Archivovať misiu</button>'
-        + '<button class="btn2" style="border-color:#8A5F44; color:#C98B7A;" onclick="zmazMisiu(\'' + misiaId + '\')">Zmazať misiu</button>'
+        + '<button class="btn2" data-misia-akcia="archivovat">Archivovať misiu</button>'
+        + '<button class="btn2" style="border-color:#8A5F44; color:#C98B7A;" data-misia-akcia="zmazat">Zmazať misiu</button>'
         + '</div>';
       html += '<div style="font-family:\'Staatliches\',sans-serif; letter-spacing:1px; color:var(--khaki-svetla); margin-bottom:10px;">Dochádzka · prihlásených cez Discord: ' + pocetPrih + '</div>';
       v.clenovia.forEach(function(c){
         var odznak = c.prihlaseny === "prihlaseny" ? '<span title="Prihlásený na Discorde" style="color:#7FB069;">✅</span>' : (c.prihlaseny === "ospravedlneny" ? '<span title="Ospravedlnený na Discorde" style="color:#C9A227;">🟡</span>' : '<span style="color:#4A5A38;">·</span>');
-        html += '<div class="doch-riadok" data-clen="' + c.clen_id + '">'
-          + '<span class="meno">' + odznak + ' ' + c.nick + (c.hodnost ? ' <span style="font-size:11px;color:var(--text-tlm);">' + c.hodnost + '</span>' : '') + '</span>'
+        html += '<div class="doch-riadok" data-clen="' + esc(c.clen_id) + '">'
+          + '<span class="meno">' + odznak + ' ' + esc(c.nick) + (c.hodnost ? ' <span style="font-size:11px;color:var(--text-tlm);">' + esc(c.hodnost) + '</span>' : '') + '</span>'
           + '<div class="doch-stavy">'
           + '<button data-s="dorazil" class="' + (c.dochadzka === "dorazil" ? "dorazil-akt" : "") + '">Dorazil</button>'
           + '<button data-s="osprav" class="' + (c.dochadzka === "osprav" ? "osprav-akt" : "") + '">Ospravedlnený</button>'
@@ -841,6 +841,8 @@
           + '</div></div>';
       });
       kam.innerHTML = html;
+      var bArch = kam.querySelector('[data-misia-akcia="archivovat"]'); if (bArch) bArch.onclick = function(){ archivujMisiu(misiaId); };
+      var bZmaz = kam.querySelector('[data-misia-akcia="zmazat"]'); if (bZmaz) bZmaz.onclick = function(){ zmazMisiu(misiaId); };
       // naviaz tlačidlá
       kam.querySelectorAll(".doch-riadok").forEach(function(riadok){
         var clenId = riadok.getAttribute("data-clen");
@@ -848,7 +850,7 @@
           b.onclick = function(){ ulozDochadzkuDB(misiaId, clenId, b.getAttribute("data-s"), riadok, b); };
         });
       });
-    } catch (e) { kam.innerHTML = '<div class="ulozene-info">Chyba: ' + e.message + '</div>'; }
+    } catch (e) { kam.innerHTML = '<div class="ulozene-info">Chyba: ' + esc(e.message) + '</div>'; }
   }
   async function ulozDochadzkuDB(misiaId, clenId, stav, riadok, btn) {
     var uzAkt = btn.className.indexOf("-akt") > -1;
@@ -865,9 +867,9 @@
   // účastníci archivovanej misie (z dochádzky)
   function ucastniciHtml(u) {
     if (!u || !u.length) return '<div style="margin-top:8px; font-size:12.5px; color:var(--text-tlm); font-style:italic;">Dochádzka nezaznamenaná.</div>';
-    var dor = u.filter(function(x){ return x.stav === "dorazil"; }).map(function(x){ return x.nick; });
-    var osp = u.filter(function(x){ return x.stav === "osprav"; }).map(function(x){ return x.nick; });
-    var ned = u.filter(function(x){ return x.stav === "nedorazil"; }).map(function(x){ return x.nick; });
+    var dor = u.filter(function(x){ return x.stav === "dorazil"; }).map(function(x){ return esc(x.nick); });
+    var osp = u.filter(function(x){ return x.stav === "osprav"; }).map(function(x){ return esc(x.nick); });
+    var ned = u.filter(function(x){ return x.stav === "nedorazil"; }).map(function(x){ return esc(x.nick); });
     var h = '<div style="margin-top:10px; font-size:12.5px; line-height:1.7;">';
     h += '<div><span style="color:#7FB069;">✔ Dorazili (' + dor.length + '):</span> <span style="color:#D8D8C0;">' + (dor.join(", ") || "—") + '</span></div>';
     if (osp.length) h += '<div><span style="color:#C9A227;">● Ospravedlnení (' + osp.length + '):</span> <span style="color:#D8D8C0;">' + osp.join(", ") + '</span></div>';
@@ -882,7 +884,7 @@
     kam.innerHTML = '<div class="ulozene-info">Načítavam archív…</div>';
     try {
       var v = await supaVolaj("nacitaj-misie", { archiv: true });
-      if (!v || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + (v.error||"?") + ').</div>'; return; }
+      if (!v || v.error) { kam.innerHTML = '<div class="ulozene-info">Nepodarilo sa načítať (' + esc((v && v.error)||"?") + ').</div>'; return; }
       if (!v.misie || !v.misie.length) { kam.innerHTML = '<div class="ulozene-info">Archív je zatiaľ prázdny.</div>'; return; }
       kam.innerHTML = "";
       v.misie.forEach(function(m){
@@ -891,10 +893,10 @@
         karta.style.cssText = "background:var(--oliva); border:1px solid var(--linka); border-radius:6px; padding:16px; margin-bottom:12px;";
         karta.innerHTML =
           '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">'
-          + '<div style="font-family:\'Staatliches\',sans-serif; font-size:18px; letter-spacing:1px; color:#C2C29E;">' + (m.typ==="vycvik"?"VÝCVIK":(m.typ==="event"?"EVENT":"MISIA")) + ' · ' + m.nazov + '</div>'
-          + '<span style="font-size:13px; color:var(--text-tlm);">' + dz + '</span></div>'
-          + '<div style="margin-top:6px; font-size:13.5px; color:#D8D8C0;">' + (m.brief || "") + '</div>'
-          + (m.modpack ? '<div style="margin-top:4px; font-size:12px; color:var(--text-tlm);">Modpack: ' + m.modpack + '</div>' : '')
+          + '<div style="font-family:\'Staatliches\',sans-serif; font-size:18px; letter-spacing:1px; color:#C2C29E;">' + (m.typ==="vycvik"?"VÝCVIK":(m.typ==="event"?"EVENT":"MISIA")) + ' · ' + esc(m.nazov) + '</div>'
+          + '<span style="font-size:13px; color:var(--text-tlm);">' + esc(dz) + '</span></div>'
+          + '<div style="margin-top:6px; font-size:13.5px; color:#D8D8C0;">' + esc(m.brief || "") + '</div>'
+          + (m.modpack ? '<div style="margin-top:4px; font-size:12px; color:var(--text-tlm);">Modpack: ' + esc(m.modpack) + '</div>' : '')
           + ucastniciHtml(m.ucastnici)
           + '<div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">'
           + '<button class="btn2" data-a="upravit">Upraviť</button>'
@@ -908,7 +910,7 @@
         btns[2].onclick = async function(){ if(!confirm("Natrvalo zmazať túto misiu z archívu?"))return; var x=await spravaMisie(m.id,"zmazat"); if(x.error){alert(x.error);return;} nacitajArchivDB(); toast(); };
         kam.appendChild(karta);
       });
-    } catch (e) { kam.innerHTML = '<div class="ulozene-info">Chyba: ' + e.message + '</div>'; }
+    } catch (e) { kam.innerHTML = '<div class="ulozene-info">Chyba: ' + esc(e.message) + '</div>'; }
   }
   function archivUprav(karta, m) {
     var box = karta.querySelector(".archiv-edit");
@@ -917,10 +919,10 @@
     try { var d = new Date(m.datum); dtLocal = new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,16); } catch(e){}
     box.innerHTML =
       '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">'
-      + '<label class="pole" style="margin:0;"><span>Názov</span><input class="vstup" data-f="nazov" value="' + (m.nazov||"").replace(/"/g,"&quot;") + '"></label>'
-      + '<label class="pole" style="margin:0;"><span>Dátum a čas</span><input class="vstup" data-f="datum" type="datetime-local" value="' + dtLocal + '"></label>'
-      + '<label class="pole" style="margin:0;"><span>Modpack</span><input class="vstup" data-f="modpack" value="' + (m.modpack||"").replace(/"/g,"&quot;") + '"></label>'
-      + '<label class="pole" style="margin:0; grid-column:1/3;"><span>Briefing</span><textarea class="vstup" data-f="brief" rows="2">' + (m.brief||"") + '</textarea></label>'
+      + '<label class="pole" style="margin:0;"><span>Názov</span><input class="vstup" data-f="nazov" value="' + esc(m.nazov||"") + '"></label>'
+      + '<label class="pole" style="margin:0;"><span>Dátum a čas</span><input class="vstup" data-f="datum" type="datetime-local" value="' + esc(dtLocal) + '"></label>'
+      + '<label class="pole" style="margin:0;"><span>Modpack</span><input class="vstup" data-f="modpack" value="' + esc(m.modpack||"") + '"></label>'
+      + '<label class="pole" style="margin:0; grid-column:1/3;"><span>Briefing</span><textarea class="vstup" data-f="brief" rows="2">' + esc(m.brief||"") + '</textarea></label>'
       + '</div>'
       + '<div style="margin-top:10px;"><button class="btn" data-u="save">Uložiť zmeny</button></div>';
     box.querySelector('button[data-u="save"]').onclick = async function(){
